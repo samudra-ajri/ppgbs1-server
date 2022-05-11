@@ -1,7 +1,7 @@
 {
   "name": "ppgbs1-server",
   "version": "1.0.0",
-  "description": "Islamic student information system",
+  "description": "Islamic student information system api server",
   "main": "server.js",
   "type": "module",
   "scripts": {
@@ -17,5 +17,18 @@
   "bugs": {
     "url": "https://github.com/samudra-ajri/ppgbs1-server/issues"
   },
-  "homepage": "https://github.com/samudra-ajri/ppgbs1-server#readme"
+  "homepage": "https://github.com/samudra-ajri/ppgbs1-server#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.3",
+    "morgan": "^1.10.0"
+  }
 }

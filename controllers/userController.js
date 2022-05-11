@@ -61,8 +61,10 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { username, email, phone, password } = req.body
-    const user = await User.findOne({ $or:[{ phone }, { email }, { username }] })
+    const { userData, password } = req.body
+    const user = await User.findOne({ 
+        $or:[{ phone: userData }, { email: userData }, { username: userData }] 
+    })
     if (user && (await user.matchPassword(password))) {
         res.json({
             ...profileResponse(user),

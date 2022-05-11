@@ -74,7 +74,14 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('Invalid credentials')
     }
-  })
+})
+
+// @desc    Get user data
+// @route   GET /api/users/me
+// @access  Private
+const getMe = asyncHandler(async (req, res) => {
+    res.status(200).json(req.user)
+})
 
 const profileResponse = user => {
     return {
@@ -85,12 +92,12 @@ const profileResponse = user => {
         phone       : user.phone,
         username    : user.username,
         email       : user.email,
-        phone       : user.phone,
         klp         : user.klp,
         isMuballigh : user.isMuballigh,
         ds          : user.ds,
         klp         : user.klp,
         role        : user.role,
+        isActive    : user.isActive,
         createdAt   : user.createdAt,
         updatedAt   : user.updatedAt
     }
@@ -99,4 +106,5 @@ const profileResponse = user => {
 export { 
     registerUser,
     loginUser,
+    getMe,
 }

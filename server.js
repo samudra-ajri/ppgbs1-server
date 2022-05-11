@@ -5,6 +5,7 @@ import morgan from 'morgan'
 
 import connectDB from './config/db.js'
 import homeRoutes from './routes/homeRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 
@@ -22,6 +23,7 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/', homeRoutes)
+app.use('/api/users', userRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -1,0 +1,21 @@
+{
+  "name": "ppgbs1-server",
+  "version": "1.0.0",
+  "description": "Islamic student information system",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samudra-ajri/ppgbs1-server.git"
+  },
+  "author": "Samudra Ajri Kifli",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/samudra-ajri/ppgbs1-server/issues"
+  },
+  "homepage": "https://github.com/samudra-ajri/ppgbs1-server#readme"
+}

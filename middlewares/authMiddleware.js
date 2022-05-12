@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
 import User from '../models/userModel.js'
+import roleTypes from '../consts/roleTypes.js'
 
 const protect = asyncHandler (async (req, res, next) => {
     let token
@@ -23,4 +24,13 @@ const protect = asyncHandler (async (req, res, next) => {
     }
 })
 
-export { protect }
+const manager = (req, res, next) => {
+    if (req.user.role != roleTypes.GENERUS) {
+        next()
+    } else {
+        res.status(401)
+        throw new Error('Not authorized')
+    }
+}
+
+export { protect, manager }

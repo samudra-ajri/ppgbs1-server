@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+import roleTypes from '../consts/roleTypes.js'
 
 const userSchema = mongoose.Schema({
     name: {
@@ -49,7 +50,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         required: true,
-        default: 'GENERUS'
+        default: roleTypes.GENERUS
     },
     isActive: {
         type: Boolean,

@@ -1,6 +1,8 @@
 import asyncHandler from 'express-async-handler'
+import roleTypes from '../consts/roleTypes.js'
 import User from '../models/userModel.js'
 import generateToken from '../utils/generateToken.js'
+import sortQuery from '../utils/sortQuery.js'
 import validateDate from '../utils/validateDate.js'
 
 // @desc    Register new user
@@ -20,7 +22,6 @@ const registerUser = asyncHandler(async (req, res) => {
         isMuballigh, 
         ds, 
         klp,
-        role, 
     } = req.body
 
     const userExists = await User.findOne({ $or:[{ phone }, { email }, { username }] })
@@ -80,6 +81,20 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Get all users
+// @route   GET /api/users
+// @access  Private/Manager
+const getUsers = asyncHandler(async (req, res) => {
+    const { page = 1, limit = 10, sortby, order } = req.query;
+    const users = await User.find({ ...filterManager(req.user) })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
+        .sort(sortQuery(sortby, order))
+        .select('-password')
+        
+    res.json({ total: users.length, users })
+})
+
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
@@ -126,9 +141,40 @@ const updateMe = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Update user data that allowed by Manager
+// @route   PUT /api/users/:id
+// @access  Private/Manager
+const updateUserByManager = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select('-password')    
+    user.isMuballigh = req.body.isMuballigh || user.isMuballigh
+    user.isActive = req.body.isActive || user.isActive
+    user.role = req.body.role || user.role
+    const updatedUser = await user.save()
+    const { password, ...userData } = updatedUser._doc
+    res.json({
+        ...userData,
+    })
+})
+
+// @desc    Filter by manager scope
+const filterManager = (user) => {
+    switch (user.role) {
+        case roleTypes.PPG:
+            return {}
+        case roleTypes.PPD:
+            return {ds: user.ds}
+        case roleTypes.PPK:
+            return {klp: user.klp}
+        default:
+            return {}
+    }
+}
+
 export { 
     registerUser,
     loginUser,
     getMe,
     updateMe,
+    updateUserByManager,
+    getUsers
 }

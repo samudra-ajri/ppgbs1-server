@@ -70,6 +70,8 @@ const loginUser = asyncHandler(async (req, res) => {
         $or:[{ phone: userData }, { email: userData }, { username: userData }] 
     })
     if (user && (await user.matchPassword(password))) {
+        user.lastLogin = Date.now()
+        await user.save()
         const { password, ...userData } = user._doc
         res.status(200).json({
             ...userData,

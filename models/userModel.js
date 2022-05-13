@@ -57,6 +57,9 @@ const userSchema = mongoose.Schema({
         required: true,
         default: true
     },
+    lastLogin: {
+        type: Date
+    }
 }, {
     timestamps: true
 })

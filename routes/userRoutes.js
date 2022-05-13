@@ -11,9 +11,16 @@ import {
 } from '../controllers/userController.js'
 
 const router = express.Router()
-router.route('/').get(protect, manager, getUsers).post(registerUser)
-router.route('/login').post(loginUser)
-router.route('/me').get(protect, getMe).put(protect, updateMe)
-router.route('/:id').put(protect, manager, updateUserByManager).delete(protect, manager, deleteUser)
+router.route('/')
+    .get(protect, manager, getUsers)
+    .post(registerUser)
+router.route('/login')
+    .post(loginUser)
+router.route('/me')
+    .get(protect, getMe)
+    .put(protect, updateMe)
+router.route('/:id')
+    .put(protect, manager, updateUserByManager)
+    .delete(protect, manager, deleteUser)
 
 export default router

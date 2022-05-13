@@ -156,6 +156,20 @@ const updateUserByManager = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Delete a user
+// @route   DELETE /api/users/:id
+// @access  Private/Manager
+const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+    if (user) {
+        await user.remove()
+        res.json({ id: req.params.id })
+    } else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
 // @desc    Filter by manager scope
 const filterManager = (user) => {
     switch (user.role) {
@@ -176,5 +190,6 @@ export {
     getMe,
     updateMe,
     updateUserByManager,
-    getUsers
+    getUsers,
+    deleteUser
 }

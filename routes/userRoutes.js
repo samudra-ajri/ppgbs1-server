@@ -1,6 +1,7 @@
 import express from 'express'
 import { manager, protect } from '../middlewares/authMiddleware.js'
 import { 
+    deleteUser,
     getMe,
     getUsers,
     loginUser,
@@ -13,6 +14,6 @@ const router = express.Router()
 router.route('/').get(protect, manager, getUsers).post(registerUser)
 router.route('/login').post(loginUser)
 router.route('/me').get(protect, getMe).put(protect, updateMe)
-router.route('/:id').put(protect, manager, updateUserByManager)
+router.route('/:id').put(protect, manager, updateUserByManager).delete(protect, manager, deleteUser)
 
 export default router

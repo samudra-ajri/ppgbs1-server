@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler'
-import roleTypes from '../consts/roleTypes.js'
 import User from '../models/userModel.js'
+import filterManager from '../utils/filterManager.js'
 import generateToken from '../utils/generateToken.js'
 import sortQuery from '../utils/sortQuery.js'
 import validateDate from '../utils/validateDate.js'
@@ -171,20 +171,6 @@ const deleteUser = asyncHandler(async (req, res) => {
         throw new Error('User not found')
     }
 })
-
-// @desc    Filter by manager scope
-const filterManager = (user) => {
-    switch (user.role) {
-        case roleTypes.PPG:
-            return {}
-        case roleTypes.PPD:
-            return {ds: user.ds}
-        case roleTypes.PPK:
-            return {klp: user.klp}
-        default:
-            return {}
-    }
-}
 
 export { 
     registerUser,

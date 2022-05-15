@@ -18,7 +18,15 @@ const completionSchema = mongoose.Schema({
         type: Number,
         required: true,
         default: 0
-    }
+    },
+    ds: {
+        type: String,
+        required: true
+    },
+    klp: {
+        type: String,
+        required: true
+    },
 }, {
     timestamps: true
 })

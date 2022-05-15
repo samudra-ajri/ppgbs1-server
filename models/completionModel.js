@@ -7,8 +7,9 @@ const completionSchema = mongoose.Schema({
         ref: 'User',
     },
     subject: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Subject',
     },
     completed: {
         type: [String]

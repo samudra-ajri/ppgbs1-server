@@ -39,6 +39,21 @@ const getCompletionsByAdmin = asyncHandler(async (req, res) => {
     res.status(200).json({ total:completions.length, completions })
 })
 
+// @desc    Get the user completions by admin
+// @route   POST /api/completions/user/:userId
+// @access  Private/Managers
+const getUserCompletionByAdmin = asyncHandler(async (req, res) => {
+    const completions = await Completion.find({ user: req.params.userId })
+        .populate({ path:'subject', model:'Subject', select:'name' })
+        .populate({ path:'user', model:'User', select: 'name' })
+    if (completions) {
+        res.status(200).json({ total:completions.length, completions})
+    } else {
+        res.status(400)
+        throw new Error('User completion not found')
+    }
+})
+
 // @desc    Get a user completion by admin
 // @route   POST /api/completion/:id/admin
 // @access  Private/Managers
@@ -77,8 +92,23 @@ const getCompletion = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Update completion
+// @route   PUT /api/completions/:id
+// @access  Private
+const updateCompletion = asyncHandler(async (req, res) => {
+    const completion = await Completion.findOne({ $and:[{ user: req.user.id }, { id: req.params.id }] })
+    if (completion) {
+        completion.completed = req.body.completed || completion.completed
+        await completion.save()
+        res.status(200).json(completion)
+    } else {
+        res.status(400)
+        throw new Error('User completion not found')
+    }
+})
+
 // @desc    Delete a completion
-// @route   Delete /api/completions/:id
+// @route   DELETE /api/completions/:id
 // @access  Private
 const deleteCompletion = asyncHandler(async (req, res) => {
     const completion = await Completion.findOne({ $and:[{ user: req.user.id }, { id: req.params.id }] })
@@ -108,5 +138,7 @@ export {
     getCompletion,
     deleteCompletion,
     getCompletionsByAdmin,
-    getCompletionByAdmin
+    getCompletionByAdmin,
+    getUserCompletionByAdmin,
+    updateCompletion,
 }

@@ -5,7 +5,9 @@ import {
     getCompletion, 
     getCompletionByAdmin, 
     getCompletions, 
-    getCompletionsByAdmin
+    getCompletionsByAdmin,
+    getUserCompletionByAdmin,
+    updateCompletion
 } from '../controllers/completionController.js'
 import { manager, protect } from '../middlewares/authMiddleware.js'
 
@@ -16,10 +18,12 @@ router.route('/')
 router.route('/admin')
     .get(protect, manager, getCompletionsByAdmin)
 router.route('/:id/admin')
-    .get(protect, getCompletion)
-    .delete(protect, manager, getCompletionByAdmin)
+    .get(protect, manager, getCompletionByAdmin)
 router.route('/:id')
     .get(protect, getCompletion)
+    .put(protect, updateCompletion)
     .delete(protect, deleteCompletion)
+router.route('/user/:userId')
+    .get(protect, manager, getUserCompletionByAdmin)
 
 export default router

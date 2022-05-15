@@ -1,10 +1,14 @@
 import mongoose from 'mongoose'
 
-const quranSchema = mongoose.Schema({
+const completionSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User',
+    },
+    subject: {
+        type: String,
+        required: true
     },
     completed: {
         type: [String]
@@ -18,11 +22,10 @@ const quranSchema = mongoose.Schema({
     timestamps: true
 })
 
-quranSchema.pre('save', async function(next) {
-    if (!this.isModified('completed')) next()
-    this.poin = this.completed ?? this.completed.length
+completionSchema.pre('save', async function(next) {
+    this.poin = this.completed.length
 })
 
-const Quran = mongoose.model('Quran', quranSchema)
+const Completion = mongoose.model('Completion', completionSchema)
 
-export default Quran
+export default Completion

@@ -33,4 +33,13 @@ const manager = (req, res, next) => {
     }
 }
 
-export { protect, manager }
+const admin = (req, res, next) => {
+    if (req.user.role == roleTypes.ADMIN) {
+        next()
+    } else {
+        res.status(401)
+        throw new Error('Not authorized')
+    }
+}
+
+export { protect, manager, admin }

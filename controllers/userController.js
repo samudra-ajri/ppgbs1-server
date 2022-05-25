@@ -22,6 +22,7 @@ const registerUser = asyncHandler(async (req, res) => {
         isMuballigh, 
         ds, 
         klp,
+        role,
     } = req.body
 
     const userExists = await User.findOne({ $or:[{ phone }, { email }, { username }] })

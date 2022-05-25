@@ -25,7 +25,19 @@ const registerUser = asyncHandler(async (req, res) => {
         role,
     } = req.body
 
-    const userExists = await User.findOne({ $or:[{ phone }, { email }, { username }] })
+    let filter = {}
+    if (phone) {
+        filter = { $or:[{ phone }, { username }] }
+    } else if (email) {
+        filter = { $or:[{ email }, { username }] }
+    } else if (phone && email) {
+        filter = { $or:[{ phone }, { email }, { username }] }
+    } else {
+        res.status(400)
+        throw new Error('No phone or email')
+    }
+
+    const userExists = await User.findOne(filter)
     if (userExists) {
         res.status(404)
         throw new Error('Phone, email, or username already exists')
@@ -33,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!validateDate(yearBirth, monthBirth, dayBirth)) {
         res.status(400)
-        throw new Error('Invalid  user data')
+        throw new Error('Invalid user data')
     }
 
     const user = await User.create({

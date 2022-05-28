@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler'
+import Location from '../models/locationModel.js'
 
 // @desc    Create new location
 // @route   POST /api/locations

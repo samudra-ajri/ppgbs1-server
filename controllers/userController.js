@@ -27,11 +27,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
     let filter = {}
     if (phone) {
-        filter = { $or:[{ phone }, { username }] }
+        filter = { phone }
     } else if (email) {
-        filter = { $or:[{ email }, { username }] }
+        filter = { email }
     } else if (phone && email) {
-        filter = { $or:[{ phone }, { email }, { username }] }
+        filter = { $or:[{ phone }, { email }] }
     } else {
         res.status(400)
         throw new Error('No phone or email')

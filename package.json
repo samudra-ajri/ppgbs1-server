@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "capitalize": "^2.0.4",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",

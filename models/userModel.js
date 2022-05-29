@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+import capitalize from 'capitalize'
 import roleTypes from '../consts/roleTypes.js'
 
 const userSchema = mongoose.Schema({
@@ -72,10 +73,10 @@ userSchema.methods.matchPassword = async function(enteredPassword) {
 }
 
 userSchema.pre('save', async function(next) {
+    this.name = capitalize.words(this.name)
     if (!this.isModified('password')) {
         next()
     }
-
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
 })

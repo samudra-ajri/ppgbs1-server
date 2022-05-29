@@ -19,6 +19,8 @@ const subjectSchema = mongoose.Schema({
 })
 
 subjectSchema.pre('save', async function(next) {
+    this.name = this.name.toUpperCase()
+    this.targets = this.targets.map(target => { return target.toUpperCase() })
     this.totalPoin = this.targets.length
 })
 

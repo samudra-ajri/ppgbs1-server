@@ -74,7 +74,6 @@ const getCompletionByAdmin = asyncHandler(async (req, res) => {
 // @access  Private
 const getCompletions = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ user: req.user.id })
-        .populate({ path:'subject', model:'Subject', select:'name' })
     res.status(200).json({ total:completions.length, completions })
 })
 

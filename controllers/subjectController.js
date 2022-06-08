@@ -27,7 +27,10 @@ const createSubject = asyncHandler(async (req, res) => {
 // @access  Public
 const getSubjects = asyncHandler(async (req, res) => {
     const subjects = await Subject.find({})
-    res.status(200).json({ total: subjects.length, subjects })
+    res.status(200).json({ 
+        total: subjects.length, 
+        totalPoin: generateTotalPoin(subjects),  
+        subjects })
 })
 
 // @desc    Get subject by id
@@ -102,6 +105,15 @@ const generateUpdatedTargets = (newTargets, subject) => {
     } else {
         return null
     }
+}
+
+// @desc    generate total poins
+const generateTotalPoin = (subjects) => {
+    let total = 0
+    subjects.forEach(subject => {
+        total += subject.totalPoin
+    })
+    return total
 }
 
 export { 

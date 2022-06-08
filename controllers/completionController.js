@@ -74,7 +74,11 @@ const getCompletionByAdmin = asyncHandler(async (req, res) => {
 // @access  Private
 const getCompletions = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ user: req.user.id })
-    res.status(200).json({ total:completions.length, completions })
+    res.status(200).json({ 
+        total:completions.length, 
+        totalPoin: generateTotalPoin(completions),
+        completions 
+    })
 })
 
 // @desc    Get a user completion
@@ -129,6 +133,15 @@ const createCompletedTargets = (subject, completedInput) => {
         }
     })
     return completed
+}
+
+// @desc    generate total poins
+const generateTotalPoin = (completions) => {
+    let total = 0
+    completions.forEach(completion => {
+        total += completion.poin
+    })
+    return total
 }
 
 export { 

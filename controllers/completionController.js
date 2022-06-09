@@ -19,7 +19,8 @@ const createCompletion = asyncHandler(async (req, res) => {
         ds: req.user.ds,
         klp: req.user.klp,
         subject: subjectId, 
-        completed: createCompletedTargets(subject, completed)
+        completed: createCompletedTargets(subject, completed),
+        category: subject.category
     })
     if (completion) {
         res.status(201).json(completion._doc)

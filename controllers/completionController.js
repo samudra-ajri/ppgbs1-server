@@ -143,7 +143,8 @@ const generateTotalPoin = (completions) => {
         alquran: 0,
         hadits: 0,
         rote: 0,
-        extra: 0
+        extra: 0,
+        total: 0
     }
 
     completions.forEach(completion => {
@@ -165,6 +166,7 @@ const generateTotalPoin = (completions) => {
                 break;
         }
     })
+    total.total = total.alquran + total.hadits + total.rote + total.extra
     return total
 }
 

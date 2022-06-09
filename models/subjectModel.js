@@ -1,9 +1,15 @@
 import mongoose from 'mongoose'
+import subjectCategories from '../consts/subjectCategories.js'
 
 const subjectSchema = mongoose.Schema({
     name: {
         type: String,
         required: true
+    },
+    category: {
+        type: String,
+        require: true,
+        enum: Object.values(subjectCategories),
     },
     targets: {
         type: [String],

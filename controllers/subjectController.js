@@ -5,7 +5,7 @@ import Subject from '../models/subjectModel.js'
 // @route   POST /api/subjects
 // @access  Private/Admin
 const createSubject = asyncHandler(async (req, res) => {
-    const { name, totalPages, targets } = req.body
+    const { name, totalPages, targets, category } = req.body
     const exists = await Subject.findOne({ name })
     if (exists) {
         res.status(404)
@@ -13,7 +13,7 @@ const createSubject = asyncHandler(async (req, res) => {
     }
 
     const generatedTargets = generateTargets(totalPages, targets)
-    const subject = await Subject.create({ name, targets: generatedTargets })
+    const subject = await Subject.create({ name, targets: generatedTargets, category })
     if (subject) {
         res.status(201).json(subject._doc)
     } else {
@@ -53,6 +53,7 @@ const updateSubject = asyncHandler(async (req, res) => {
     const subject = await Subject.findById(req.params.id)
     if (subject) {
         subject.name = req.body.name || subject.name
+        subject.category = req.body.category || subject.category
         subject.targets = generateTargets(
             req.body.totalPages, 
             req.body.targets, 

@@ -101,7 +101,7 @@ const generateTargets = (totalPages, targets, newTargets, subject) => {
 
 // @desc    Generate updated subjet targets
 const generateUpdatedTargets = (newTargets, subject) => {
-    if (!subject.targets.includes(newTargets)) {
+    if (!subject.targets.includes(newTargets.toUpperCase())) {
         return [...subject.targets, newTargets]
     } else {
         return null

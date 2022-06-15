@@ -107,7 +107,6 @@ const getCompletionsByCategory = asyncHandler(async (req, res) => {
 const getCompletionsScores = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ user: req.user.id })
     res.status(200).json({
-        total: completions.length,
         totalPoin: generateTotalPoin(completions),
     })
 })

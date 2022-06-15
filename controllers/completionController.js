@@ -72,7 +72,7 @@ const getCompletionByAdmin = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get user completions
-// @route   POST /api/completions
+// @route   GET /api/completions
 // @access  Private
 const getCompletions = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ user: req.user.id })
@@ -84,7 +84,7 @@ const getCompletions = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get user completions by category
-// @route   POST /api/completions/categories/:category
+// @route   GET /api/completions/categories/:category
 // @access  Private
 const getCompletionsByCategory = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ 
@@ -98,6 +98,17 @@ const getCompletionsByCategory = asyncHandler(async (req, res) => {
         total: completions.length,
         totalPoin: generateTotalPoin(completions),
         completions
+    })
+})
+
+// @desc    Get user completions score
+// @route   GET /api/completions/scores
+// @access  Private
+const getCompletionsScores = asyncHandler(async (req, res) => {
+    const completions = await Completion.find({ user: req.user.id })
+    res.status(200).json({
+        total: completions.length,
+        totalPoin: generateTotalPoin(completions),
     })
 })
 
@@ -197,5 +208,6 @@ export {
     getCompletionByAdmin,
     getUserCompletionByAdmin,
     updateCompletion,
-    getCompletionsByCategory
+    getCompletionsByCategory,
+    getCompletionsScores
 }

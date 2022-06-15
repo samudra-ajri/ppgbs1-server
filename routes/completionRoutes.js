@@ -7,6 +7,7 @@ import {
     getCompletions, 
     getCompletionsByAdmin,
     getCompletionsByCategory,
+    getCompletionsScores,
     getUserCompletionByAdmin,
     updateCompletion
 } from '../controllers/completionController.js'
@@ -28,5 +29,7 @@ router.route('/user/:userId')
     .get(protect, manager, getUserCompletionByAdmin)
 router.route('/categories/:category')
     .get(protect, getCompletionsByCategory)
+router.route('/scores')
+    .get(protect, getCompletionsScores) 
 
 export default router

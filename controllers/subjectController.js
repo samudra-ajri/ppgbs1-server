@@ -33,6 +33,23 @@ const getSubjects = asyncHandler(async (req, res) => {
         subjects })
 })
 
+// @desc    Get subjects by category
+// @route   GET /api/subjects/categories/:category
+// @access  Public
+const getSubjectsByCategory = asyncHandler(async (req, res) => {
+    const subjects = await Subject.find({ category: req.params.category.toUpperCase() })
+    if (subjects) {
+        res.status(200).json({
+            total: subjects.length,
+            totalPoin: generateTotalPoin(subjects),
+            subjects
+        })
+    } else {
+        res.status(400)
+        throw new Error('Subject not found')
+    }
+})
+
 // @desc    Get subject by id
 // @route   GET /api/subjects/:id
 // @access  Public
@@ -122,5 +139,6 @@ export {
     getSubjects,
     getSubject,
     updateSubject,
-    deleteSubject
+    deleteSubject,
+    getSubjectsByCategory
 }

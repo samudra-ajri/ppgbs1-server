@@ -5,6 +5,7 @@ import {
     deleteSubject, 
     getSubject, 
     getSubjects,
+    getSubjectsByCategory,
     updateSubject
 } from '../controllers/subjectController.js'
 
@@ -12,6 +13,8 @@ const router = express.Router()
 router.route('/')
     .get(getSubjects)
     .post(protect, admin, createSubject)
+router.route('/categories/:category')
+    .get(getSubjectsByCategory)
 router.route('/:id')
     .get(getSubject)
     .put(protect, admin, updateSubject)

@@ -6,6 +6,7 @@ import {
     getCompletionByAdmin, 
     getCompletions, 
     getCompletionsByAdmin,
+    getCompletionsByCategory,
     getUserCompletionByAdmin,
     updateCompletion
 } from '../controllers/completionController.js'
@@ -25,5 +26,7 @@ router.route('/:id')
     .delete(protect, deleteCompletion)
 router.route('/user/:userId')
     .get(protect, manager, getUserCompletionByAdmin)
+router.route('/categories/:category')
+    .get(protect, getCompletionsByCategory)
 
 export default router

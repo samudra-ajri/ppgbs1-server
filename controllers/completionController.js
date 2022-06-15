@@ -83,6 +83,24 @@ const getCompletions = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Get user completions by category
+// @route   POST /api/completions/categories/:category
+// @access  Private
+const getCompletionsByCategory = asyncHandler(async (req, res) => {
+    const completions = await Completion.find({ 
+        $and: [{ 
+            user: req.user.id 
+        }, { 
+            category: req.params.category.toUpperCase()
+        }] 
+    })
+    res.status(200).json({
+        total: completions.length,
+        totalPoin: generateTotalPoin(completions),
+        completions
+    })
+})
+
 // @desc    Get a user completion
 // @route   POST /api/completion/:id
 // @access  Private
@@ -179,4 +197,5 @@ export {
     getCompletionByAdmin,
     getUserCompletionByAdmin,
     updateCompletion,
+    getCompletionsByCategory
 }

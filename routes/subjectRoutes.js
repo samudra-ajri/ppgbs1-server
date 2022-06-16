@@ -4,6 +4,7 @@ import {
     createSubject, 
     deleteSubject, 
     getSubject, 
+    getSubjectCategories, 
     getSubjects,
     getSubjectsByCategory,
     updateSubject
@@ -15,6 +16,8 @@ router.route('/')
     .post(protect, admin, createSubject)
 router.route('/categories/:category')
     .get(getSubjectsByCategory)
+router.route('/count/categories')
+    .get(getSubjectCategories)
 router.route('/:id')
     .get(getSubject)
     .put(protect, admin, updateSubject)

@@ -63,6 +63,28 @@ const getSubject = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Get subject categories
+// @route   GET /api/subjects/categories
+// @access  Public
+const getSubjectCategories = asyncHandler(async (req, res) => {
+    const cateogry = await Subject.aggregate([
+        { $unwind: "$category" },
+        {
+            $group: {
+                _id: "$category",
+                count: { $sum: 1 },
+            },
+        },
+    ])
+    // const subject = await Subject.findById(req.params.id)
+    if (cateogry) {
+        res.status(200).json(cateogry)
+    } else {
+        res.status(400)
+        throw new Error('Cateogry not found')
+    }
+})
+
 // @desc    Ubdate a subject
 // @route   PUT /api/subjects/:id
 // @access  Private/Admin
@@ -140,5 +162,6 @@ export {
     getSubject,
     updateSubject,
     deleteSubject,
-    getSubjectsByCategory
+    getSubjectsByCategory,
+    getSubjectCategories
 }

@@ -130,12 +130,7 @@ const getCompletion = asyncHandler(async (req, res) => {
 // @access  Private
 const getCompletionBySubjectId = asyncHandler(async (req, res) => {
     const completion = await Completion.findOne({ $and: [{ user: req.user.id }, { subject: req.params.subjectId }] })
-    if (completion) {
-        res.status(200).json(completion)
-    } else {
-        res.status(400)
-        throw new Error('User completion not found')
-    }
+    res.status(200).json(completion)
 })
 
 // @desc    Update completion

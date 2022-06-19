@@ -4,6 +4,7 @@ import {
     deleteCompletion, 
     getCompletion, 
     getCompletionByAdmin, 
+    getCompletionBySubjectId, 
     getCompletions, 
     getCompletionsByAdmin,
     getCompletionsByCategory,
@@ -31,5 +32,7 @@ router.route('/user/:userId')
     .get(protect, manager, getUserCompletionByAdmin)
 router.route('/categories/:category')
     .get(protect, getCompletionsByCategory)
+router.route('/subjects/:subjectId')
+    .get(protect, getCompletionBySubjectId)
 
 export default router

@@ -125,6 +125,19 @@ const getCompletion = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Get user completion by subjectId
+// @route   POST /api/completion/subjects/:subjectId
+// @access  Private
+const getCompletionBySubjectId = asyncHandler(async (req, res) => {
+    const completion = await Completion.findOne({ $and: [{ user: req.user.id }, { subject: req.params.subjectId }] })
+    if (completion) {
+        res.status(200).json(completion)
+    } else {
+        res.status(400)
+        throw new Error('User completion not found')
+    }
+})
+
 // @desc    Update completion
 // @route   PUT /api/completions/:id
 // @access  Private
@@ -208,5 +221,6 @@ export {
     getUserCompletionByAdmin,
     updateCompletion,
     getCompletionsByCategory,
-    getCompletionsScores
+    getCompletionsScores,
+    getCompletionBySubjectId
 }

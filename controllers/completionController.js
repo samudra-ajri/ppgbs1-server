@@ -10,19 +10,30 @@ import filterManager from '../utils/filterManager.js'
 const createCompletion = asyncHandler(async (req, res) => {
     const { subjectId, completed } = req.body
     const exists = await Completion.findOne({ $and: [{ user: req.user.id }, { subject: subjectId }] })
-    if (exists) {
-        res.status(404)
-        throw new Error('Subject already exists')
-    }
     const subject = await Subject.findById(subjectId)
-    const completion = await Completion.create({
+
+    const completionData = {
         user: req.user.id,
         ds: req.user.ds,
         klp: req.user.klp,
         subject: subjectId,
         completed: createCompletedTargets(subject, completed),
         category: subject.category
-    })
+    }
+
+    let completion = {}
+    if (exists) {
+        exists.user         = completionData.user
+        exists.ds           = completionData.ds
+        exists.klp          = completionData.klp
+        exists.subject      = completionData.subject
+        exists.completed    = completionData.completed
+        exists.category     = completionData.category
+        completion          = await exists.save()
+    } else {
+        completion = await Completion.create(completionData)
+    }
+
     if (completion) {
         res.status(201).json(completion._doc)
     } else {

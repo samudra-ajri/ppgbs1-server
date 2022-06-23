@@ -127,7 +127,6 @@ const getCompletionsScores = asyncHandler(async (req, res) => {
 // @access  Private
 const getCompletion = asyncHandler(async (req, res) => {
     const completion = await Completion.findOne({ $and: [{ user: req.user.id }, { id: req.params.id }] })
-        .populate({ path: 'subject', model: 'Subject', select: 'name' })
     if (completion) {
         res.status(200).json(completion)
     } else {

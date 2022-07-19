@@ -2,13 +2,18 @@ import roleTypes from "../consts/roleTypes.js"
 
 // @desc    Filter by manager scope
 const filterManager = (user) => {
+    let parameters = [
+        { role: roleTypes.GENERUS }
+    ]
     switch (user.role) {
         case roleTypes.PPG:
             return {}
         case roleTypes.PPD:
-            return {ds: user.ds}
+            parameters.push({ ds: user.ds })
+            return { $and: parameters }
         case roleTypes.PPK:
-            return {klp: user.klp}
+            parameters.push({ klp: user.klp })
+            return { $and: parameters }
         default:
             return {}
     }

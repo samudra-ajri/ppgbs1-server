@@ -11,6 +11,7 @@ import {
     getCompletionsScores,
     getCompletionsScoresByUserId,
     getUserCompletionByAdmin,
+    getUserCompletionsByCategory,
     updateCompletion
 } from '../controllers/completionController.js'
 import { manager, protect } from '../middlewares/authMiddleware.js'
@@ -33,6 +34,8 @@ router.route('/:id')
     .delete(protect, deleteCompletion)
 router.route('/user/:userId')
     .get(protect, manager, getUserCompletionByAdmin)
+router.route('/categories/:category/users/:userId')
+    .get(protect, getUserCompletionsByCategory)
 router.route('/categories/:category')
     .get(protect, getCompletionsByCategory)
 router.route('/subjects/:subjectId')

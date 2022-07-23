@@ -122,6 +122,16 @@ const getCompletionsScores = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Get user completions score by user id
+// @route   GET /api/completions/:userId/scores
+// @access  Private, Managers
+const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
+    const completions = await Completion.find({ user: req.params.userId })
+    res.status(200).json({
+        totalPoin: generateTotalPoin(completions),
+    })
+})
+
 // @desc    Get a user completion
 // @route   POST /api/completion/:id
 // @access  Private
@@ -227,5 +237,6 @@ export {
     updateCompletion,
     getCompletionsByCategory,
     getCompletionsScores,
+    getCompletionsScoresByUserId,
     getCompletionBySubjectId
 }

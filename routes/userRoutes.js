@@ -3,6 +3,7 @@ import { manager, protect } from '../middlewares/authMiddleware.js'
 import { 
     deleteUser,
     getMe,
+    getUserById,
     getUsers,
     loginUser,
     registerUser,
@@ -20,6 +21,7 @@ router.route('/me')
     .get(protect, getMe)
     .put(protect, updateMe)
 router.route('/:id')
+    .get(protect, manager, getUserById)
     .put(protect, manager, updateUserByManager)
     .delete(protect, manager, deleteUser)
 

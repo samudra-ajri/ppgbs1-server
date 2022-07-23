@@ -110,6 +110,14 @@ const getUsers = asyncHandler(async (req, res) => {
     res.json({ total: users.length, users })
 })
 
+// @desc    Get user by id
+// @route   GET /api/users/:id
+// @access  Private/Manager
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select('-password')
+    res.json(user)
+})
+
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
@@ -192,5 +200,6 @@ export {
     updateMe,
     updateUserByManager,
     getUsers,
-    deleteUser
+    deleteUser,
+    getUserById
 }

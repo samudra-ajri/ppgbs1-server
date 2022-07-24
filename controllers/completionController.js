@@ -171,6 +171,14 @@ const getCompletionBySubjectId = asyncHandler(async (req, res) => {
     res.status(200).json(completion)
 })
 
+// @desc    Get user completion by subjectId and userId
+// @route   POST /api/completion/subjects/:subjectId/users/:userId
+// @access  Private
+const getUserCompletionBySubjectId = asyncHandler(async (req, res) => {
+    const completion = await Completion.findOne({ $and: [{ user: req.params.userId }, { subject: req.params.subjectId }] })
+    res.status(200).json(completion)
+})
+
 // @desc    Update completion
 // @route   PUT /api/completions/:id
 // @access  Private
@@ -257,5 +265,6 @@ export {
     getCompletionsScores,
     getCompletionsScoresByUserId,
     getCompletionBySubjectId,
-    getUserCompletionsByCategory
+    getUserCompletionsByCategory,
+    getUserCompletionBySubjectId
 }

@@ -11,6 +11,7 @@ import {
     getCompletionsScores,
     getCompletionsScoresByUserId,
     getUserCompletionByAdmin,
+    getUserCompletionBySubjectId,
     getUserCompletionsByCategory,
     updateCompletion
 } from '../controllers/completionController.js'
@@ -38,6 +39,8 @@ router.route('/categories/:category/users/:userId')
     .get(protect, getUserCompletionsByCategory)
 router.route('/categories/:category')
     .get(protect, getCompletionsByCategory)
+router.route('/subjects/:subjectId/users/:userId')
+    .get(protect, getUserCompletionBySubjectId)
 router.route('/subjects/:subjectId')
     .get(protect, getCompletionBySubjectId)
 

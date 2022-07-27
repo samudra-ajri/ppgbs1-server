@@ -97,11 +97,11 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users
-// @route   GET /api/users
+// @route   GET /api/users?page=&limit=&search=
 // @access  Private/Manager
 const getUsers = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, sortby, order } = req.query;
-    const users = await User.find({ ...filterManager(req.user) })
+    const { page = 1, limit = 10, sortby, order, search } = req.query;
+    const users = await User.find({ ...filterManager(req.user, search) })
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .sort(sortQuery(sortby, order))

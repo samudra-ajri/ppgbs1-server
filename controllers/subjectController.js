@@ -73,6 +73,7 @@ const getSubjectCategories = asyncHandler(async (req, res) => {
             $group: {
                 _id: "$category",
                 count: { $sum: 1 },
+                totalPoin: { $sum: "$totalPoin" },
             },
         },
     ])

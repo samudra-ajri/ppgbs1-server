@@ -23,13 +23,13 @@ const createCompletion = asyncHandler(async (req, res) => {
 
     let completion = {}
     if (exists) {
-        exists.user         = completionData.user
-        exists.ds           = completionData.ds
-        exists.klp          = completionData.klp
-        exists.subject      = completionData.subject
-        exists.completed    = completionData.completed
-        exists.category     = completionData.category
-        completion          = await exists.save()
+        exists.user = completionData.user
+        exists.ds = completionData.ds
+        exists.klp = completionData.klp
+        exists.subject = completionData.subject
+        exists.completed = completionData.completed
+        exists.category = completionData.category
+        completion = await exists.save()
     } else {
         completion = await Completion.create(completionData)
     }
@@ -98,12 +98,12 @@ const getCompletions = asyncHandler(async (req, res) => {
 // @route   GET /api/completions/categories/:category
 // @access  Private
 const getCompletionsByCategory = asyncHandler(async (req, res) => {
-    const completions = await Completion.find({ 
-        $and: [{ 
-            user: req.user.id 
-        }, { 
+    const completions = await Completion.find({
+        $and: [{
+            user: req.user.id
+        }, {
             category: req.params.category.toUpperCase()
-        }] 
+        }]
     })
     res.status(200).json({
         total: completions.length,
@@ -116,12 +116,12 @@ const getCompletionsByCategory = asyncHandler(async (req, res) => {
 // @route   GET /api/completions/categories/:category/users/:userId
 // @access  Private
 const getUserCompletionsByCategory = asyncHandler(async (req, res) => {
-    const completions = await Completion.find({ 
-        $and: [{ 
-            user: req.params.userId 
-        }, { 
+    const completions = await Completion.find({
+        $and: [{
+            user: req.params.userId
+        }, {
             category: req.params.category.toUpperCase()
-        }] 
+        }]
     })
     res.status(200).json({
         total: completions.length,
@@ -147,6 +147,24 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
     const completions = await Completion.find({ user: req.params.userId })
     res.status(200).json({
         totalPoin: generateTotalPoin(completions),
+    })
+})
+
+// @desc    Get all users completions score
+// @route   GET /api/completions/scores/all
+// @access  Private, Managers
+const getAllCompletionsScores = asyncHandler(async (req, res) => {
+    const scores = await Completion.aggregate(
+        [
+            { $match: {} },
+            { $group: { 
+                _id: "$category", 
+                total: { $sum: "$poin" }
+            } },
+        ]
+    )
+    res.status(200).json({
+        totalPoin: scores,
     })
 })
 
@@ -266,5 +284,6 @@ export {
     getCompletionsScoresByUserId,
     getCompletionBySubjectId,
     getUserCompletionsByCategory,
-    getUserCompletionBySubjectId
+    getUserCompletionBySubjectId,
+    getAllCompletionsScores
 }

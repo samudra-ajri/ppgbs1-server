@@ -2,6 +2,7 @@ import express from 'express'
 import { 
     createCompletion, 
     deleteCompletion, 
+    getAllCompletionsScores, 
     getCompletion, 
     getCompletionByAdmin, 
     getCompletionBySubjectId, 
@@ -27,6 +28,8 @@ router.route('/scores')
     .get(protect, getCompletionsScores) 
 router.route('/:id/admin')
     .get(protect, manager, getCompletionByAdmin)
+router.route('/scores/all')
+    .get(protect, manager, getAllCompletionsScores)
 router.route('/user/:userId/scores')
     .get(protect, manager, getCompletionsScoresByUserId)
 router.route('/:id')

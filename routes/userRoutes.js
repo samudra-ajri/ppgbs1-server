@@ -3,6 +3,7 @@ import { manager, protect } from '../middlewares/authMiddleware.js'
 import { 
     deleteUser,
     getMe,
+    getRolesCount,
     getUserById,
     getUsers,
     loginUser,
@@ -15,6 +16,8 @@ const router = express.Router()
 router.route('/')
     .get(protect, manager, getUsers)
     .post(registerUser)
+router.route('/roles')
+    .get(protect, manager, getRolesCount)
 router.route('/login')
     .post(loginUser)
 router.route('/me')

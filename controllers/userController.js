@@ -193,6 +193,24 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Get users roles count
+// @route   GET /api/users/roles
+// @access  Private, Managers
+const getRolesCount = asyncHandler(async (req, res) => {
+    const roles = await User.aggregate(
+        [
+            { $match: {} },
+            { $group: { 
+                _id: "$role", 
+                total: { $sum: 1 }
+            } },
+        ]
+    )
+    res.status(200).json({
+        countRoles: roles,
+    })
+})
+
 export { 
     registerUser,
     loginUser,
@@ -201,5 +219,6 @@ export {
     updateUserByManager,
     getUsers,
     deleteUser,
-    getUserById
+    getUserById,
+    getRolesCount
 }

@@ -151,12 +151,17 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users completions score
-// @route   GET /api/completions/scores/all
+// @route   GET /api/completions/scores/all?ds=&klp=
 // @access  Private, Managers
 const getAllCompletionsScores = asyncHandler(async (req, res) => {
+    const { ds, klp } = req.query;
+    const filters = []
+    if (ds) filters.push({ ds: ds.toUpperCase() })
+    if (klp) filters.push({ klp: klp.toUpperCase() })
+
     const scores = await Completion.aggregate(
         [
-            { $match: {} },
+            { $match: generateFilters(filters) },
             { $group: { 
                 _id: "$category", 
                 total: { $sum: "$poin" }
@@ -268,6 +273,15 @@ const generateTotalPoin = (completions) => {
     })
     total.total = total.alquran + total.hadits + total.rote + total.extra
     return total
+}
+
+// @desc    build filter
+const generateFilters = (filters) => {
+    if (filters.length !== 0) {
+        return { $and: filters }
+    } else {
+        return {}
+    }
 }
 
 export {

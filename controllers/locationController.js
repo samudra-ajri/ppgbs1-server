@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import Location from '../models/locationModel.js'
+import sortQuery from '../utils/sortQuery.js'
 
 // @desc    Create new location
 // @route   POST /api/locations
@@ -25,7 +26,7 @@ const createLocation = asyncHandler(async (req, res) => {
 // @route   GET /api/locations
 // @access  Public
 const getLocations = asyncHandler(async (req, res) => {
-    const locations = await Location.find({})
+    const locations = await Location.find({}).sort('ds')
     res.status(200).json({ total: locations.length, locations })
 })
 

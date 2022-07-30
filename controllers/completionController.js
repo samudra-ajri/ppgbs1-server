@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import subjectCategories from '../consts/subjectCategories.js'
 import Completion from '../models/completionModel.js'
 import Subject from '../models/subjectModel.js'
+import filterLocation from '../utils/filterLocation.js'
 import filterManager from '../utils/filterManager.js'
 
 // @desc    Create user completion
@@ -155,13 +156,13 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
 // @access  Private, Managers
 const getAllCompletionsScores = asyncHandler(async (req, res) => {
     const { ds, klp } = req.query;
-    const filters = []
-    if (ds) filters.push({ ds: ds.toUpperCase() })
-    if (klp) filters.push({ klp: klp.toUpperCase() })
+    const locations = []
+    if (ds) locations.push({ ds: ds.toUpperCase() })
+    if (klp) locations.push({ klp: klp.toUpperCase() })
 
     const scores = await Completion.aggregate(
         [
-            { $match: generateFilters(filters) },
+            { $match: filterLocation(locations) },
             { $group: { 
                 _id: "$category", 
                 total: { $sum: "$poin" }
@@ -273,15 +274,6 @@ const generateTotalPoin = (completions) => {
     })
     total.total = total.alquran + total.hadits + total.rote + total.extra
     return total
-}
-
-// @desc    build filter
-const generateFilters = (filters) => {
-    if (filters.length !== 0) {
-        return { $and: filters }
-    } else {
-        return {}
-    }
 }
 
 export {

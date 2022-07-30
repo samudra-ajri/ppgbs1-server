@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler'
+import roleTypes from '../consts/roleTypes.js'
 import User from '../models/userModel.js'
+import filterLocation from '../utils/filterLocation.js'
 import filterManager from '../utils/filterManager.js'
 import generateToken from '../utils/generateToken.js'
 import sortQuery from '../utils/sortQuery.js'
@@ -194,12 +196,17 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get users roles count
-// @route   GET /api/users/roles
+// @route   GET /api/users/roles?ds=&klp=
 // @access  Private, Managers
 const getRolesCount = asyncHandler(async (req, res) => {
+    const { ds, klp } = req.query;
+    const locations = []
+    if (ds) locations.push({ ds: ds.toUpperCase() })
+    if (klp) locations.push({ klp: klp.toUpperCase() })
+
     const roles = await User.aggregate(
         [
-            { $match: {} },
+            { $match: filterLocation(locations) },
             { $group: { 
                 _id: "$role", 
                 total: { $sum: 1 }

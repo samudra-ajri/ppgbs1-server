@@ -8,7 +8,7 @@ const filterManager = (user, search) => {
     ]
     switch (user.role) {
         case roleTypes.PPG:
-            return { name: { $regex: new RegExp(search, 'i') }}
+            return { $and: parameters }
         case roleTypes.PPD:
             parameters.push({ ds: user.ds })
             return { $and: parameters }

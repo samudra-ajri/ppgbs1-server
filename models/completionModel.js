@@ -23,6 +23,10 @@ const completionSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    subjectName: {
+        type: String,
+        required: true
+    },
     ds: {
         type: String,
         required: true

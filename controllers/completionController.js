@@ -19,7 +19,8 @@ const createCompletion = asyncHandler(async (req, res) => {
         klp: req.user.klp,
         subject: subjectId,
         completed: createCompletedTargets(subject, completed),
-        category: subject.category
+        category: subject.category,
+        subjectName: subject.name
     }
 
     let completion = {}
@@ -30,6 +31,7 @@ const createCompletion = asyncHandler(async (req, res) => {
         exists.subject = completionData.subject
         exists.completed = completionData.completed
         exists.category = completionData.category
+        exists.subjectName = completionData.subjectName
         completion = await exists.save()
     } else {
         completion = await Completion.create(completionData)
@@ -152,10 +154,11 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users completions score
-// @route   GET /api/completions/scores/all?ds=&klp=
+// @route   GET /api/completions/scores/all?ds=&klp=&field=
 // @access  Private, Managers
 const getAllCompletionsScores = asyncHandler(async (req, res) => {
-    const { ds, klp } = req.query;
+    const { ds, klp, field } = req.query;
+    const type = field ? `$${field}` : '$category'
     const locations = []
     if (ds) locations.push({ ds: ds.toUpperCase() })
     if (klp) locations.push({ klp: klp.toUpperCase() })
@@ -164,7 +167,7 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
         [
             { $match: filterLocation(locations) },
             { $group: { 
-                _id: "$category", 
+                _id: type,
                 total: { $sum: "$poin" }
             } },
         ]

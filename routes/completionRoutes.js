@@ -3,6 +3,7 @@ import {
     createCompletion, 
     deleteCompletion, 
     getAllCompletionsScores, 
+    getAllCompletionsSubjectScores, 
     getCompletion, 
     getCompletionByAdmin, 
     getCompletionBySubjectId, 
@@ -30,6 +31,8 @@ router.route('/:id/admin')
     .get(protect, manager, getCompletionByAdmin)
 router.route('/scores/all')
     .get(protect, manager, getAllCompletionsScores)
+router.route('/scores/all/subjects/:subjectId')
+    .get(protect, manager, getAllCompletionsSubjectScores)
 router.route('/user/:userId/scores')
     .get(protect, manager, getCompletionsScoresByUserId)
 router.route('/:id')

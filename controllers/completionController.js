@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler'
+import mongoose from 'mongoose'
 import subjectCategories from '../consts/subjectCategories.js'
 import Completion from '../models/completionModel.js'
 import Subject from '../models/subjectModel.js'
@@ -166,15 +167,48 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
     const scores = await Completion.aggregate(
         [
             { $match: filterLocation(locations) },
-            { $group: { 
-                _id: type,
-                total: { $sum: "$poin" }
-            } },
+            {
+                $group: {
+                    _id: type,
+                    total: { $sum: "$poin" }
+                }
+            },
         ]
     )
     res.status(200).json({
         totalPoin: scores,
     })
+})
+
+// @desc    Get all users completions score
+// @route   GET /api/completions/scores/all/subjects/:subjectId?ds=&klp=
+// @access  Private, Managers
+const getAllCompletionsSubjectScores = asyncHandler(async (req, res) => {
+    const subjectId = mongoose.Types.ObjectId(req.params.subjectId);
+    const { ds, klp } = req.query;
+    const filters = [{ subject: subjectId }]
+    if (ds) filters.push({ ds: ds.toUpperCase() })
+    if (klp) filters.push({ klp: klp.toUpperCase() })
+
+    const targetsCompleted = await Completion.aggregate(
+        [
+            { $match: { $and: filters } },
+            { $unwind: "$completed" },
+            { $group: { "_id": "$completed", "count": { $sum: 1 } } },
+            {
+                $group: {
+                    "_id": null, "targetsCompleted": {
+                        $push: {
+                            "target": "$_id",
+                            "count": "$count"
+                        }
+                    }
+                }
+            },
+            { $project: { "_id": 0, "targetsCompleted": 1 } }
+        ]
+    )
+    res.status(200).json(targetsCompleted)
 })
 
 // @desc    Get a user completion
@@ -294,5 +328,6 @@ export {
     getCompletionBySubjectId,
     getUserCompletionsByCategory,
     getUserCompletionBySubjectId,
-    getAllCompletionsScores
+    getAllCompletionsScores,
+    getAllCompletionsSubjectScores
 }

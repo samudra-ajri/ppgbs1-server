@@ -196,7 +196,6 @@ const getAllCompletionsSubjectScores = asyncHandler(async (req, res) => {
             { $unwind: "$completed" },
             { $group: { "_id": "$completed", "count": { $sum: 1 } } },
             { $sort: { _id: 1 } },
-            { $collation: { locale: "en_US", numericOrdering: true } }, // not work for mongo atlass free tier
             {
                 $group: {
                     "_id": null, "targetsCompleted": {

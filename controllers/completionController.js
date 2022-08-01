@@ -208,7 +208,7 @@ const getAllCompletionsSubjectScores = asyncHandler(async (req, res) => {
             { $project: { "_id": 0, "targetsCompleted": 1 } }
         ]
     )
-    res.status(200).json(targetsCompleted)
+    res.status(200).json(...targetsCompleted)
 })
 
 // @desc    Get a user completion

@@ -160,13 +160,15 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
     const { ds, klp, field, category } = req.query;
     const type = field ? `$${field}` : '$category'
     const filters = []
+    let match = {}
     if (ds) filters.push({ ds: ds.toUpperCase() })
     if (klp) filters.push({ klp: klp.toUpperCase() })
     if (category) filters.push({ category: category.toUpperCase() })
+    if (filters.length !== 0) match = { $and: filters }
 
     const scores = await Completion.aggregate(
         [
-            { $match: { $and: filters } },
+            { $match: match },
             {
                 $group: {
                     _id: type,
@@ -185,7 +187,7 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
 // @access  Private, Managers
 const getAllCompletionsSubjectDetailsScores = asyncHandler(async (req, res) => {
     const subjectId = mongoose.Types.ObjectId(req.params.subjectId);
-    const { ds, klp, category } = req.query;
+    const { ds, klp } = req.query;
     const filters = [{ subject: subjectId }]
     if (ds) filters.push({ ds: ds.toUpperCase() })
     if (klp) filters.push({ klp: klp.toUpperCase() })

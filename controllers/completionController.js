@@ -3,7 +3,6 @@ import mongoose from 'mongoose'
 import subjectCategories from '../consts/subjectCategories.js'
 import Completion from '../models/completionModel.js'
 import Subject from '../models/subjectModel.js'
-import filterLocation from '../utils/filterLocation.js'
 import filterManager from '../utils/filterManager.js'
 
 // @desc    Create user completion
@@ -155,19 +154,19 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users completions score
-// @route   GET /api/completions/scores/all?ds=&klp=&field=
+// @route   GET /api/completions/scores/all?ds=&klp=&field=&category=
 // @access  Private, Managers
 const getAllCompletionsScores = asyncHandler(async (req, res) => {
-    const { ds, klp, field } = req.query;
+    const { ds, klp, field, category } = req.query;
     const type = field ? `$${field}` : '$category'
-    const locations = []
-    if (ds) locations.push({ ds: ds.toUpperCase() })
-    if (klp) locations.push({ klp: klp.toUpperCase() })
-    if (klp) locations.push({ klp: klp.toUpperCase() })
+    const filters = []
+    if (ds) filters.push({ ds: ds.toUpperCase() })
+    if (klp) filters.push({ klp: klp.toUpperCase() })
+    if (category) filters.push({ category: category.toUpperCase() })
 
     const scores = await Completion.aggregate(
         [
-            { $match: filterLocation(locations) },
+            { $match: { $and: filters } },
             {
                 $group: {
                     _id: type,
@@ -186,7 +185,7 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
 // @access  Private, Managers
 const getAllCompletionsSubjectDetailsScores = asyncHandler(async (req, res) => {
     const subjectId = mongoose.Types.ObjectId(req.params.subjectId);
-    const { ds, klp } = req.query;
+    const { ds, klp, category } = req.query;
     const filters = [{ subject: subjectId }]
     if (ds) filters.push({ ds: ds.toUpperCase() })
     if (klp) filters.push({ klp: klp.toUpperCase() })

@@ -163,6 +163,7 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
     const locations = []
     if (ds) locations.push({ ds: ds.toUpperCase() })
     if (klp) locations.push({ klp: klp.toUpperCase() })
+    if (klp) locations.push({ klp: klp.toUpperCase() })
 
     const scores = await Completion.aggregate(
         [
@@ -181,9 +182,9 @@ const getAllCompletionsScores = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users completions score
-// @route   GET /api/completions/scores/all/subjects/:subjectId?ds=&klp=
+// @route   GET /api/completions/scores/details/subjects/:subjectId?ds=&klp=
 // @access  Private, Managers
-const getAllCompletionsSubjectScores = asyncHandler(async (req, res) => {
+const getAllCompletionsSubjectDetailsScores = asyncHandler(async (req, res) => {
     const subjectId = mongoose.Types.ObjectId(req.params.subjectId);
     const { ds, klp } = req.query;
     const filters = [{ subject: subjectId }]
@@ -330,5 +331,5 @@ export {
     getUserCompletionsByCategory,
     getUserCompletionBySubjectId,
     getAllCompletionsScores,
-    getAllCompletionsSubjectScores
+    getAllCompletionsSubjectDetailsScores
 }

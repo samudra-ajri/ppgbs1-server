@@ -9,6 +9,7 @@ import userRoutes from './routes/userRoutes.js'
 import completionRoutes from './routes/completionRoutes.js'
 import subjectRoutes from './routes/subjectRoutes.js'
 import locationRoutes from './routes/locationRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
 
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 
@@ -30,6 +31,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/completions', completionRoutes)
 app.use('/api/subjects', subjectRoutes)
 app.use('/api/locations', locationRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

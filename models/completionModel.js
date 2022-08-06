@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import roleTypes from '../consts/roleTypes.js'
 
 const completionSchema = mongoose.Schema({
     user: {
@@ -32,6 +33,19 @@ const completionSchema = mongoose.Schema({
         required: true
     },
     klp: {
+        type: String,
+        required: true
+    },
+    birthdate: {
+        type: Date,
+        required: true
+    },
+    role: {
+        type: String,
+        required: true,
+        default: roleTypes.GENERUS
+    },
+    sex: {
         type: String,
         required: true
     },

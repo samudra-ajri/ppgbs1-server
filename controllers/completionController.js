@@ -17,6 +17,9 @@ const createCompletion = asyncHandler(async (req, res) => {
         user: req.user.id,
         ds: req.user.ds,
         klp: req.user.klp,
+        birthdate: req.user.birthdate,
+        role: req.user.role,
+        sex: req.user.sex,
         subject: subjectId,
         completed: createCompletedTargets(subject, completed),
         category: subject.category,
@@ -28,6 +31,9 @@ const createCompletion = asyncHandler(async (req, res) => {
         exists.user = completionData.user
         exists.ds = completionData.ds
         exists.klp = completionData.klp
+        exists.birthdate = completionData.birthdate
+        exists.role = completionData.role
+        exists.sex = completionData.sex
         exists.subject = completionData.subject
         exists.completed = completionData.completed
         exists.category = completionData.category

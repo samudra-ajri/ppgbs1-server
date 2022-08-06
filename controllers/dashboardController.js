@@ -5,16 +5,22 @@ import User from '../models/userModel.js'
 import filterLocation from '../utils/filterLocation.js'
 
 // @desc    Get dashboard
-// @route   GET /api/users/roles?ds=&klp=
+// @route   GET /api/dashboard
 // @access  Private, Managers
 const getDashboard = asyncHandler(async (req, res) => {
+    let match = {}
+    if (Object.keys(req.query).length !== 0) {
+        console.log(req.query);
+        match = { $and: [req.query] }
+    }
+
     const minDatePreteen = (moment().subtract(12, 'years')).toDate()
     const minDateTeen = (moment().subtract(15, 'years')).toDate()
     const minDatePremarried = (moment().subtract(18, 'years')).toDate()
 
     const users = await User.aggregate(
         [
-            { $match: {} },
+            { $match: match },
             {
                 $project: {
                     male: { $cond: [{ $eq: ["$sex", "male"] }, 1, 0] },
@@ -44,13 +50,26 @@ const getDashboard = asyncHandler(async (req, res) => {
 
     const scores = await Completion.aggregate(
         [
-            { $match: {} },
+            { $match: match },
             {
-                $group: {
-                    _id: "$category",
-                    total: { $sum: "$poin" }
+                $project: {
+                    alquran: { $cond: [{ $eq: ["$category", "ALQURAN"] }, "$poin", 0] },
+                    hadits: { $cond: [{ $eq: ["$category", "HADITS"] }, "$poin", 0] },
+                    rote: { $cond: [{ $eq: ["$category", "ROTE"] }, "$poin", 0] },
+                    extra: { $cond: [{ $eq: ["$category", "EXTRA"] }, "$poin", 0] },
+                    total: { $sum: "$poin" },
                 }
             },
+            {
+                $group: {
+                    _id: null, 
+                    total: { $sum: "$total" },
+                    alquran: { $sum: "$alquran" },
+                    hadits: { $sum: "$hadits" },
+                    rote: { $sum: "$rote" },
+                    extra: { $sum: "$extra" },
+                }
+            }
         ]
     )
 

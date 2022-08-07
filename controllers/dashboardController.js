@@ -15,6 +15,7 @@ const getDashboard = asyncHandler(async (req, res) => {
     const minDatePreteen = (moment().subtract(12, 'years')).toDate()
     const minDateTeen = (moment().subtract(15, 'years')).toDate()
     const minDatePremarried = (moment().subtract(18, 'years')).toDate()
+    const maxnDatePremarried = (moment().subtract(30, 'years')).toDate()
 
     const users = await User.aggregate(
         [
@@ -27,20 +28,20 @@ const getDashboard = asyncHandler(async (req, res) => {
                     pengajar: { $cond: [{ $eq: ["$role", "TEACHER"] }, 1, 0] },
                     preteenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePreteen] }, { $gt : ["$birthdate", minDateTeen] }] }, 1, 0] },
                     teenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDateTeen] }, { $gt : ["$birthdate", minDatePremarried] }] }, 1, 0] },
-                    premarriedAge: { $cond: [{ $lte: ["$birthdate", minDatePremarried] }, 1, 0] }
+                    premarriedAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePremarried] }, { $gte : ["$birthdate", maxnDatePremarried] }] }, 1, 0] }
                 }
             },
             {
                 $group: {
                     _id: null, 
                     total: { $sum: 1 },
-                    male: { $sum: "$male" },
-                    female: { $sum: "$female" },
                     generus: { $sum: "$generus" },
                     pengajar: { $sum: "$pengajar" },
                     preteenAge: { $sum: "$preteenAge" },
                     teenAge: { $sum: "$teenAge" },
                     premarriedAge: { $sum: "$premarriedAge" },
+										male: { $sum: "$male" },
+                    female: { $sum: "$female" },
                 }
             }
         ]

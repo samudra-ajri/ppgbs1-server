@@ -25,7 +25,7 @@ const getDashboard = asyncHandler(async (req, res) => {
                     male: { $cond: [{ $eq: ["$sex", "male"] }, 1, 0] },
                     female: { $cond: [{ $eq: ["$sex", "female"] }, 1, 0] },
                     generus: { $cond: [{ $eq: ["$role", "GENERUS"] }, 1, 0] },
-                    pengajar: { $cond: [{ $eq: ["$role", "TEACHER"] }, 1, 0] },
+                    teacher: { $cond: [{ $eq: ["$role", "TEACHER"] }, 1, 0] },
                     preteenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePreteen] }, { $gt : ["$birthdate", minDateTeen] }] }, 1, 0] },
                     teenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDateTeen] }, { $gt : ["$birthdate", minDatePremarried] }] }, 1, 0] },
                     premarriedAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePremarried] }, { $gte : ["$birthdate", maxnDatePremarried] }] }, 1, 0] }
@@ -36,7 +36,7 @@ const getDashboard = asyncHandler(async (req, res) => {
                     _id: null, 
                     total: { $sum: 1 },
                     generus: { $sum: "$generus" },
-                    pengajar: { $sum: "$pengajar" },
+                    teacher: { $sum: "$teacher" },
                     preteenAge: { $sum: "$preteenAge" },
                     teenAge: { $sum: "$teenAge" },
                     premarriedAge: { $sum: "$premarriedAge" },

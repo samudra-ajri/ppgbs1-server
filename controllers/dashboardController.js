@@ -74,8 +74,8 @@ const getDashboard = asyncHandler(async (req, res) => {
     )
 
     res.status(200).json({
-        users,
-        scores,
+        users: users[0],
+        scores: scores[0],
     })
 })
 

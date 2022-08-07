@@ -2,7 +2,6 @@ import asyncHandler from 'express-async-handler'
 import moment from 'moment'
 import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
-import filterLocation from '../utils/filterLocation.js'
 
 // @desc    Get dashboard
 // @route   GET /api/dashboard
@@ -10,7 +9,6 @@ import filterLocation from '../utils/filterLocation.js'
 const getDashboard = asyncHandler(async (req, res) => {
     let match = {}
     if (Object.keys(req.query).length !== 0) {
-        console.log(req.query);
         match = { $and: [req.query] }
     }
 

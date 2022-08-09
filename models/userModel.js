@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 import capitalize from 'capitalize'
 import roleTypes from '../consts/roleTypes.js'
+import educationTypes from '../consts/educationTypes.js'
 
 const userSchema = mongoose.Schema({
     name: {
@@ -63,6 +64,37 @@ const userSchema = mongoose.Schema({
     },
     lastLogin: {
         type: Date
+    },
+
+    // Addition for THE teacher data
+    muballighType: {
+        type: String
+    },
+    hometown: {
+        type: String
+    },
+    isMarried: {
+        type: Boolean,
+        default: false
+    },
+    pondok: {
+        type: String
+    },
+    kertosonoYear: {
+        type: Number
+    },
+    firstDutyYear: {
+        type: Number
+    },
+    timesDuties: {
+        type: Number
+    },
+    greatHadiths: {
+        type: [String]
+    },
+    education: {
+        type: String,
+        enum: Object.values(educationTypes),
     }
 }, {
     timestamps: true

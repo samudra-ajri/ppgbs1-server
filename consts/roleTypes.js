@@ -3,5 +3,7 @@ export default {
     PPG: 'PPG',
     PPD: 'PPD',
     PPK: 'PPK',
-    GENERUS: 'GENERUS'
+    GENERUS: 'GENERUS',
+    MT: 'MT',
+    MS: 'MS'
 }

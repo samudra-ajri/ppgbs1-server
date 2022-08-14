@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import roleTypes from '../consts/roleTypes.js'
+import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
 import filterLocation from '../utils/filterLocation.js'
 import filterManager from '../utils/filterManager.js'
@@ -11,18 +12,18 @@ import validateDate from '../utils/validateDate.js'
 // @route   POST /api/users
 // @access  public
 const registerUser = asyncHandler(async (req, res) => {
-    const { 
-        name, 
+    const {
+        name,
         yearBirth,
         monthBirth,
         dayBirth,
-        sex, 
-        username, 
-        email, 
-        phone, 
-        password, 
-        isMuballigh, 
-        ds, 
+        sex,
+        username,
+        email,
+        phone,
+        password,
+        isMuballigh,
+        ds,
         klp,
         role,
     } = req.body
@@ -33,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
     } else if (email) {
         filter = { email }
     } else if (phone && email) {
-        filter = { $or:[{ phone }, { email }] }
+        filter = { $or: [{ phone }, { email }] }
     } else {
         res.status(400)
         throw new Error('No phone or email')
@@ -52,7 +53,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const user = await User.create({
         name,
-        birthdate: new Date(Date.UTC(Number(yearBirth), Number(monthBirth)-1, Number(dayBirth))),
+        birthdate: new Date(Date.UTC(Number(yearBirth), Number(monthBirth) - 1, Number(dayBirth))),
         sex,
         username,
         email,
@@ -81,8 +82,8 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
     const { userData, password } = req.body
-    const user = await User.findOne({ 
-        $or:[{ phone: userData }, { email: userData }, { username: userData }] 
+    const user = await User.findOne({
+        $or: [{ phone: userData }, { email: userData }, { username: userData }]
     })
     if (user && (await user.matchPassword(password))) {
         user.lastLogin = Date.now()
@@ -108,7 +109,7 @@ const getUsers = asyncHandler(async (req, res) => {
         .skip((page - 1) * limit)
         .sort(sortQuery(sortby, order))
         .select('-password')
-        
+
     res.json({ total: users.length, users })
 })
 
@@ -132,19 +133,19 @@ const getMe = asyncHandler(async (req, res) => {
 // @access  Private
 const updateMe = asyncHandler(async (req, res) => {
     const user = req.user
-    
-    user.name        = req.body.name || user.name
-    user.sex         = req.body.sex || user.sex
-    user.username    = req.body.username || user.username
-    user.email       = req.body.email || user.email
-    user.phone       = req.body.phone || user.phone
-    user.isMuballigh = req.body.isMuballigh
-    user.Ds          = req.body.Ds || user.Ds
-    user.klp         = req.body.klp || user.klp
 
-    const yearBirth  = req.body.yearBirth || new Date(user.birthdate).getFullYear()
-    const monthBirth = req.body.monthBirth-1 || new Date(user.birthdate).getMonth()
-    const dayBirth   = req.body.dayBirth || new Date(user.birthdate).getDate()
+    user.name = req.body.name || user.name
+    user.sex = req.body.sex || user.sex
+    user.username = req.body.username || user.username
+    user.email = req.body.email || user.email
+    user.phone = req.body.phone || user.phone
+    user.isMuballigh = req.body.isMuballigh
+    user.Ds = req.body.Ds || user.Ds
+    user.klp = req.body.klp || user.klp
+
+    const yearBirth = req.body.yearBirth || new Date(user.birthdate).getFullYear()
+    const monthBirth = req.body.monthBirth - 1 || new Date(user.birthdate).getMonth()
+    const dayBirth = req.body.dayBirth || new Date(user.birthdate).getDate()
 
     if (req.body.yearBirth || req.body.monthBirth || req.body.dayBirth) {
         if (dateValidation(yearBirth, monthBirth, dayBirth)) {
@@ -153,7 +154,7 @@ const updateMe = asyncHandler(async (req, res) => {
             res.status(400)
             throw new Error('Invalid birthdate')
         }
-    } 
+    }
 
     if (req.body.password) {
         user.password = req.body.password
@@ -170,10 +171,26 @@ const updateMe = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/:id
 // @access  Private/Manager
 const updateUserByManager = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id).select('-password')    
+    const user = await User.findById(req.params.id).select('-password')
     user.isMuballigh = req.body.isMuballigh || user.isMuballigh
     user.isActive = req.body.isActive || user.isActive
     user.role = req.body.role || user.role
+    user.ds = req.body.ds || user.ds
+    user.klp = req.body.klp || user.klp
+
+    // Update user completion
+    if (req.body.ds || req.body.klp) {
+        console.log(123);
+        await Completion.updateMany({ 
+            user: req.params.id 
+        }, { 
+            $set: { 
+                ds: user.ds,
+                klp: user.klp,
+            } 
+        })
+    }
+
     const updatedUser = await user.save()
     const { password, ...userData } = updatedUser._doc
     res.json({
@@ -207,10 +224,12 @@ const getRolesCount = asyncHandler(async (req, res) => {
     const roles = await User.aggregate(
         [
             { $match: filterLocation(locations) },
-            { $group: { 
-                _id: "$role", 
-                total: { $sum: 1 }
-            } },
+            {
+                $group: {
+                    _id: "$role",
+                    total: { $sum: 1 }
+                }
+            },
         ]
     )
     res.status(200).json({
@@ -218,7 +237,7 @@ const getRolesCount = asyncHandler(async (req, res) => {
     })
 })
 
-export { 
+export {
     registerUser,
     loginUser,
     getMe,

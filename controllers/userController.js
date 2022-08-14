@@ -26,6 +26,15 @@ const registerUser = asyncHandler(async (req, res) => {
         ds,
         klp,
         role,
+        // Addition for muballigh data
+        hometown,
+        isMarried,
+        pondok,
+        kertosonoYear,
+        firstDutyYear,
+        timesDuties,
+        education,
+        greatHadiths
     } = req.body
 
     let filter = {}
@@ -63,6 +72,14 @@ const registerUser = asyncHandler(async (req, res) => {
         ds,
         klp,
         role,
+        hometown,
+        isMarried,
+        pondok,
+        kertosonoYear,
+        firstDutyYear,
+        timesDuties,
+        education,
+        greatHadiths
     })
 
     if (user) {

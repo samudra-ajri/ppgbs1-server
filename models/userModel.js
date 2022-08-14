@@ -68,10 +68,6 @@ const userSchema = mongoose.Schema({
     },
 
     // Addition for THE teacher data
-    education: {
-        type: String,
-        enum: Object.values(muballighTypes),
-    },
     hometown: {
         type: String
     },
@@ -96,7 +92,6 @@ const userSchema = mongoose.Schema({
     },
     education: {
         type: String,
-        enum: Object.values(educationTypes),
     }
 }, {
     timestamps: true

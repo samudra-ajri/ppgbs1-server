@@ -16,7 +16,9 @@ const filterManager = (user, search, role) => {
             return { 
                 $and: [ 
                     { role: { $in: roles }},
-                    { name: { $regex: new RegExp(search, 'i') }}
+                    { name: { $regex: new RegExp(search, 'i') }},
+                    { ds: { $ne: 'MOVING' } },
+                    { klp: { $ne: 'MOVING' } }
                 ]
             }
         case roleTypes.PPD:

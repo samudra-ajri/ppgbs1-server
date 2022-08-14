@@ -67,7 +67,7 @@ const userSchema = mongoose.Schema({
         type: Date
     },
 
-    // Addition for THE teacher data
+    // Addition for the teacher data
     hometown: {
         type: String
     },

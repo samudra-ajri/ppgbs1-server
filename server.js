@@ -26,7 +26,7 @@ if (ENV === 'staging' || ENV === 'local') {
 app.use(cors())
 app.use(express.json())
 
-app.use('/', homeRoutes)
+app.use('/api', homeRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/completions', completionRoutes)
 app.use('/api/subjects', subjectRoutes)

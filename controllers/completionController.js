@@ -165,7 +165,7 @@ const getCompletionsScoresByUserId = asyncHandler(async (req, res) => {
 const getAllCompletionsScores = asyncHandler(async (req, res) => {
     const { ds, klp, field, category } = req.query;
     const type = field ? `$${field}` : '$category'
-    const filters = []
+    const filters = [{ ds: { $ne: "MOVING" } }]
     let match = {}
     if (ds) filters.push({ ds: ds.toUpperCase() })
     if (klp) filters.push({ klp: klp.toUpperCase() })

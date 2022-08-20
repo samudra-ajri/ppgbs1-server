@@ -197,7 +197,6 @@ const updateUserByManager = asyncHandler(async (req, res) => {
 
     // Update user completion
     if (req.body.ds || req.body.klp) {
-        console.log(123);
         await Completion.updateMany({ 
             user: req.params.id 
         }, { 

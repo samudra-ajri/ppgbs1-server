@@ -7,7 +7,7 @@ import User from '../models/userModel.js'
 // @route   GET /api/dashboard
 // @access  Private, Managers
 const getDashboard = asyncHandler(async (req, res) => {
-	let match = {}
+	let match = { ds: { $ne: "MOVING" } }
 	const minDatePreteen = (moment().subtract(12, 'years')).toDate()
 	const minDateTeen = (moment().subtract(15, 'years')).toDate()
 	const minDatePremarried = (moment().subtract(18, 'years')).toDate()
@@ -15,9 +15,9 @@ const getDashboard = asyncHandler(async (req, res) => {
 
 	if (Object.keys(req.query).length !== 0) {
 		if (!req.query.age) {
-			match = { $and: [req.query] }
+			match = { $and: [req.query, { ds: { $ne: "MOVING" } }] }
 		} else {
-			const filters = []
+			const filters = [{ ds: { $ne: "MOVING" } }]
 			switch (req.query.age) {
 				case 'preteenAge':
 					filters.push({ birthdate: { $lte: minDatePreteen, $gt: minDateTeen } })
@@ -42,7 +42,8 @@ const getDashboard = asyncHandler(async (req, res) => {
 				$project: {
 					male: { $cond: [{ $eq: ["$sex", "male"] }, 1, 0] },
 					female: { $cond: [{ $eq: ["$sex", "female"] }, 1, 0] },
-					generus: { $cond: [{ $and: [{ $eq: ["$role", "GENERUS"] }, { $ne: ["$ds", "MOVING"] }] }, 1, 0] },
+					generus: { $cond: [{ $eq: ["$role", "GENERUS"] }, 1, 0] },
+					// generus: { $cond: [{ $and: [{ $eq: ["$role", "GENERUS"] }, { $ne: ["$ds", "MOVING"] }] }, 1, 0] },
 					mt: { $cond: [{ $eq: ["$role", "MT"] }, 1, 0] },
 					ms: { $cond: [{ $eq: ["$role", "MS"] }, 1, 0] },
 					preteenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePreteen] }, { $gt: ["$birthdate", minDateTeen] }] }, 1, 0] },

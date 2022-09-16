@@ -5,6 +5,9 @@ const schema = mongoose.Schema({
         type: String,
         required: true
     },
+    attendersCount: {
+        type: Number
+    },
     attenders: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,
@@ -12,15 +15,12 @@ const schema = mongoose.Schema({
         },
         ds: {
             type: String,
-            required: true
         },
         klp: {
             type: String,
-            required: true
         },
         sex: {
             type: String,
-            required: true
         },
         time: {
             type: Date
@@ -28,6 +28,10 @@ const schema = mongoose.Schema({
     }]
 }, {
     timestamps: true
+})
+
+schema.pre('save', async function(next) {
+    this.attendersCount = this.attenders.length
 })
 
 const Presence = mongoose.model('Presence', schema)

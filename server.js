@@ -11,6 +11,7 @@ import subjectRoutes from './routes/subjectRoutes.js'
 import locationRoutes from './routes/locationRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
 import eventRoutes from './routes/eventRoutes.js'
+import presenceRoutes from './routes/presenceRoutes.js'
 
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
 
@@ -34,6 +35,7 @@ app.use('/api/subjects', subjectRoutes)
 app.use('/api/locations', locationRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/events', eventRoutes)
+app.use('/api/presences', presenceRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler'
 import moment from 'moment'
 import roleTypes from '../consts/roleTypes.js'
 import Event from '../models/eventModel.js'
+import Presence from '../models/presenceModel.js'
 
 // @desc    Create new event
 // @route   POST /api/events
@@ -17,6 +18,7 @@ const createEvent = asyncHandler(async (req, res) => {
 
     const event = await Event.create({ name, roomId, passCode, classType, ds, klp, startDate, endDate })
     if (event) {
+        await Presence.create({ roomId })
         res.status(201).json(event._doc)
     } else {
         res.status(400)

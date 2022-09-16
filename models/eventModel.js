@@ -15,11 +15,11 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    classType: {
+    classTypes: [{
         type: String,
         require: true,
         enum: Object.values(classTypes),
-    },
+    }],
     ds: {
         type: String
     },

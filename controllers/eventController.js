@@ -8,7 +8,7 @@ import Presence from '../models/presenceModel.js'
 // @route   POST /api/events
 // @access  Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
-    const { name, passCode, classType, startDate, endDate } = req.body
+    const { name, passCode, classTypes, startDate, endDate } = req.body
     const roomId = parseInt(Math.random().toFixed(10).replace("0.",""))
 
     let ds = undefined
@@ -16,9 +16,9 @@ const createEvent = asyncHandler(async (req, res) => {
     if (req.user.role === roleTypes.PPD) ds = req.user.ds
     if (req.user.role === roleTypes.PPK) ds = req.user.ds, klp = req.user.klp
 
-    const event = await Event.create({ name, roomId, passCode, classType, ds, klp, startDate, endDate })
+    const event = await Event.create({ name, roomId, passCode, classTypes, ds, klp, startDate, endDate })
     if (event) {
-        await Presence.create({ roomId })
+        await Presence.create({ roomId, classTypes })
         res.status(201).json(event._doc)
     } else {
         res.status(400)
@@ -90,10 +90,16 @@ const updateEvent = asyncHandler(async (req, res) => {
     if (event) {
         event.name = req.body.name || event.name
         event.passCode = req.body.passCode || event.passCode
-        event.classType = req.body.classType || event.classType
+        event.classTypes = req.body.classTypes || event.classTypes
         event.startDate = req.body.startDate || event.startDate
         event.endDate = req.body.endDate || event.endDate
         await event.save()
+
+        if (req.body.classTypes) {
+            const presence = await Presence.findOne({ roomId: event.roomId})
+            presence.classTypes = event.classTypes
+        }
+        
         res.status(201).json(event)
     } else {
         res.status(404)

@@ -1,10 +1,16 @@
 import mongoose from 'mongoose'
+import classTypes from '../consts/classTypes.js'
 
 const schema = mongoose.Schema({
     roomId: {
         type: String,
         required: true
     },
+    classTypes: [{
+        type: String,
+        require: true,
+        enum: Object.values(classTypes),
+    }],
     attendersCount: {
         type: Number
     },

@@ -3,5 +3,5 @@ export default {
     PR: 'PR',   // pra remaja
     RM: 'RM',   // remaja
     PN: 'PN',   // pra nikah
-    PU: 'PU'    // public
+    ALL: 'ALL'    // public
 }

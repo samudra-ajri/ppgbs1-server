@@ -46,7 +46,7 @@ const getEvents = asyncHandler(async (req, res) => {
                 ] }
             ] }
         ]
-    }).sort('startDate')
+    }).sort('-createdAt')
     if (events) {
         res.status(201).json({ total: events.length, events })
     } else {
@@ -56,11 +56,19 @@ const getEvents = asyncHandler(async (req, res) => {
 })
 
 // @desc    List all events
-// @route   GET /api/events/all
-// @access  Private, Admin
+// @route   GET /api/events/admin
+// @access  Private, Manager
 const getAllEvents = asyncHandler(async (req, res) => {
-    const now = moment();
-    const events = await Event.find({}).sort('-createdAt')
+    // if (req.user.role === roleTypes.PPD) ds = req.user.ds
+    const filters = []
+    if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
+    if (req.user.role === roleTypes.PPD) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
+    
+    const match = () => {
+        if (req.user.role === roleTypes.PPG || req.user.role === roleTypes.ADMIN) return {}
+        return { $or: filters }
+    }
+    const events = await Event.find(match()).sort('-createdAt')
     if (events) {
         res.status(201).json({ total: events.length, events })
     } else {
@@ -71,7 +79,7 @@ const getAllEvents = asyncHandler(async (req, res) => {
 
 // @desc    Get an event
 // @route   GET /api/events/:id
-// @access  Private, Admin
+// @access  Private
 const getEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (event) {
@@ -84,7 +92,7 @@ const getEvent = asyncHandler(async (req, res) => {
 
 // @desc    Update event
 // @route   PUT /api/events/:id
-// @access  Private, Admin
+// @access  Private, Manager
 const updateEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (event) {
@@ -109,7 +117,7 @@ const updateEvent = asyncHandler(async (req, res) => {
 
 // @desc    Delete event
 // @route   DELETE /api/events/:id
-// @access  Private, Admin
+// @access  Private, Manager
 const deleteEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (event) {

@@ -8,7 +8,7 @@ import Presence from '../models/presenceModel.js'
 // @route   POST /api/events
 // @access  Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
-    const { name, passCode, classTypes, startDate, endDate } = req.body
+    const { name, passCode, classTypes, startDate, endDate, location } = req.body
     const roomId = parseInt(Math.random().toFixed(10).replace("0.",""))
 
     let ds = undefined
@@ -16,7 +16,7 @@ const createEvent = asyncHandler(async (req, res) => {
     if (req.user.role === roleTypes.PPD) ds = req.user.ds
     if (req.user.role === roleTypes.PPK) ds = req.user.ds, klp = req.user.klp
 
-    const event = await Event.create({ name, roomId, passCode, classTypes, ds, klp, startDate, endDate })
+    const event = await Event.create({ name, roomId, passCode, classTypes, ds, klp, startDate, endDate, location })
     if (event) {
         await Presence.create({ roomId, classTypes })
         res.status(201).json(event._doc)
@@ -104,6 +104,7 @@ const updateEvent = asyncHandler(async (req, res) => {
         event.classTypes = req.body.classTypes || event.classTypes
         event.startDate = req.body.startDate || event.startDate
         event.endDate = req.body.endDate || event.endDate
+        event.location = req.body.location || event.location
         await event.save()
 
         if (req.body.classTypes) {

@@ -30,7 +30,7 @@ const createEvent = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Private
 const getEvents = asyncHandler(async (req, res) => {
-    const endPresence = moment().subtract(1, 'hours')
+    const endPresence = moment().subtract(8, 'hours')
     const events = await Event.find({ 
         $and : [
             { endDate: { $gte: endPresence.format() } },
@@ -60,7 +60,7 @@ const getEvents = asyncHandler(async (req, res) => {
 // @access  Private, Admin
 const getAllEvents = asyncHandler(async (req, res) => {
     const now = moment();
-    const events = await Event.find({}).sort('startDate')
+    const events = await Event.find({}).sort('-createdAt')
     if (events) {
         res.status(201).json({ total: events.length, events })
     } else {

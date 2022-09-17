@@ -9,7 +9,7 @@ import Presence from '../models/presenceModel.js'
 // @access  Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
     const { name, passCode, classTypes, startDate, endDate, location } = req.body
-    const roomId = parseInt(Math.random().toFixed(10).replace("0.",""))
+    const roomId = `${parseInt(Math.random().toFixed(3).replace("0.",""))} - ${parseInt(Math.random().toFixed(3).replace("0.",""))} - ${parseInt(Math.random().toFixed(4).replace("0.",""))}`
 
     let ds = undefined
     let klp = undefined

@@ -70,7 +70,7 @@ const getPresences = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get presence by room id
-// @route   GET /api/presences/event/:roomId?page=&size=
+// @route   GET /api/presences/room/:roomId?page=&size=
 // @access  Private, Manager
 const getPresencesByRoomId = asyncHandler(async (req, res) => {
     const { page=1, size=20 } = req.query

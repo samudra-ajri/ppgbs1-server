@@ -77,8 +77,25 @@ const getPresencesByRoomId = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Check if the logged user is present
+// @route   GET /api/presences/event/:roomId/ispresent
+// @access  Private
+const isPresent = asyncHandler(async (req, res) => {
+    const presences = await Presence.findOne({ roomId: req.params.roomId})
+    if (presences) {
+        const attender = presences.attenders.find(attender => attender.user == String(req.user._id))
+        const isPresent = attender ? true : false
+        const time = attender?.time
+        res.json({ isPresent, time })
+    } else {
+        res.status(404)
+        throw new Error('Presence not found')
+    }
+})
+
 export { 
     createPresence,
     getPresences,
-    getPresencesByRoomId
+    getPresencesByRoomId,
+    isPresent
 }

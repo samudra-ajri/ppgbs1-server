@@ -9,14 +9,15 @@ import Presence from '../models/presenceModel.js'
 // @access  Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
     const { name, passCode, classTypes, startDate, endDate, location } = req.body
-    const roomId = `${parseInt(Math.random().toFixed(3).replace("0.",""))} - ${parseInt(Math.random().toFixed(3).replace("0.",""))} - ${parseInt(Math.random().toFixed(4).replace("0.",""))}`
+    const roomIdSlug = `${parseInt(Math.random().toFixed(3).replace("0.",""))}-${parseInt(Math.random().toFixed(3).replace("0.",""))}-${parseInt(Math.random().toFixed(4).replace("0.",""))}`
+    const roomId = roomIdSlug.split('-').join('')
 
     let ds = undefined
     let klp = undefined
     if (req.user.role === roleTypes.PPD) ds = req.user.ds
     if (req.user.role === roleTypes.PPK) ds = req.user.ds, klp = req.user.klp
 
-    const event = await Event.create({ name, roomId, passCode, classTypes, ds, klp, startDate, endDate, location })
+    const event = await Event.create({ name, roomId, roomIdSlug, passCode, classTypes, ds, klp, startDate, endDate, location })
     if (event) {
         await Presence.create({ roomId, classTypes })
         res.status(201).json(event._doc)
@@ -46,7 +47,7 @@ const getEvents = asyncHandler(async (req, res) => {
                 ] }
             ] }
         ]
-    }).sort('-createdAt')
+    }).sort('-createdAt').select('-passCode')
     if (events) {
         res.status(201).json({ total: events.length, events })
     } else {
@@ -84,8 +85,13 @@ const getAllEvents = asyncHandler(async (req, res) => {
 // @route   GET /api/events/:id
 // @access  Private
 const getEvent = asyncHandler(async (req, res) => {
-    const event = await Event.findById(req.params.id)
-    if (event) {
+    let event = {}
+    if (req.user.role === roleTypes.GENERUS) {
+        event = await Event.findById(req.params.id).select('-passCode')
+    } else {
+        event = await Event.findById(req.params.id)
+    }
+    if (event.id) {
         res.status(201).json(event)
     } else {
         res.status(404)

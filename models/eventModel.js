@@ -11,6 +11,11 @@ const eventSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    roomIdSlug: {
+        type: String,
+        required: true,
+        unique: true
+    },
     passCode: {
         type: String,
         required: true

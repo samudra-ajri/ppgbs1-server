@@ -6,9 +6,9 @@ const router = express.Router()
 router.route('/')
     .get(protect, manager, getPresences)
     .post(protect, createPresence)
-router.route('/event/:roomId')
+router.route('/room/:roomId')
     .get(protect, manager, getPresencesByRoomId)
-router.route('/event/:roomId/ispresent')
+router.route('/room/:roomId/ispresent')
     .get(protect, isPresent)
 
 export default router

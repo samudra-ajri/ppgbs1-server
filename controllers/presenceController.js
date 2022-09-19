@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import moment from 'moment'
+import roleTypes from '../consts/roleTypes.js'
 import Presence from '../models/presenceModel.js'
 
 // @desc    Create new presence
@@ -45,7 +46,16 @@ const createPresence = asyncHandler(async (req, res) => {
 // @route   GET /api/presences
 // @access  Private, Manager
 const getPresences = asyncHandler(async (req, res) => {
-    const presences = await Presence.find({})
+    const filters = []
+    if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
+    if (req.user.role === roleTypes.PPD) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
+    
+    const match = () => {
+        if (req.user.role === roleTypes.PPG || req.user.role === roleTypes.ADMIN) return {}
+        return { $or: filters } 
+    }
+
+    const presences = await Presence.find(match())
         .populate({
             path: 'attenders.user',
             model: 'User',

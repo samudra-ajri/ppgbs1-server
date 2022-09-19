@@ -19,10 +19,10 @@ const schema = mongoose.Schema({
         type: Number
     },
     ds: {
-        type: Number
+        type: String
     },
     klp: {
-        type: Number
+        type: String
     },
     attenders: [{
         user: {

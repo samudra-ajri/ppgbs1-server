@@ -19,7 +19,7 @@ const createEvent = asyncHandler(async (req, res) => {
 
     const event = await Event.create({ name, roomId, roomIdSlug, passCode, classTypes, ds, klp, startDate, endDate, location })
     if (event) {
-        await Presence.create({ roomId, classTypes })
+        await Presence.create({ roomId, classTypes, passCode })
         res.status(201).json(event._doc)
     } else {
         res.status(400)

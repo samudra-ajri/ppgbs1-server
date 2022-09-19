@@ -6,6 +6,10 @@ const schema = mongoose.Schema({
         type: String,
         required: true
     },
+    passCode: {
+        type: String,
+        required: true
+    },
     classTypes: [{
         type: String,
         require: true,

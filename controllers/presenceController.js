@@ -6,7 +6,7 @@ import Presence from '../models/presenceModel.js'
 // @route   POST /api/presences
 // @access  Private
 const createPresence = asyncHandler(async (req, res) => {
-    const { roomId } = req.body
+    const { roomId, passCode } = req.body
     const presence = await Presence .findOne({ roomId })
     if (presence) {
         const user = req.user._id
@@ -14,9 +14,14 @@ const createPresence = asyncHandler(async (req, res) => {
             attender => String(attender.user) === String(user)
         )
 
+        if (presence.passCode !== passCode) {
+            res.status(401)
+            throw new Error('Kode Akses Salah')
+        }
+
         if (userExists) {
             res.status(403)
-            throw new Error('User already present')
+            throw new Error('Sudah mengisi daftar hadir')
         }
 
         const attender = {
@@ -32,7 +37,7 @@ const createPresence = asyncHandler(async (req, res) => {
         res.json({ message: 'Presence success' })
     } else {
         res.status(404)
-        throw new Error('event not found')
+        throw new Error('Event not found')
     }
 })
 
@@ -45,7 +50,7 @@ const getPresences = asyncHandler(async (req, res) => {
             path: 'attenders.user',
             model: 'User',
             select: ['name']
-        })
+        }).sort('-createdAt')
     if (presences) {
         res.json({presences})
     } else {

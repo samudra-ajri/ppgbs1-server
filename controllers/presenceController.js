@@ -70,17 +70,18 @@ const getPresences = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get presence by room id
-// @route   GET /api/presences/event/:roomId
+// @route   GET /api/presences/event/:roomId?page=&size=
 // @access  Private, Manager
 const getPresencesByRoomId = asyncHandler(async (req, res) => {
-    const presences = await Presence.findOne({ roomId: req.params.roomId})
+    const { page=1, size=20 } = req.query
+    const presence = await Presence.findOne({ roomId: req.params.roomId})
         .populate({
             path: 'attenders.user',
             model: 'User',
             select: ['name']
         })
-    if (presences) {
-        res.json(presences)
+    if (presence) {
+        res.json({attenders: presence.attenders.slice((page-1)*size, page*size), total: presence.attenders.length})
     } else {
         res.status(404)
         throw new Error('Presence not found')

@@ -18,6 +18,12 @@ const schema = mongoose.Schema({
     attendersCount: {
         type: Number
     },
+    ds: {
+        type: Number
+    },
+    klp: {
+        type: Number
+    },
     attenders: [{
         user: {
             type: mongoose.Schema.Types.ObjectId,

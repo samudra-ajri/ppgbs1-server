@@ -49,11 +49,17 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('No phone or email')
     }
 
-    const userExists = await User.findOne(filter)
+    const userExists = await User.find(filter)
     if (!role) role = roleTypes.GENERUS
 
+    // User had registered as generus and Teacher
+    if (userExists.length > 1) {
+        res.status(404)
+        throw new Error('Phone, email, or username already exists')
+    }
+
     // Generus and Teacher possible as a one user
-    if (userExists?.role === role) {
+    if (userExists[0]?.role === role) {
         res.status(404)
         throw new Error('Phone, email, or username already exists')
     }

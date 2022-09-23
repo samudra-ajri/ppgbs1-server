@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import moment from 'moment'
+import roleTypes from '../consts/roleTypes.js'
 import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
 
@@ -14,6 +15,8 @@ const getDashboard = asyncHandler(async (req, res) => {
 	const maxnDatePremarried = (moment().subtract(30, 'years')).toDate()
 
 	if (Object.keys(req.query).length !== 0) {
+		if (req.query.role === "MUBALLIGH") req.query.role = {$in: [roleTypes.MS, roleTypes.MT]
+		}
 		if (!req.query.age) {
 			match = { $and: [req.query, { ds: { $ne: "MOVING" } }] }
 		} else {

@@ -25,7 +25,6 @@ const registerUser = asyncHandler(async (req, res) => {
         isMuballigh,
         ds,
         klp,
-        role,
         // Addition for muballigh data
         hometown,
         isMarried,
@@ -36,6 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
         education,
         greatHadiths
     } = req.body
+    let { role } = req.body
 
     let filter = {}
     if (phone) {
@@ -50,7 +50,10 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const userExists = await User.findOne(filter)
-    if (userExists) {
+    if (!role) role = roleTypes.GENERUS
+
+    // Generus and Teacher possible as a one user
+    if (userExists?.role === role) {
         res.status(404)
         throw new Error('Phone, email, or username already exists')
     }

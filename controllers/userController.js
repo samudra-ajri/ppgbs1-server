@@ -107,10 +107,15 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { userData, password } = req.body
-    const user = await User.findOne({
-        $or: [{ phone: userData }, { email: userData }, { username: userData }]
-    })
+    const { userData, password, role } = req.body
+
+    const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
+    if (role === roleTypes.GENERUS) {
+        loginMatch.push({ role }) 
+    } else {
+        loginMatch.push({ role: { $ne: roleTypes.GENERUS } }) 
+    }
+    const user = await User.findOne({ $and : loginMatch })
     if (user && (await user.matchPassword(password))) {
         user.lastLogin = Date.now()
         await user.save()

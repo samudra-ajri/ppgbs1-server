@@ -63,7 +63,7 @@ const getAllEvents = asyncHandler(async (req, res) => {
     const filters = []
     const endshow = moment().subtract(1, 'years')
     if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
-    if (req.user.role === roleTypes.PPD) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
+    if (req.user.role === roleTypes.PPD || req.user.role === roleTypes.MT || req.user.role === roleTypes.MS) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
     
     const match = () => {
         if (req.user.role === roleTypes.PPG || req.user.role === roleTypes.ADMIN) return { endDate: { $gte: endshow.format() }}

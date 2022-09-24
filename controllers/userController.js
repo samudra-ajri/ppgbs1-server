@@ -171,7 +171,7 @@ const updateMe = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email
     user.phone = req.body.phone || user.phone
     user.isMuballigh = req.body.isMuballigh
-    user.Ds = req.body.Ds || user.Ds
+    user.ds = req.body.ds || user.ds
     user.klp = req.body.klp || user.klp
 
     const yearBirth = req.body.yearBirth || new Date(user.birthdate).getFullYear()
@@ -179,7 +179,7 @@ const updateMe = asyncHandler(async (req, res) => {
     const dayBirth = req.body.dayBirth || new Date(user.birthdate).getDate()
 
     if (req.body.yearBirth || req.body.monthBirth || req.body.dayBirth) {
-        if (dateValidation(yearBirth, monthBirth, dayBirth)) {
+        if (validateDate(yearBirth, monthBirth, dayBirth)) {
             user.birthdate = new Date(Date.UTC(Number(yearBirth), Number(monthBirth), Number(dayBirth)))
         } else {
             res.status(400)
@@ -195,6 +195,7 @@ const updateMe = asyncHandler(async (req, res) => {
     const { password, ...userData } = updatedUser._doc
     res.json({
         ...userData,
+        token: generateToken(user._id)
     })
 })
 

@@ -131,6 +131,7 @@ const updateEvent = asyncHandler(async (req, res) => {
 const deleteEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (event) {
+        await Presence.findOne({ roomId: event.roomId }).remove()
         await event.remove()
         res.status(200).json({ id: req.params.id })
     } else {

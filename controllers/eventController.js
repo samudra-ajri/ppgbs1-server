@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import moment from 'moment'
 import roleTypes from '../consts/roleTypes.js'
+import Attendance from '../models/attendanceModel.js'
 import Event from '../models/eventModel.js'
 import Presence from '../models/presenceModel.js'
 
@@ -132,6 +133,7 @@ const deleteEvent = asyncHandler(async (req, res) => {
     const event = await Event.findById(req.params.id)
     if (event) {
         await Presence.findOne({ roomId: event.roomId }).remove()
+        await Attendance.findOne({ roomId: event.roomId }).remove()
         await event.remove()
         res.status(200).json({ id: req.params.id })
     } else {

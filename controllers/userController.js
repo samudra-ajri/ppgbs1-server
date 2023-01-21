@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler'
+import randomstring from 'randomstring'
 import roleTypes from '../consts/roleTypes.js'
 import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
@@ -229,6 +230,16 @@ const updateUserByManager = asyncHandler(async (req, res) => {
     })
 })
 
+// @desc    Forgot password
+// @route   PUT /api/users/forgot-password
+// @access  Private
+const forgotPassword = asyncHandler(async (req, res) => {
+    const user = req.user
+    user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
+    user.save()
+    res.json({ message: 'success' })
+})
+
 // @desc    Delete a user
 // @route   DELETE /api/users/:id
 // @access  Private/Manager
@@ -277,5 +288,6 @@ export {
     getUsers,
     deleteUser,
     getUserById,
-    getRolesCount
+    getRolesCount,
+    forgotPassword,
 }

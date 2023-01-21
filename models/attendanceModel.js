@@ -28,6 +28,10 @@ const schema = mongoose.Schema({
     sex: {
         type: String,
     },
+    birthdate: {
+        type: Date,
+        required: true
+    },
     time: {
         type: Date
     }

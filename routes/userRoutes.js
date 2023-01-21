@@ -2,6 +2,7 @@ import express from 'express'
 import { manager, protect } from '../middlewares/authMiddleware.js'
 import { 
     deleteUser,
+    forgotPassword,
     getMe,
     getRolesCount,
     getUserById,
@@ -23,6 +24,8 @@ router.route('/login')
 router.route('/me')
     .get(protect, getMe)
     .put(protect, updateMe)
+router.route('/forgot-password')
+    .put(protect, forgotPassword)
 router.route('/:id')
     .get(protect, manager, getUserById)
     .put(protect, manager, updateUserByManager)

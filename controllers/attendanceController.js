@@ -34,6 +34,7 @@ const createAttendance = asyncHandler(async (req, res) => {
         ds: req.user.ds,
         klp: req.user.klp,
         sex: req.user.sex,
+        birthdate: req.user.birthdate,
         time: moment().format()
     }
 
@@ -46,15 +47,48 @@ const createAttendance = asyncHandler(async (req, res) => {
 // @access  Private, Manager
 const getAttendances = asyncHandler(async (req, res) => {
     const { roomId } = req.params
+    const { page = 1, limit = 20, search } = req.query;
+    const minDatePreteen = (moment().subtract(12, 'years')).toDate()
+	const minDateTeen = (moment().subtract(15, 'years')).toDate()
+	const minDatePremarried = (moment().subtract(18, 'years')).toDate()
+	const maxnDatePremarried = (moment().subtract(30, 'years')).toDate()
+    
     const attendances = await Attendance.find({ roomId })
         .populate({
             path: 'attender',
             model: 'User',
-            select: ['name']
+            select: ['name', 'birthdate']
         })
+        .limit(limit * 1)
+        .skip((page - 1) * limit)
         .sort('-createdAt')
+        
     if (attendances) {
-        res.json({ attendances, total: attendances.length })
+        const count = (await Attendance.aggregate([
+            { $match: { roomId } },
+            {
+                $project: {
+                    male: { $cond: [{ $eq: ["$sex", "male"] }, 1, 0] },
+                    female: { $cond: [{ $eq: ["$sex", "female"] }, 1, 0] },
+                    preteenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePreteen] }, { $gt: ["$birthdate", minDateTeen] }] }, 1, 0] },
+                    teenAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDateTeen] }, { $gt: ["$birthdate", minDatePremarried] }] }, 1, 0] },
+                    premarriedAge: { $cond: [{ $and: [{ $lte: ["$birthdate", minDatePremarried] }, { $gte: ["$birthdate", maxnDatePremarried] }] }, 1, 0] }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: 1 },
+                    preteenAge: { $sum: "$preteenAge" },
+                    teenAge: { $sum: "$teenAge" },
+                    premarriedAge: { $sum: "$premarriedAge" },
+                    male: { $sum: "$male" },
+                    female: { $sum: "$female" },
+                }
+            }
+        ]))[0]
+
+        res.json({ attendances, count })
     } else {
         res.status(404)
         throw new Error('Attendances not found')

@@ -92,6 +92,9 @@ const userSchema = mongoose.Schema({
     },
     education: {
         type: String,
+    },
+    resetPasswordToken: {
+        type: String,
     }
 }, {
     timestamps: true

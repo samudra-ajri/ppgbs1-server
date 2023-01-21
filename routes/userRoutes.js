@@ -9,6 +9,7 @@ import {
     getUsers,
     loginUser,
     registerUser,
+    resetPassword,
     updateMe,
     updateUserByManager, 
 } from '../controllers/userController.js'
@@ -26,6 +27,8 @@ router.route('/me')
     .put(protect, updateMe)
 router.route('/forgot-password')
     .put(protect, forgotPassword)
+router.route('/reset-password/:token')
+    .put(protect, manager, resetPassword)
 router.route('/:id')
     .get(protect, manager, getUserById)
     .put(protect, manager, updateUserByManager)

@@ -1,7 +1,8 @@
 import roleTypes from "../consts/roleTypes.js"
 
 // @desc    Filter by manager scope
-const filterManager = (user, search, role) => {
+const filterManager = (user, search, role, needresetpassword) => {
+    let filters = null
     const roles = []
     const regex = new RegExp(search, 'i')
     if (role?.toUpperCase() === roleTypes.GENERUS) {
@@ -14,42 +15,55 @@ const filterManager = (user, search, role) => {
 
     switch (user.role) {
         case roleTypes.PPG:
-            return { 
-                $and: [ 
-                    { role: { $in: roles }},
+            filters = {
+                $and: [
+                    { role: { $in: roles } },
                     { $or: [{ name: regex }, { ds: regex }, { klp: regex }] },
                     { ds: { $ne: 'MOVING' } },
                     { klp: { $ne: 'MOVING' } }
                 ]
             }
+            break
         case roleTypes.PPD:
-            return { 
-                $and: [ 
-                    { role: { $in: roles }},
+            filters = {
+                $and: [
+                    { role: { $in: roles } },
                     { $or: [{ name: regex }, { ds: regex }, { klp: regex }] },
                     { ds: user.ds }
                 ]
             }
+            break
         case roleTypes.PPK:
-            return { 
-                $and: [ 
-                    { role: { $in: roles }},
+            filters = {
+                $and: [
+                    { role: { $in: roles } },
                     { $or: [{ name: regex }, { ds: regex }, { klp: regex }] },
                     { klp: user.klp }
                 ]
             }
+            break
         case roleTypes.MT:
         case roleTypes.MS:
-            return { 
+            filters = {
                 $and: [
-                    { role: { $in: [roleTypes.GENERUS] }},
+                    { role: { $in: [roleTypes.GENERUS] } },
                     { $or: [{ name: regex }, { ds: regex }, { klp: regex }] },
                     { ds: user.ds }
                 ]
             }
+            break
         default:
-            return { $or: [{ name: regex }, { ds: regex }, { klp: regex }] }
+            filters = { $or: [{ name: regex }, { ds: regex }, { klp: regex }] }
     }
+
+    filterByNeedResetPasswordStatus(filters, needresetpassword)
+    return filters
+}
+
+const filterByNeedResetPasswordStatus = (filters, needresetpassword) => {
+    if (needresetpassword === 'true') {
+        filters['$and'].push({ resetPasswordToken: { $exists: true } });
+    } 
 }
 
 export default filterManager

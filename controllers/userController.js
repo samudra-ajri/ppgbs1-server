@@ -132,11 +132,14 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 // @desc    Get all users
-// @route   GET /api/users?page=&limit=&search=
+// @route   GET /api/users?page=&limit=&search=&isresetpassword=
 // @access  Private/Manager
 const getUsers = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, sortby, order, search, role } = req.query;
-    const users = await User.find({ ...filterManager(req.user, search, role) })
+    const { sortby, order, search, role, needresetpassword } = req.query;
+    const page = req.query.page || 1
+    const limit = req.query.limit || 20
+
+    const users = await User.find({ ...filterManager(req.user, search, role, needresetpassword) })
         .limit(limit * 1)
         .skip((page - 1) * limit)
         .sort(sortQuery(sortby, order))
@@ -240,6 +243,22 @@ const forgotPassword = asyncHandler(async (req, res) => {
     res.json({ message: 'success' })
 })
 
+// @desc    Reset password
+// @route   PUT /api/users/reset-password/:token
+// @access  Private/Manager
+const resetPassword = asyncHandler(async (req, res) => {
+    const user = await User.findOne({ resetPasswordToken: req.params.token })
+    if (!user) {
+        res.status(404)
+        throw new Error('Invalid token')
+    }
+    
+    user.resetPasswordToken = null
+    user.password = req.body.newPassword
+    user.save()
+    res.json({ message: 'success' })
+})
+
 // @desc    Delete a user
 // @route   DELETE /api/users/:id
 // @access  Private/Manager
@@ -290,4 +309,5 @@ export {
     getUserById,
     getRolesCount,
     forgotPassword,
+    resetPassword
 }

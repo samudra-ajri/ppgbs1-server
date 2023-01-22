@@ -235,9 +235,15 @@ const updateUserByManager = asyncHandler(async (req, res) => {
 
 // @desc    Forgot password
 // @route   PUT /api/users/forgot-password
-// @access  Private
+// @access  Public
 const forgotPassword = asyncHandler(async (req, res) => {
-    const user = req.user
+    const { userData } = req.body
+    const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
+    const user = await User.findOne({ $and : loginMatch })
+    if (!user) {
+        res.status(404)
+        throw new Error('email atau no hp tidak terdaftar')
+    }
     user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
     user.save()
     res.json({ message: 'success' })

@@ -62,7 +62,7 @@ const filterManager = (user, search, role, needresetpassword) => {
 
 const filterByNeedResetPasswordStatus = (filters, needresetpassword) => {
     if (needresetpassword === 'true') {
-        filters['$and'].push({ resetPasswordToken: { $exists: true } });
+        filters['$and'].push({ resetPasswordToken: { $ne: null } });
     } 
 }
 

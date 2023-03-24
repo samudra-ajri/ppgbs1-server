@@ -32,7 +32,7 @@ const createEvent = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Private
 const getEvents = asyncHandler(async (req, res) => {
-    const endPresence = moment().subtract(8, 'hours')
+    const endPresence = moment().subtract(1, 'days')
     const events = await Event.find({ 
         $and : [
             { endDate: { $gte: endPresence.format() } },

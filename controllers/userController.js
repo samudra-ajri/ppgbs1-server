@@ -16,6 +16,7 @@ import eventTypes from '../consts/eventTypes.js'
 // @access  public
 const registerUser = asyncHandler(async (req, res) => {
     const event = eventTypes.user.register
+    req.event = event.event
     const {
         name,
         yearBirth,
@@ -97,6 +98,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
     const event = eventTypes.user.login
+    req.event = event.event
     const { userData, password, role } = req.body
 
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
@@ -156,6 +158,7 @@ const getMe = asyncHandler(async (req, res) => {
 // @access  Private
 const updateMe = asyncHandler(async (req, res) => {
     const event = eventTypes.user.updateProfile
+    req.event = event.event
     const user = req.user
 
     user.name = req.body.name || user.name
@@ -226,6 +229,7 @@ const updateUserByManager = asyncHandler(async (req, res) => {
 // @access  Public
 const forgotPassword = asyncHandler(async (req, res) => {
     const event = eventTypes.user.forgotPassword
+    req.event = event.event
     const { userData } = req.body
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
     const user = await User.findOne({ $and : loginMatch })
@@ -240,6 +244,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 // @access  Private/Manager
 const resetPassword = asyncHandler(async (req, res) => {
     const event = eventTypes.user.resetPassword
+    req.event = event.event
     const user = await User.findOne({ resetPasswordToken: req.params.token })
     if (!user) throwError(event.message.failed.invalidToken, 404)
     user.resetPasswordToken = null
@@ -253,6 +258,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @access  Private/Manager
 const deleteUser = asyncHandler(async (req, res) => {
     const event = eventTypes.user.deleteUser
+    req.event = event.event
     const user = await User.findById(req.params.id)
     if (user) {
         await user.remove()

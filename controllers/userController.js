@@ -8,11 +8,14 @@ import filterManager from '../utils/filterManager.js'
 import generateToken from '../utils/generateToken.js'
 import sortQuery from '../utils/sortQuery.js'
 import validateDate from '../utils/validateDate.js'
+import throwError from '../utils/errorUtils.js'
+import eventTypes from '../consts/eventTypes.js'
 
 // @desc    Register new user
 // @route   POST /api/users
 // @access  public
 const registerUser = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.register
     const {
         name,
         yearBirth,
@@ -46,29 +49,15 @@ const registerUser = asyncHandler(async (req, res) => {
     } else if (phone && email) {
         filter = { $or: [{ phone }, { email }] }
     } else {
-        res.status(400)
-        throw new Error('No phone or email')
+        throwError(event.message.failed.undefinedCredentials, 400)
     }
 
     const userExists = await User.find(filter)
     if (!role) role = roleTypes.GENERUS
 
-    // User had registered as generus and Teacher
-    if (userExists.length > 1) {
-        res.status(404)
-        throw new Error('Phone, email, or username already exists')
-    }
-
-    // Generus and Teacher possible as a one user
-    if (userExists[0]?.role === role) {
-        res.status(404)
-        throw new Error('Phone, email, or username already exists')
-    }
-
-    if (!validateDate(yearBirth, monthBirth, dayBirth)) {
-        res.status(400)
-        throw new Error('Invalid user data')
-    }
+    if (userExists.length > 1) throwError(event.message.failed.registeredCredentials, 400) // User had registered as generus and Teacher
+    if (userExists[0]?.role === role) throwError(event.message.failed.registeredCredentials, 400) // Generus and Teacher possible as a one user
+    if (!validateDate(yearBirth, monthBirth, dayBirth)) throwError(event.message.failed.invalidDate, 400)
 
     const user = await User.create({
         name,
@@ -99,8 +88,7 @@ const registerUser = asyncHandler(async (req, res) => {
             token: generateToken(user._id)
         })
     } else {
-        res.status(400)
-        throw new Error('Invalid user data')
+        throwError(event.message.failed.invalidData, 400)
     }
 })
 
@@ -108,6 +96,7 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.login
     const { userData, password, role } = req.body
 
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
@@ -126,8 +115,7 @@ const loginUser = asyncHandler(async (req, res) => {
             token: generateToken(user._id)
         })
     } else {
-        res.status(401)
-        throw new Error('Invalid credentials')
+        throwError(event.message.failed.incorrectPhoneOrPassword, 401)
     }
 })
 
@@ -167,6 +155,7 @@ const getMe = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/me
 // @access  Private
 const updateMe = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.updateProfile
     const user = req.user
 
     user.name = req.body.name || user.name
@@ -186,8 +175,7 @@ const updateMe = asyncHandler(async (req, res) => {
         if (validateDate(yearBirth, monthBirth, dayBirth)) {
             user.birthdate = new Date(Date.UTC(Number(yearBirth), Number(monthBirth), Number(dayBirth)))
         } else {
-            res.status(400)
-            throw new Error('Invalid birthdate')
+            throwError(event.message.failed.invalidBirthdate, 400)
         }
     }
 
@@ -237,13 +225,11 @@ const updateUserByManager = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/forgot-password
 // @access  Public
 const forgotPassword = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.forgotPassword
     const { userData } = req.body
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
     const user = await User.findOne({ $and : loginMatch })
-    if (!user) {
-        res.status(404)
-        throw new Error('email atau no hp tidak terdaftar')
-    }
+    if (!user) throwError(event.message.failed.notFoundEmailOrPassowrd, 404)
     user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
     user.save()
     res.json({ message: 'success' })
@@ -253,12 +239,9 @@ const forgotPassword = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/reset-password/:token
 // @access  Private/Manager
 const resetPassword = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.resetPassword
     const user = await User.findOne({ resetPasswordToken: req.params.token })
-    if (!user) {
-        res.status(404)
-        throw new Error('Invalid token')
-    }
-    
+    if (!user) throwError(event.message.failed.invalidToken, 404)
     user.resetPasswordToken = null
     user.password = req.body.newPassword
     user.save()
@@ -269,13 +252,13 @@ const resetPassword = asyncHandler(async (req, res) => {
 // @route   DELETE /api/users/:id
 // @access  Private/Manager
 const deleteUser = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.deleteUser
     const user = await User.findById(req.params.id)
     if (user) {
         await user.remove()
         res.json({ id: req.params.id })
     } else {
-        res.status(404)
-        throw new Error('User not found')
+        throwError(event.message.failed.notFound, 404)
     }
 })
 

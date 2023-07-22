@@ -10,6 +10,7 @@ import sortQuery from '../utils/sortQuery.js'
 import validateDate from '../utils/validateDate.js'
 import throwError from '../utils/errorUtils.js'
 import eventTypes from '../consts/eventTypes.js'
+import loggerUtils from '../utils/logger.js'
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -88,6 +89,7 @@ const registerUser = asyncHandler(async (req, res) => {
             ...userData,
             token: generateToken(user._id)
         })
+        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
     } else {
         throwError(event.message.failed.invalidData, 400)
     }
@@ -116,6 +118,7 @@ const loginUser = asyncHandler(async (req, res) => {
             ...userData,
             token: generateToken(user._id)
         })
+        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
     } else {
         throwError(event.message.failed.incorrectPhoneOrPassword, 401)
     }
@@ -125,6 +128,9 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route   GET /api/users?page=&limit=&search=&isresetpassword=
 // @access  Private/Manager
 const getUsers = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.list
+    req.event = event.event
+
     const { sortby, order, search, role, needresetpassword } = req.query;
     const page = req.query.page || 1
     const limit = req.query.limit || 20
@@ -136,21 +142,29 @@ const getUsers = asyncHandler(async (req, res) => {
         .select('-password')
 
     res.json({ total: users.length, users })
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Get user by id
 // @route   GET /api/users/:id
 // @access  Private/Manager
 const getUserById = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.detail
+    req.event = event.event
+
     const user = await User.findById(req.params.id).select('-password')
     res.json(user)
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Get user data
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.me
+    req.event = event.event
     res.status(200).json(req.user)
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Update user data
@@ -192,12 +206,16 @@ const updateMe = asyncHandler(async (req, res) => {
         ...userData,
         token: generateToken(user._id)
     })
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Update user data that allowed by Manager
 // @route   PUT /api/users/:id
 // @access  Private/Manager
 const updateUserByManager = asyncHandler(async (req, res) => {
+    const event = eventTypes.user.updateByManager
+    req.event = event.event
+
     const user = await User.findById(req.params.id).select('-password')
     user.isMuballigh = req.body.isMuballigh || user.isMuballigh
     user.isActive = req.body.isActive || user.isActive
@@ -222,6 +240,7 @@ const updateUserByManager = asyncHandler(async (req, res) => {
     res.json({
         ...userData,
     })
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Forgot password
@@ -237,6 +256,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
     user.save()
     res.json({ message: 'success' })
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Reset password
@@ -251,6 +271,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.password = req.body.newPassword
     user.save()
     res.json({ message: 'success' })
+    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    Delete a user
@@ -263,6 +284,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (user) {
         await user.remove()
         res.json({ id: req.params.id })
+        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
     } else {
         throwError(event.message.failed.notFound, 404)
     }

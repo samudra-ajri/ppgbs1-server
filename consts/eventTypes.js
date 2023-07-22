@@ -22,7 +22,7 @@ export default {
             },
         },
         updateProfile: {
-            event: 'update_profile',
+            event: 'update-profile',
             message: {
                 success: 'berhasil',
                 failed: {
@@ -31,7 +31,7 @@ export default {
             },
         },
         resetPassword: {
-            event: 'reset_password',
+            event: 'reset-password',
             message: {
                 success: 'berhasil',
                 failed: {
@@ -40,7 +40,7 @@ export default {
             },
         },
         forgotPassword: {
-            event: 'forgot_password',
+            event: 'forgot-password',
             message: {
                 success: 'berhasil',
                 failed: {
@@ -49,7 +49,7 @@ export default {
             },
         },
         deleteUser: {
-            event: 'delete_user',
+            event: 'delete-user',
             message: {
                 success: 'berhasil',
                 failed: {
@@ -57,7 +57,36 @@ export default {
                 }
             },
         },
+        list: {
+            event: 'user-list',
+            message: {
+                success: 'list berhasil dimuat.',
+                failed: 'list gagal dimuat.',
+            },
+        },
+        detail: {
+            event: 'user-detail',
+            message: {
+                success: 'detail berhasil dimuat.',
+                failed: 'detail gagal dimuat.',
+            },
+        },
+        me: {
+            event: 'me',
+            message: {
+                success: 'detail berhasil dimuat.',
+                failed: 'detail gagal dimuat.',
+            },
+        },
+        updateByManager: {
+            event: 'user-update-by-manager',
+            message: {
+                success: 'berhasil.',
+                failed: 'detail gagal dimuat.',
+            },
+        },
     },
+
     // user1: {
     //     list: {
     //         event: 'user-list',

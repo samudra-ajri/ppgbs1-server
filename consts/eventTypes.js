@@ -86,91 +86,164 @@ export default {
             },
         },
     },
-
-    // user1: {
-    //     list: {
-    //         event: 'user-list',
-    //         message: {
-    //             success: 'List berhasil dimuat.',
-    //             failed: 'List gagal dimuat.',
-    //         },
-    //     },
-    //     detail: {
-    //         event: 'user-detail',
-    //         message: {
-    //             success: 'Detail berhasil dimuat.',
-    //             failed: 'Detail gagal dimuat.',
-    //         },
-    //     },
-    // },
-    // position: {
-    //     list: {
-    //         event: 'position-list',
-    //         message: {
-    //             success: 'List berhasil dimuat.',
-    //             failed: 'List gagal dimuat.',
-    //         },
-    //     },
-    // },
-    // organization: {
-    //     list: {
-    //         event: 'organization-list',
-    //         message: {
-    //             success: 'List berhasil dimuat.',
-    //             failed: 'List gagal dimuat.',
-    //         },
-    //     },
-    // },
-    // media: {
-    //     upload: {
-    //         event: 'upload',
-    //         message: {
-    //             success: 'Upload media berhasil.',
-    //             failed: 'Upload media gagal.',
-    //         },
-    //     },
-    // },
-    // activityType: {
-    //     list: {
-    //         event: 'activity-type-list',
-    //         message: {
-    //             success: 'List berhasil dimuat.',
-    //             failed: 'List gagal dimuat.',
-    //         },
-    //     },
-    // },
-    // activity: {
-    //     list: {
-    //         event: 'activity-list',
-    //         message: {
-    //             success: 'List berhasil dimuat.',
-    //             failed: 'List gagal dimuat.',
-    //         },
-    //     },
-    //     detail: {
-    //         event: 'activity-detail',
-    //         message: {
-    //             success: 'Detail berhasil dimuat.',
-    //             failed: 'Aktivitas tidak ditemukan.',
-    //         },
-    //     },
-    //     delete: {
-    //         event: 'activity-delete',
-    //         message: {
-    //             success: 'Berhasil hapus data.',
-    //             failed: {
-    //                 activityNotFound: 'Aktivitas tidak ditemukan.',
-    //             },
-    //         },
-    //     },
-    //     create: {
-    //         event: 'activity-create',
-    //         message: {
-    //             success: 'Berhasil membuat data.',
-    //             failed: {
-    //                 activityTypeNotFound: 'Tipe kegiatan (activityType) tidak tersedia.',
-    //             },
-    //         },
-    //     },
-    // },
+    attendance: {
+        create: {
+            event: 'create-attendance',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'kehadiran (Attendances) tidak ditemukan.',
+                    eventNotFound: 'event tidak ditemukan.',
+                    wrongAccessCode: 'kode akses salah.',
+                    alreadyAttend: 'sudah mengisi daftar hadir.',
+                },
+            },
+        },
+        list: {
+            event: 'attendance-list',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'kehadiran (Attendances) tidak ditemukan.',
+                },
+            },
+        },
+        isAttended: {
+            event: 'check-is-attended',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    eventNotFound: 'event tidak ditemukan.',
+                },
+            },
+        },
+    },
+    completion: {
+        detail: {
+            event: 'completion-detail',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan.',
+                },
+            },
+        },
+        detailBySubject: {
+            event: 'completion-detail-by-subject',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal',
+            },
+        },
+        detailBySubjectUserBased: {
+            event: 'completion-detail-by-subject-user-based',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan.',
+                },
+            },
+        },
+        create: {
+            event: 'create-completion',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    invalid: 'data tidak valid',
+                },
+            },
+        },
+        update: {
+            event: 'update-completion',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan.',
+                },
+            },
+        },
+        delete: {
+            event: 'delete-completion',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan.',
+                },
+            },
+        },
+        listAdmin: {
+            event: 'completion-list-admin',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        detailAdmin: {
+            event: 'completion-detail-admin',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan'
+                },
+            },
+        },
+        listUser: {
+            event: 'completion-list-user',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listUserBased: {
+            event: 'completion-list-user-based',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'user completion tidak ditemukan'
+                },
+            },
+        },
+        listByCategory: {
+            event: 'completion-list-by-category',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listUserBasedByCategory: {
+            event: 'completion-list-user-based-category',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listScore: {
+            event: 'completion-list-score',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listScoreAll: {
+            event: 'completion-list-score-all',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listScoreByUserId: {
+            event: 'completion-list-score-by-userid',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+        listSubjectDetailsScores: {
+            event: 'completion-list-subject-detail-score',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal.',
+            },
+        },
+    }
 }

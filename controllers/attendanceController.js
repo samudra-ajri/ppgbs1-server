@@ -2,29 +2,26 @@ import asyncHandler from 'express-async-handler'
 import moment from 'moment'
 import Attendance from '../models/attendanceModel.js'
 import Event from '../models/eventModel.js'
+import eventTypes from '../consts/eventTypes.js'
+import throwError from '../utils/errorUtils.js'
+import loggerUtils from '../utils/logger.js'
 
 // @desc    Create new attendance
 // @route   POST /api/attendance
 // @access  Private
 const createAttendance = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.attendance.create
+    req.event = eventLogger.event
+
     const user = req.user._id
     const { roomId, passCode } = req.body
 
     const event = await Event.findOne({ roomId })
-    if (!event) {
-        res.status(404)
-        throw new Error('Event not found')
-    }
-    if (event.passCode !== passCode) {
-        res.status(401)
-        throw new Error('Kode Akses Salah')
-    }
+    if (!event) throwError(eventLogger.message.failed.eventNotFound, 404)
+    if (event.passCode !== passCode) throwError(eventLogger.message.failed.wrongAccessCode, 401)
 
     const userExists = await Attendance.findOne({ roomId, attender: user })
-    if (userExists) {
-        res.status(403)
-        throw new Error('Sudah mengisi daftar hadir')
-    }
+    if (userExists) throwError(eventLogger.message.failed.alreadyAttend, 403)
 
     const data = {
         roomId,
@@ -40,12 +37,16 @@ const createAttendance = asyncHandler(async (req, res) => {
 
     await Attendance.create(data)
     res.json({ message: 'success' })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Get attendances
 // @route   GET /api/attendances/room/:roomId
 // @access  Private, Manager
 const getAttendances = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.attendance.list
+    req.event = eventLogger.event
+
     const { roomId } = req.params
     const { page = 1, limit = 20, search } = req.query;
     const minDatePreteen = (moment().subtract(12, 'years')).toDate()
@@ -89,9 +90,9 @@ const getAttendances = asyncHandler(async (req, res) => {
         ]))[0]
 
         res.json({ attendances, count })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Attendances not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -99,16 +100,17 @@ const getAttendances = asyncHandler(async (req, res) => {
 // @route   GET /api/attendances/event/:roomId/isattended
 // @access  Private
 const isAttended = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.attendance.isAttended
+    req.event = eventLogger.event
+
     const { roomId } = req.params
     const event = await Event.findOne({ roomId })
-    if (!event) {
-        res.status(404)
-        throw new Error('Event not found')
-    }
+    if (!event) throwError(eventLogger.message.failed.eventNotFound)
     const attendance = await Attendance.findOne({ roomId, attender: req.user._id })
     const isAttended = attendance ? true : false
     const time = attendance?.time
     res.json({ isAttended, time })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 export { 

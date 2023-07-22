@@ -11,6 +11,7 @@ import validateDate from '../utils/validateDate.js'
 import throwError from '../utils/errorUtils.js'
 import eventTypes from '../consts/eventTypes.js'
 import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
 
 // @desc    Register new user
 // @route   POST /api/users
@@ -89,7 +90,7 @@ const registerUser = asyncHandler(async (req, res) => {
             ...userData,
             token: generateToken(user._id)
         })
-        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
         throwError(event.message.failed.invalidData, 400)
     }
@@ -114,11 +115,11 @@ const loginUser = asyncHandler(async (req, res) => {
         user.lastLogin = Date.now()
         await user.save()
         const { password, ...userData } = user._doc
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
         res.status(200).json({
             ...userData,
             token: generateToken(user._id)
         })
-        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
     } else {
         throwError(event.message.failed.incorrectPhoneOrPassword, 401)
     }
@@ -142,7 +143,7 @@ const getUsers = asyncHandler(async (req, res) => {
         .select('-password')
 
     res.json({ total: users.length, users })
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Get user by id
@@ -154,7 +155,7 @@ const getUserById = asyncHandler(async (req, res) => {
 
     const user = await User.findById(req.params.id).select('-password')
     res.json(user)
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Get user data
@@ -164,7 +165,7 @@ const getMe = asyncHandler(async (req, res) => {
     const event = eventTypes.user.me
     req.event = event.event
     res.status(200).json(req.user)
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Update user data
@@ -206,7 +207,7 @@ const updateMe = asyncHandler(async (req, res) => {
         ...userData,
         token: generateToken(user._id)
     })
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Update user data that allowed by Manager
@@ -240,7 +241,7 @@ const updateUserByManager = asyncHandler(async (req, res) => {
     res.json({
         ...userData,
     })
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Forgot password
@@ -256,7 +257,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
     user.save()
     res.json({ message: 'success' })
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Reset password
@@ -271,7 +272,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     user.password = req.body.newPassword
     user.save()
     res.json({ message: 'success' })
-    loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Delete a user
@@ -284,7 +285,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     if (user) {
         await user.remove()
         res.json({ id: req.params.id })
-        loggerUtils({ req, status: loggerStatusConstant.SUCCESS })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
         throwError(event.message.failed.notFound, 404)
     }

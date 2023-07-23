@@ -6,6 +6,8 @@ import Subject from '../models/subjectModel.js'
 import filterManager from '../utils/filterManager.js'
 import eventTypes from '../consts/eventTypes.js'
 import throwError from '../utils/errorUtils.js'
+import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
 
 // @desc    Create user completion
 // @route   POST /api/completions

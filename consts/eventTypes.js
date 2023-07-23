@@ -245,5 +245,79 @@ export default {
                 failed: 'gagal.',
             },
         },
-    }
+    },
+    dashboard: {
+        detail: {
+            event: 'dashboard-detail',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal',
+            },
+        },
+    },
+    event: {
+        create: {
+            event: 'create-event',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    invalidData: 'data tidak valid',
+                },
+            },
+        },
+        list: {
+            event: 'event-list',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    invalidData: 'data tidak valid',
+                },
+            },
+        },
+        listAdmin: {
+            event: 'event-list-admin',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    invalidData: 'data tidak valid',
+                },
+            },
+        },
+        detail: {
+            event: 'event-detail',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'data tidak ditemukan',
+                },
+            },
+        },
+        update: {
+            event: 'update-event',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'data tidak ditemukan',
+                },
+            },
+        },
+        delete: {
+            event: 'delete-event',
+            message: {
+                success: 'berhasil.',
+                failed: {
+                    notFound: 'data tidak ditemukan',
+                },
+            },
+        },
+    },
+    home: {
+        detail: {
+            event: 'home',
+            message: {
+                success: 'berhasil.',
+                failed: 'gagal',
+            },
+        },
+    },
 }

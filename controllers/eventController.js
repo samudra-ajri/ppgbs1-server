@@ -4,11 +4,18 @@ import roleTypes from '../consts/roleTypes.js'
 import Attendance from '../models/attendanceModel.js'
 import Event from '../models/eventModel.js'
 import Presence from '../models/presenceModel.js'
+import eventTypes from '../consts/eventTypes.js'
+import throwError from '../utils/errorUtils.js'
+import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
 
 // @desc    Create new event
 // @route   POST /api/events
 // @access  Private/Admin
 const createEvent = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.create
+    req.event = eventLogger.event
+
     const { name, passCode, classTypes, startDate, endDate, location } = req.body
     const roomIdSlug = `${parseInt(Math.random().toFixed(3).replace("0.",""))}-${parseInt(Math.random().toFixed(3).replace("0.",""))}-${parseInt(Math.random().toFixed(4).replace("0.",""))}`
     const roomId = roomIdSlug.split('-').join('')
@@ -22,9 +29,9 @@ const createEvent = asyncHandler(async (req, res) => {
     if (event) {
         await Presence.create({ roomId, classTypes, passCode, ds, klp })
         res.status(201).json(event._doc)
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Invalid data')
+        throwError(eventLogger.message.failed.invalidData, 400)
     }
 })
 
@@ -32,6 +39,9 @@ const createEvent = asyncHandler(async (req, res) => {
 // @route   GET /api/events
 // @access  Private
 const getEvents = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.list
+    req.event = eventLogger.event
+
     const endPresence = moment().subtract(1, 'days')
     const events = await Event.find({ 
         $and : [
@@ -51,9 +61,9 @@ const getEvents = asyncHandler(async (req, res) => {
     }).sort('-createdAt').select('-passCode')
     if (events) {
         res.status(201).json({ total: events.length, events })
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Invalid data')
+        throwError(eventLogger.message.failed.invalidData, 400)
     }
 })
 
@@ -61,6 +71,9 @@ const getEvents = asyncHandler(async (req, res) => {
 // @route   GET /api/events/admin
 // @access  Private, Manager
 const getAllEvents = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.listAdmin
+    req.event = eventLogger.event
+
     const filters = []
     const endshow = moment().subtract(1, 'years')
     if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
@@ -76,9 +89,9 @@ const getAllEvents = asyncHandler(async (req, res) => {
     const events = await Event.find(match()).sort('-createdAt')
     if (events) {
         res.status(201).json({ total: events.length, events })
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Invalid data')
+        throwError(eventLogger.message.failed.invalidData, 400)
     }
 })
 
@@ -86,6 +99,9 @@ const getAllEvents = asyncHandler(async (req, res) => {
 // @route   GET /api/events/:id
 // @access  Private
 const getEvent = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.detail
+    req.event = eventLogger.event
+
     let event = {}
     if (req.user.role === roleTypes.GENERUS) {
         event = await Event.findById(req.params.id).select('-passCode')
@@ -94,9 +110,9 @@ const getEvent = asyncHandler(async (req, res) => {
     }
     if (event.id) {
         res.status(201).json(event)
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -104,6 +120,9 @@ const getEvent = asyncHandler(async (req, res) => {
 // @route   PUT /api/events/:id
 // @access  Private, Manager
 const updateEvent = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.update
+    req.event = eventLogger.event
+
     const event = await Event.findById(req.params.id)
     if (event) {
         event.name = req.body.name || event.name
@@ -120,9 +139,9 @@ const updateEvent = asyncHandler(async (req, res) => {
         }
         
         res.status(201).json(event)
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -130,15 +149,18 @@ const updateEvent = asyncHandler(async (req, res) => {
 // @route   DELETE /api/events/:id
 // @access  Private, Manager
 const deleteEvent = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.event.delete
+    req.event = eventLogger.event
+
     const event = await Event.findById(req.params.id)
     if (event) {
         await Presence.findOne({ roomId: event.roomId }).remove()
         await Attendance.findOne({ roomId: event.roomId }).remove()
         await event.remove()
         res.status(200).json({ id: req.params.id })
+	    loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 

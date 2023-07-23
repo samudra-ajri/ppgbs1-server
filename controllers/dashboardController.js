@@ -3,11 +3,17 @@ import moment from 'moment'
 import roleTypes from '../consts/roleTypes.js'
 import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
+import eventTypes from '../consts/eventTypes.js'
+import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
 
 // @desc    Get dashboard
 // @route   GET /api/dashboard
 // @access  Private, Managers
 const getDashboard = asyncHandler(async (req, res) => {
+	const eventLogger = eventTypes.dashboard.detail
+    req.event = eventLogger.event
+
 	let match = { ds: { $ne: "MOVING" } }
 	const minDatePreteen = (moment().subtract(12, 'years')).toDate()
 	const minDateTeen = (moment().subtract(15, 'years')).toDate()
@@ -100,6 +106,7 @@ const getDashboard = asyncHandler(async (req, res) => {
 		users: users[0],
 		scores: scores[0],
 	})
+	loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 export {

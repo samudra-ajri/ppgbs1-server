@@ -1,24 +1,27 @@
 import asyncHandler from 'express-async-handler'
 import Subject from '../models/subjectModel.js'
+import eventTypes from '../consts/eventTypes.js'
+import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
+import throwError from '../utils/errorUtils.js'
 
 // @desc    Create new subject
 // @route   POST /api/subjects
 // @access  Private/Admin
 const createSubject = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.create
+    req.event = eventLogger.event
+
     const { name, totalPages, targets, category } = req.body
     const exists = await Subject.findOne({ name })
-    if (exists) {
-        res.status(404)
-        throw new Error('Subject already added')
-    }
-
+    if (exists) throwError(eventLogger.message.failed.alreadyExists, 403)
     const generatedTargets = generateTargets(totalPages, targets)
     const subject = await Subject.create({ name, targets: generatedTargets, category })
     if (subject) {
         res.status(201).json(subject._doc)
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Invalid data')
+        throwError(eventLogger.message.failed.invalidData, 400)
     }
 })
 
@@ -26,17 +29,25 @@ const createSubject = asyncHandler(async (req, res) => {
 // @route   GET /api/subjects
 // @access  Public
 const getSubjects = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.list
+    req.event = eventLogger.event
+
     const subjects = await Subject.find({})
     res.status(200).json({ 
         total: subjects.length, 
         totalPoin: generateTotalPoin(subjects),  
-        subjects })
+        subjects
+    })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 
 // @desc    Get subjects by category
 // @route   GET /api/subjects/categories/:category
 // @access  Public
 const getSubjectsByCategory = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.listByCategory
+    req.event = eventLogger.event
+
     const subjects = await Subject.find({ category: req.params.category.toUpperCase() })
     if (subjects) {
         res.status(200).json({
@@ -44,9 +55,9 @@ const getSubjectsByCategory = asyncHandler(async (req, res) => {
             totalPoin: generateTotalPoin(subjects),
             subjects
         })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Subject not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -54,12 +65,15 @@ const getSubjectsByCategory = asyncHandler(async (req, res) => {
 // @route   GET /api/subjects/:id
 // @access  Public
 const getSubject = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.detail
+    req.event = eventLogger.event
+
     const subject = await Subject.findById(req.params.id)
     if (subject) {
         res.status(200).json(subject)
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Subject not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -67,6 +81,9 @@ const getSubject = asyncHandler(async (req, res) => {
 // @route   GET /api/subjects/categories
 // @access  Public
 const getSubjectCategories = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.categoryBased
+    req.event = eventLogger.event
+
     const cateogry = await Subject.aggregate([
         { $unwind: "$category" },
         {
@@ -80,16 +97,19 @@ const getSubjectCategories = asyncHandler(async (req, res) => {
     // const subject = await Subject.findById(req.params.id)
     if (cateogry) {
         res.status(200).json(cateogry)
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Cateogry not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
-// @desc    Ubdate a subject
+// @desc    Update a subject
 // @route   PUT /api/subjects/:id
 // @access  Private/Admin
 const updateSubject = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.update
+    req.event = eventLogger.event
+
     const subject = await Subject.findById(req.params.id)
     if (subject) {
         subject.name = req.body.name || subject.name
@@ -103,9 +123,9 @@ const updateSubject = asyncHandler(async (req, res) => {
         
         const updatedSubject = await subject.save()
         res.status(200).json(updatedSubject)
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Subject not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -113,13 +133,16 @@ const updateSubject = asyncHandler(async (req, res) => {
 // @route   Delete /api/subjects/:id
 // @access  Private/Admin
 const deleteSubject = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.subject.update
+    req.event = eventLogger.event
+
     const subject = await Subject.findById(req.params.id)
     if (subject) {
         await subject.remove()
         res.status(200).json({ id: req.params.id })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(400)
-        throw new Error('Subject not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 

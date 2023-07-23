@@ -2,11 +2,18 @@ import asyncHandler from 'express-async-handler'
 import moment from 'moment'
 import roleTypes from '../consts/roleTypes.js'
 import Presence from '../models/presenceModel.js'
+import eventTypes from '../consts/eventTypes.js'
+import loggerUtils from '../utils/logger.js'
+import loggerStatus from '../consts/loggerStatus.js'
+import throwError from '../utils/errorUtils.js'
 
 // @desc    Create new presence
 // @route   POST /api/presences
 // @access  Private
 const createPresence = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.create
+    req.event = eventLogger.event
+
     const { roomId, passCode } = req.body
     const presence = await Presence .findOne({ roomId })
     if (presence) {
@@ -15,16 +22,8 @@ const createPresence = asyncHandler(async (req, res) => {
             attender => String(attender.user) === String(user)
         )
 
-        if (presence.passCode !== passCode) {
-            res.status(401)
-            throw new Error('Kode Akses Salah')
-        }
-
-        if (userExists) {
-            res.status(403)
-            throw new Error('Sudah mengisi daftar hadir')
-        }
-
+        if (presence.passCode !== passCode) throwError(eventLogger.message.failed.wrongAccessCode, 401)
+        if (userExists) throwError(eventLogger.message.failed.alreadyExists, 403)
         const attender = {
             user,
             ds: req.user.ds,
@@ -36,9 +35,9 @@ const createPresence = asyncHandler(async (req, res) => {
         presence.attenders.push(attender)
         await presence.save()
         res.json({ message: 'Presence success' })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Event not found')
+        throwError(eventLogger.message.failed.eventNotFound, 404)
     }
 })
 
@@ -46,6 +45,9 @@ const createPresence = asyncHandler(async (req, res) => {
 // @route   GET /api/presences
 // @access  Private, Manager
 const getPresences = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.list
+    req.event = eventLogger.event
+
     const filters = []
     if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
     if (req.user.role === roleTypes.PPD) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
@@ -63,9 +65,9 @@ const getPresences = asyncHandler(async (req, res) => {
         }).sort('-createdAt')
     if (presences) {
         res.json({presences})
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Presence not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -73,6 +75,9 @@ const getPresences = asyncHandler(async (req, res) => {
 // @route   GET /api/presences/room/:roomId?page=&size=
 // @access  Private, Manager
 const getPresencesByRoomId = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.detail
+    req.event = eventLogger.event
+
     const { page=1, size=20 } = req.query
     const presence = await Presence.findOne({ roomId: req.params.roomId})
         .populate({
@@ -82,9 +87,9 @@ const getPresencesByRoomId = asyncHandler(async (req, res) => {
         })
     if (presence) {
         res.json({attenders: presence.attenders.slice((page-1)*size, page*size), total: presence.attenders.length})
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Presence not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 
@@ -92,15 +97,18 @@ const getPresencesByRoomId = asyncHandler(async (req, res) => {
 // @route   GET /api/presences/event/:roomId/ispresent
 // @access  Private
 const isPresent = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.isPresent
+    req.event = eventLogger.event
+
     const presences = await Presence.findOne({ roomId: req.params.roomId})
     if (presences) {
         const attender = presences.attenders.find(attender => attender.user == String(req.user._id))
         const isPresent = attender ? true : false
         const time = attender?.time
         res.json({ isPresent, time })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
-        res.status(404)
-        throw new Error('Presence not found')
+        throwError(eventLogger.message.failed.notFound, 404)
     }
 })
 

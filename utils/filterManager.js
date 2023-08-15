@@ -19,8 +19,10 @@ const filterManager = (user, search, role, needresetpassword) => {
                 $and: [
                     { role: { $in: roles } },
                     { $or: [{ name: regex }, { ds: regex }, { klp: regex }] },
-                    { ds: { $ne: 'MOVING' } },
-                    { klp: { $ne: 'MOVING' } }
+                    // Check if needresetpassword is false, then add the filters
+                    ...(needresetpassword !== 'true'
+                        ? [{ ds: { $ne: 'MOVING' } }, { klp: { $ne: 'MOVING' } }]
+                        : []),
                 ]
             }
             break
@@ -63,7 +65,7 @@ const filterManager = (user, search, role, needresetpassword) => {
 const filterByNeedResetPasswordStatus = (filters, needresetpassword) => {
     if (needresetpassword === 'true') {
         filters['$and'].push({ resetPasswordToken: { $ne: null } });
-    } 
+    }
 }
 
 export default filterManager

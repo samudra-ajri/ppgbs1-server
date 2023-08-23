@@ -4,7 +4,6 @@ import logger from '../pkg/logger.js'
 const loggerUtils = {}
 
 loggerUtils.logger = ({ req, status, message, statusCode }) => {
-    console.log(req.user);
     const severity = status === loggerStatus.FAILED ? 'error' : 'info'
     logger[severity]({
         event: req.event,

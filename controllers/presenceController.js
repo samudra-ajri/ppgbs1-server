@@ -6,6 +6,7 @@ import eventTypes from '../consts/eventTypes.js'
 import loggerUtils from '../utils/logger.js'
 import loggerStatus from '../consts/loggerStatus.js'
 import throwError from '../utils/errorUtils.js'
+import User from '../models/userModel.js'
 
 // @desc    Create new presence
 // @route   POST /api/presences
@@ -15,7 +16,7 @@ const createPresence = asyncHandler(async (req, res) => {
     req.event = eventLogger.event
 
     const { roomId, passCode } = req.body
-    const presence = await Presence .findOne({ roomId })
+    const presence = await Presence.findOne({ roomId })
     if (presence) {
         const user = req.user._id
         const userExists = presence.attenders.some(
@@ -35,6 +36,52 @@ const createPresence = asyncHandler(async (req, res) => {
         presence.attenders.push(attender)
         await presence.save()
         res.json({ message: 'Presence success' })
+        loggerUtils({ req, status: loggerStatus.SUCCESS })
+    } else {
+        throwError(eventLogger.message.failed.eventNotFound, 404)
+    }
+})
+
+// @desc    Create new presence by admin
+// @route   POST /api/presences/admin
+// @access  Private, Manager
+const createPresenceByAdmin = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.createByAdmin
+    req.event = eventLogger.event
+
+    const { roomId, userId } = req.body
+
+    const user = await User.findById(userId).select('-password')
+    if (!user) throwError(eventLogger.message.failed.userNotFound, 404)
+
+    const presence = await Presence.findOne({ roomId })
+    if (presence) {
+        const userId = user._id
+        const userExists = presence.attenders.some(
+            attender => String(attender.user) === String(userId)
+        )
+        if (userExists) throwError(eventLogger.message.failed.alreadyExists, 403)
+        const attender = {
+            user: userId,
+            ds: user.ds,
+            klp: user.klp,
+            sex: user.sex,
+            time: moment().format()
+        }
+
+        presence.attenders.push(attender)
+        await presence.save()
+        res.json({ message: 'Presence success' })
+
+        req.body.attender = {
+            _id: userId,
+            name: user.name,
+            birthdate: user.birthdate,
+            ds: attender.ds,
+            klp: attender.klp,
+            sex: attender.sex,
+        }
+
         loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
         throwError(eventLogger.message.failed.eventNotFound, 404)
@@ -116,5 +163,6 @@ export {
     createPresence,
     getPresences,
     getPresencesByRoomId,
-    isPresent
+    isPresent,
+    createPresenceByAdmin,
 }

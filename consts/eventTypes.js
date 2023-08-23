@@ -405,6 +405,17 @@ export default {
 				},
 			},
 		},
+		createByAdmin: {
+			event: 'create-presence-by-admin',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					alreadyExists: 'user sudah hadir.',
+					eventNotFound: 'kegiatan (event) tidak tersedia.',
+					userNotFound: 'user tidak ditemukan.',
+				},
+			},
+		},
 	},
 	subject: {
 		create: {

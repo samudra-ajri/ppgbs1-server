@@ -410,9 +410,9 @@ export default {
 			message: {
 				success: 'berhasil.',
 				failed: {
-					alreadyExists: 'user sudah hadir.',
+					alreadyExists: 'generus sudah hadir.',
 					eventNotFound: 'kegiatan (event) tidak tersedia.',
-					userNotFound: 'user tidak ditemukan.',
+					userNotFound: 'generus tidak ditemukan.',
 				},
 			},
 		},

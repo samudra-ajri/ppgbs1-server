@@ -416,6 +416,16 @@ export default {
 				},
 			},
 		},
+		deleteAttender: {
+			event: 'delete-attender',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					eventNotFound: 'kegiatan (event) tidak tersedia.',
+					userNotFound: 'generus tidak ditemukan.',
+				},
+			},
+		},
 	},
 	subject: {
 		create: {

@@ -1,5 +1,12 @@
 import express from 'express'
-import { createPresence, createPresenceByAdmin, getPresences, getPresencesByRoomId, isPresent } from '../controllers/presenceController.js'
+import {
+    createPresence,
+    createPresenceByAdmin,
+    getPresences,
+    getPresencesByRoomId,
+    isPresent,
+    removeAttender
+} from '../controllers/presenceController.js'
 import { manager, protect } from '../middlewares/authMiddleware.js'
 
 const router = express.Router()
@@ -12,5 +19,7 @@ router.route('/room/:roomId/ispresent')
     .get(protect, isPresent)
 router.route('/admin')
     .post(protect, manager, createPresenceByAdmin)
+router.route('/attenders')
+    .delete(protect, manager, removeAttender)
 
 export default router

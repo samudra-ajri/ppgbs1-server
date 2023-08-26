@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import moment from 'moment'
+import mongoose from 'mongoose'
 import roleTypes from '../consts/roleTypes.js'
 import Presence from '../models/presenceModel.js'
 import eventTypes from '../consts/eventTypes.js'
@@ -89,6 +90,39 @@ const createPresenceByAdmin = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    Remove a presence attender
+// @route   DELETE /api/presences/attenders
+// @access  Private, Manager
+const removeAttender = asyncHandler(async (req, res) => {
+    const eventLogger = eventTypes.presence.deleteAttender
+    req.event = eventLogger.event
+
+    const { roomId, userId } = req.body
+
+    const user = await User.findById(userId).select('-password')
+    if (!user) throwError(eventLogger.message.failed.userNotFound, 404)
+
+    Presence.updateOne(
+        { roomId },
+        { $pull: { attenders: { 'user': mongoose.Types.ObjectId(userId) } } },
+        (err, result) => {
+            if (err) throwError(eventLogger.message.failed.eventNotFound, 404)
+        }
+    )
+
+    req.body.deletedAttender = {
+        _id: userId,
+        name: user.name,
+        birthdate: user.birthdate,
+        ds: user.ds,
+        klp: user.klp,
+        sex: user.sex,
+    }
+
+    res.json({ id: userId })
+    loggerUtils({ req, status: loggerStatus.SUCCESS })
+})
+
 // @desc    Get presences
 // @route   GET /api/presences
 // @access  Private, Manager
@@ -99,10 +133,10 @@ const getPresences = asyncHandler(async (req, res) => {
     const filters = []
     if (req.user.role === roleTypes.PPK) filters.push({ klp: req.user.klp }, { $and: [{ ds: req.user.ds }, { klp: undefined }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
     if (req.user.role === roleTypes.PPD) filters.push({ $and: [{ ds: req.user.ds }] }, { $and: [{ ds: undefined }, { klp: undefined }] })
-    
+
     const match = () => {
         if (req.user.role === roleTypes.PPG || req.user.role === roleTypes.ADMIN) return {}
-        return { $or: filters } 
+        return { $or: filters }
     }
 
     const presences = await Presence.find(match())
@@ -112,7 +146,7 @@ const getPresences = asyncHandler(async (req, res) => {
             select: ['name']
         }).sort('-createdAt')
     if (presences) {
-        res.json({presences})
+        res.json({ presences })
         loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
         throwError(eventLogger.message.failed.notFound, 404)
@@ -126,15 +160,15 @@ const getPresencesByRoomId = asyncHandler(async (req, res) => {
     const eventLogger = eventTypes.presence.detail
     req.event = eventLogger.event
 
-    const { page=1, size=20 } = req.query
-    const presence = await Presence.findOne({ roomId: req.params.roomId})
+    const { page = 1, size = 20 } = req.query
+    const presence = await Presence.findOne({ roomId: req.params.roomId })
         .populate({
             path: 'attenders.user',
             model: 'User',
             select: ['name']
         })
     if (presence) {
-        res.json({attenders: presence.attenders.slice((page-1)*size, page*size), total: presence.attenders.length})
+        res.json({ attenders: presence.attenders.slice((page - 1) * size, page * size), total: presence.attenders.length })
         loggerUtils({ req, status: loggerStatus.SUCCESS })
     } else {
         throwError(eventLogger.message.failed.notFound, 404)
@@ -148,7 +182,7 @@ const isPresent = asyncHandler(async (req, res) => {
     const eventLogger = eventTypes.presence.isPresent
     req.event = eventLogger.event
 
-    const presences = await Presence.findOne({ roomId: req.params.roomId})
+    const presences = await Presence.findOne({ roomId: req.params.roomId })
     if (presences) {
         const attender = presences.attenders.find(attender => attender.user == String(req.user._id))
         const isPresent = attender ? true : false
@@ -160,10 +194,11 @@ const isPresent = asyncHandler(async (req, res) => {
     }
 })
 
-export { 
+export {
     createPresence,
     getPresences,
     getPresencesByRoomId,
     isPresent,
     createPresenceByAdmin,
+    removeAttender,
 }

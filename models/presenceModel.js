@@ -40,7 +40,11 @@ const schema = mongoose.Schema({
         },
         time: {
             type: Date
-        }
+        },
+        createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
     }]
 }, {
     timestamps: true

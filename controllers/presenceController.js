@@ -66,7 +66,8 @@ const createPresenceByAdmin = asyncHandler(async (req, res) => {
             ds: user.ds,
             klp: user.klp,
             sex: user.sex,
-            time: moment().format()
+            time: moment().format(),
+            createdBy: req.user._id
         }
 
         presence.attenders.push(attender)

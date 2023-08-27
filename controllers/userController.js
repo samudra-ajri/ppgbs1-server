@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import randomstring from 'randomstring'
+import bcrypt from 'bcryptjs'
 import roleTypes from '../consts/roleTypes.js'
 import Completion from '../models/completionModel.js'
 import User from '../models/userModel.js'
@@ -106,11 +107,11 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
     if (role === roleTypes.GENERUS) {
-        loginMatch.push({ role }) 
+        loginMatch.push({ role })
     } else {
-        loginMatch.push({ role: { $ne: roleTypes.GENERUS } }) 
+        loginMatch.push({ role: { $ne: roleTypes.GENERUS } })
     }
-    const user = await User.findOne({ $and : loginMatch })
+    const user = await User.findOne({ $and: loginMatch })
     if (user && (await user.matchPassword(password))) {
         user.lastLogin = Date.now()
         await user.save()
@@ -226,13 +227,13 @@ const updateUserByManager = asyncHandler(async (req, res) => {
 
     // Update user completion
     if (req.body.ds || req.body.klp) {
-        await Completion.updateMany({ 
-            user: req.params.id 
-        }, { 
-            $set: { 
+        await Completion.updateMany({
+            user: req.params.id
+        }, {
+            $set: {
                 ds: user.ds,
                 klp: user.klp,
-            } 
+            }
         })
     }
 
@@ -252,10 +253,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
     req.event = event.event
     const { userData } = req.body
     const loginMatch = [{ $or: [{ phone: userData }, { email: userData }, { username: userData }] }]
-    const user = await User.findOne({ $and : loginMatch })
-    if (!user) throwError(event.message.failed.notFoundEmailOrPassowrd, 404)
-    user.resetPasswordToken = `${user._id}${randomstring.generate({ length: 10, charset: 'alphabetic'})}`
-    user.save()
+    const users = await User.find({ $and: loginMatch })
+    if (users.length === 0) throwError(event.message.failed.notFoundEmailOrPassowrd, 404)
+    const resetPasswordToken = `${users[0]._id}${randomstring.generate({ length: 10, charset: 'alphabetic' })}`
+    for (const user of users) {
+        await User.findByIdAndUpdate(user._id, { resetPasswordToken })
+    }
     res.json({ message: 'success' })
     loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
@@ -266,11 +269,16 @@ const forgotPassword = asyncHandler(async (req, res) => {
 const resetPassword = asyncHandler(async (req, res) => {
     const event = eventTypes.user.resetPassword
     req.event = event.event
-    const user = await User.findOne({ resetPasswordToken: req.params.token })
-    if (!user) throwError(event.message.failed.invalidToken, 404)
-    user.resetPasswordToken = null
-    user.password = req.body.newPassword
-    user.save()
+    const users = await User.find({ resetPasswordToken: req.params.token })
+    if (users.length === 0) throwError(event.message.failed.invalidToken, 404)
+    for (const user of users) {
+        const salt = await bcrypt.genSalt(10)
+        const password = await bcrypt.hash(req.body.newPassword, salt)
+        await User.findByIdAndUpdate(user._id, {
+            resetPasswordToken: null,
+            password,
+        })
+    }
     res.json({ message: 'success' })
     loggerUtils({ req, status: loggerStatus.SUCCESS })
 })

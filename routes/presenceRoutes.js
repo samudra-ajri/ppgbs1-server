@@ -19,7 +19,7 @@ router.route('/room/:roomId/ispresent')
     .get(protect, isPresent)
 router.route('/admin')
     .post(protect, manager, createPresenceByAdmin)
-router.route('/attenders')
+router.route('/room/:roomId/attender/:attenderId')
     .delete(protect, manager, removeAttender)
 
 export default router

@@ -91,27 +91,27 @@ const createPresenceByAdmin = asyncHandler(async (req, res) => {
 })
 
 // @desc    Remove a presence attender
-// @route   DELETE /api/presences/attenders
+// @route   DELETE /api/presences/room/:roomId/attender/:attenderId
 // @access  Private, Manager
 const removeAttender = asyncHandler(async (req, res) => {
     const eventLogger = eventTypes.presence.deleteAttender
     req.event = eventLogger.event
 
-    const { roomId, userId } = req.body
+    const { roomId, attenderId } = req.params
 
-    const user = await User.findById(userId).select('-password')
+    const user = await User.findById(attenderId).select('-password')
     if (!user) throwError(eventLogger.message.failed.userNotFound, 404)
 
     Presence.updateOne(
         { roomId },
-        { $pull: { attenders: { 'user': mongoose.Types.ObjectId(userId) } } },
+        { $pull: { attenders: { 'user': mongoose.Types.ObjectId(attenderId) } } },
         (err, result) => {
             if (err) throwError(eventLogger.message.failed.eventNotFound, 404)
         }
     )
 
     req.body.deletedAttender = {
-        _id: userId,
+        _id: attenderId,
         name: user.name,
         birthdate: user.birthdate,
         ds: user.ds,
@@ -119,7 +119,7 @@ const removeAttender = asyncHandler(async (req, res) => {
         sex: user.sex,
     }
 
-    res.json({ id: userId })
+    res.json({ id: attenderId })
     loggerUtils({ req, status: loggerStatus.SUCCESS })
 })
 

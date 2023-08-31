@@ -12,10 +12,10 @@ module.exports = {
           data.push({
             name: `${positionTypes[key]} ${line.name}`,
             type: key,
-            organization_id: line.id,
-            created_at: now,
-            updated_at: now,
-            deleted_at: null,
+            organizationId: line.id,
+            createdAt: now,
+            updatedAt: now,
+            deletedAt: null,
           })
         }
       }

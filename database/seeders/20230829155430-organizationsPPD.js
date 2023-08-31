@@ -11,25 +11,25 @@ module.exports = {
         id: line.id,
         name: line.name,
         level: organizationLevelsConstant.ppd,
-        created_at: now,
-        updated_at: now,
-        deleted_at: null,
+        createdAt: now,
+        updatedAt: now,
+        deletedAt: null,
       }
     }
 
     const parseCsvLineHierarchy = (line) => {
       return [
         {
-          ancestor_id: 1, // PPG organization id
-          descendant_id: line.id,
+          ancestorId: 1, // PPG organization id
+          descendantId: line.id,
           depth: 1,
-          updated_at: now,
+          updatedAt: now,
         },
         {
-          ancestor_id: line.id,
-          descendant_id: line.id,
+          ancestorId: line.id,
+          descendantId: line.id,
           depth: 0,
-          updated_at: now,
+          updatedAt: now,
         },
       ]
     }
@@ -53,6 +53,6 @@ module.exports = {
     })
 
     await queryInterface.bulkInsert('organizations', data.rows)
-    await queryInterface.bulkInsert('organization_hierarchies', data.rowHierarchies)
+    await queryInterface.bulkInsert('organizationHierarchies', data.rowHierarchies)
   }
 }

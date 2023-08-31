@@ -11,31 +11,31 @@ module.exports = {
         id: line.id,
         name: line.name,
         level: organizationLevelsConstant.ppk,
-        created_at: now,
-        updated_at: now,
-        deleted_at: null,
+        createdAt: now,
+        updatedAt: now,
+        deletedAt: null,
       }
     }
 
     const parseCsvLineHierarchy = (line) => {
       return [
         {
-          ancestor_id: 1, // DPP organization id
-          descendant_id: line.id,
+          ancestorId: 1, // DPP organization id
+          descendantId: line.id,
           depth: 2,
-          updated_at: now,
+          updatedAt: now,
         },
         {
-          ancestor_id: line.dpwId,
-          descendant_id: line.id,
+          ancestorId: line.dpwId,
+          descendantId: line.id,
           depth: 1,
-          updated_at: now,
+          updatedAt: now,
         },
         {
-          ancestor_id: line.id,
-          descendant_id: line.id,
+          ancestorId: line.id,
+          descendantId: line.id,
           depth: 0,
-          updated_at: now,
+          updatedAt: now,
         },
       ]
     }
@@ -59,6 +59,6 @@ module.exports = {
     })
 
     await queryInterface.bulkInsert('organizations', data.rows)
-    await queryInterface.bulkInsert('organization_hierarchies', data.rowHierarchies)
+    await queryInterface.bulkInsert('organizationHierarchies', data.rowHierarchies)
   }
 }

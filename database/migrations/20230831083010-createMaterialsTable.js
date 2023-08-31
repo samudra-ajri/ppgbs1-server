@@ -2,11 +2,12 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     return queryInterface.sequelize.query(`
-      CREATE TABLE IF NOT EXISTS "organizations" (
-        "id"        BIGSERIAL PRIMARY KEY,
+      CREATE TABLE IF NOT EXISTS "materials" (
+        "id"        SERIAL PRIMARY KEY,
+        "subjectId" int,
         "name"      varchar,
+        "parentId"  int,
         "createdAt" bigint,
-        "updatedAt" bigint,
         "deletedAt" bigint
       );
     `)
@@ -14,7 +15,7 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     return queryInterface.sequelize.query(`
-      DROP TABLE IF EXISTS "organizations"
+      DROP TABLE IF EXISTS "materials"
     `)
   }
-};
+}

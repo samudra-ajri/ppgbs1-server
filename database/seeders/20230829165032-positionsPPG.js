@@ -10,14 +10,14 @@ module.exports = {
         data.push({
           name: `${positionTypes[key]} PPG BANDUNG SELATAN`,
           type: key,
-          organization_id: 1,
-          created_at: now,
-          updated_at: now,
-          deleted_at: null,
+          organizationId: 1,
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null,
         })
       }
     }
-    console.log(data);
-    // await queryInterface.bulkInsert('positions', data)
+
+    await queryInterface.bulkInsert('positions', data)
   },
 }

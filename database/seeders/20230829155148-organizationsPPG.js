@@ -7,19 +7,19 @@ module.exports = {
       id: 1,
       name: 'PPG BANDUNG SELATAN',
       level: organizationLevelsConstant.ppg,
-      created_at: now,
-      updated_at: now,
-      deleted_at: null,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null,
     }]
 
     const hierarchyData = [{
-      ancestor_id: 1,
-      descendant_id: 1,
+      ancestorId: 1,
+      descendantId: 1,
       depth: 0,
-      updated_at: now
+      updatedAt: now
     }]
   
     await queryInterface.bulkInsert('organizations', data)
-    await queryInterface.bulkInsert('organization_hierarchies', hierarchyData)
+    await queryInterface.bulkInsert('organizationHierarchies', hierarchyData)
   }
 }

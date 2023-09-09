@@ -4,6 +4,8 @@ const positionTypesConstant = {
     ORANGTUA: 'ORANGTUA',
     PENGAJAR: 'PENGAJAR',
     PENGURUS: 'PENGURUS',
+    PAKAR: 'PAKAR PENDIDIK',
+    KYAI: 'KYAI',
     ADMIN: 'ADMIN'
 }
 

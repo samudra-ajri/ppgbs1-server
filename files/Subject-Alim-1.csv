@@ -1,0 +1,34 @@
+material,grade,subject,category,subcategory
+Membaca huruf hijaiyah dengan tanda baca fathah,1,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Membaca angka arab,1,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Membaca kata berharokat fathah, dlomah dan fathatain, kasrotain, dlomatain",1,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Membaca bacaan panjang 1 alif,1,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Membaca bentuk-bentuk Ta',1,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Menulis huruf tunggal fathah,1,ALIM,Baca-Tulis,Tulis huruf Al-Quran
+Menulis angka arab,1,ALIM,Baca-Tulis,Tulis huruf Al-Quran
+"Menulis huruf sambung (di depan, tengah dan belakang)",1,ALIM,Baca-Tulis,Tulis huruf Al-Quran
+Menjaga hafalan surat An-Nas s.d. Al-Kafirun,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Al-Kautsar,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Al-Ma'un,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Quraisy,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Al-Fil,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Al-Humazah,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Surat Al-Asr,1,ALIM,Hafalan,Hafalan surat-surat Al-Quran
+Asmaulhusna 1-40,1,ALIM,Hafalan,Hafalan doa-doa harian
+Menerampilkan hafalan Doa pada jenjang sebelumnya,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa dan dzikir setelah sholat,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa ketetapan iman,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa minta ilmu yang manfaat,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa minta ilham yang baik,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa masuk dan keluar rumah,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa pagi dan sore,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa masuk dan keluar masjid,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa memakai pakaian,1,ALIM,Hafalan,Hafalan doa-doa harian
+Doa ketika berbuka puasa,1,ALIM,Hafalan,Hafalan doa-doa harian
+Dasar-dasar aqidah,1,ALIM,Keilmuan,Dasar Keagamaan
+"Rukun Iman, Islam dan Ihsan",1,ALIM,Keilmuan,Dasar Keagamaan
+"Pengertian Quran, Hadits, Jamaah",1,ALIM,Keilmuan,Dasar Keagamaan
+Thoharoh dan Sholat,1,ALIM,Keilmuan,Dasar Keagamaan
+Pengetahuan wajibnya taat dan haromnya maksiat,1,ALIM,Keilmuan,Dasar Keagamaan
+Pengetahuan hukum halAl-harom,1,ALIM,Keilmuan,Dasar Keagamaan
+Puasa,1,ALIM,Keilmuan,Dasar Keagamaan

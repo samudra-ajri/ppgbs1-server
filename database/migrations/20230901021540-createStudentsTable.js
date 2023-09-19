@@ -2,10 +2,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.sequelize.query(`
       CREATE TABLE IF NOT EXISTS "students" (
-        "userId"      bigint,
-        "isMuballigh" boolean,         
-        "birthdate"   date,         
-        "sex"         boolean,       
+        "userId"      bigint,              
         "grade"       integer,       
         "createdAt"   bigint,
         "createdBy"   bigint,

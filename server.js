@@ -6,6 +6,7 @@ const db = require('./database/config/postgresql')
 const errorMiddleware = require('./middlewares/errorMiddleware')
 const redis = require('./pkg/redis')
 const homeRoutes = require('./routes/homeRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 // Connecting db
 db.authenticate()
@@ -27,6 +28,8 @@ app.use(express.urlencoded({ extended: false }))
 if (config.NODE_ENV !== 'production') app.use(morgan('dev'))
 
 // Routes
+const version = `api/${config.APP_VERSION}`
+app.use(`/${version}/auths`, authRoutes)
 app.use('/api', homeRoutes)
 
 // Error handler

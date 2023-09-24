@@ -1,5 +1,5 @@
-export default {
-	user: {
+const eventConstant = {
+	auth: {
 		login: {
 			event: 'login',
 			message: {
@@ -21,15 +21,6 @@ export default {
 				},
 			},
 		},
-		updateProfile: {
-			event: 'update-profile',
-			message: {
-				success: 'berhasil',
-				failed: {
-					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid'
-				}
-			},
-		},
 		resetPassword: {
 			event: 'reset-password',
 			message: {
@@ -45,6 +36,17 @@ export default {
 				success: 'berhasil',
 				failed: {
 					notFoundEmailOrPassowrd: 'email atau No. HP tidak terdaftar'
+				}
+			},
+		},
+	},
+	user: {
+		updateProfile: {
+			event: 'update-profile',
+			message: {
+				success: 'berhasil',
+				failed: {
+					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid'
 				}
 			},
 		},
@@ -492,3 +494,5 @@ export default {
 		},
 	},
 }
+
+module.exports = eventConstant

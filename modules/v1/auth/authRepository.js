@@ -1,3 +1,4 @@
+const positionTypesTableMap = require('../../../constants/positionTypesTableMap')
 const db = require('../../../database/config/postgresql')
 
 const { QueryTypes } = require('sequelize')
@@ -110,7 +111,7 @@ authRepository.findUserWithPosition = async (userId) => {
 
 authRepository.findPositions = async (positionsIds) => {
     return db.query(
-        'SELECT id FROM positions WHERE id = ANY($1::int[])', {
+        'SELECT id, type FROM positions WHERE id = ANY($1::int[])', {
             bind: [positionsIds],
             type: QueryTypes.SELECT,
         }
@@ -122,6 +123,7 @@ authRepository.createUser = async (data) => {
         const user = await insertUser(t, data)
         data.userId = user[0].id
         await insertUserPositions(t, data)
+        await insertUserRoles(t, data)
     })
 }
 
@@ -141,11 +143,11 @@ const insertUser = async (trx, data) => {
 }
 
 const insertUserPositions = async (trx, data) => {
-    const { userId } = data
+    const { userId, positionIds } = data
     const now = Date.now()
-    data.positionIds.forEach(async (positionId, index) => {
+    positionIds.forEach(async (positionId, index) => {
         const isMain = index === 0 ? true : false
-        return db.query(`
+        await db.query(`
             INSERT INTO "usersPositions" ("userId", "positionId", "isMain", "createdAt")
             VALUES ($1, $2, $3, $4)`, {
                 bind: [userId, positionId, isMain, now],
@@ -154,6 +156,25 @@ const insertUserPositions = async (trx, data) => {
             }
         )
     })
+}
+
+const insertUserRoles = async (trx, data) => {
+    const { userId, positions } = data
+    const now = Date.now()
+
+    for (let position of positions) {
+        const positionType = positionTypesTableMap[position.type]
+        const values = [userId, now, now]
+        const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
+        await db.query(`
+            INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt")
+            VALUES (${placeholders})`, {
+                bind: values,
+                type: QueryTypes.INSERT,
+                transaction: trx,
+            }
+        )
+    }
 }
 
 module.exports = authRepository

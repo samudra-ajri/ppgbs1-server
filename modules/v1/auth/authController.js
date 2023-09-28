@@ -7,7 +7,7 @@ const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const authController = {}
 
 // @desc    register
-// @route   POST /auths/register/:role
+// @route   POST /auths/register
 // @access  Public
 authController.register = asyncHandler(async (req, res) => {
     req.event = eventConstant.auth.register.event

@@ -74,7 +74,8 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         isMuballigh,
         birthdate,
         password: await authUtils.generatePassword(password),
-        positionIds
+        positionIds,
+        positions: foundPositions,
     }
     await authRepository.createUser(data)
 }

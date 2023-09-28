@@ -15,6 +15,30 @@ authRepository.findUser = async (login) => {
     )
 }
 
+authRepository.findRegisteredUser = async (register) => {
+    // generate query filters based on register data
+    const filters = []
+    const bind = []
+    let i = 1
+    for (const key in register) {
+        if (register[key]) {
+            bind.push(register[key])
+            filters.push(`${key} = $${i}`)
+            i++
+        }
+    }
+    const queryFilters = filters.join(' OR ')
+
+    return db.query(`
+        SELECT "id"
+        FROM "users" 
+        WHERE ${queryFilters}`, {
+            bind,
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
 authRepository.findUserPoisition = async (userId, positionId) => {
     const positionFilter = positionId => {
         if (!positionId) return 'AND "isMain" = TRUE'
@@ -51,6 +75,85 @@ authRepository.findPoisitionHierarchy = async (positionId) => {
             type: QueryTypes.SELECT,
         }
     )
+}
+
+authRepository.findUserWithPosition = async (userId) => {
+    const user = await db.query(`
+        SELECT 
+            "users"."id", 
+            "users"."name", 
+            "phone",
+            "isActive", 
+            JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'isMain', "usersPositions"."isMain",
+                    'type', "positions"."type", 
+                    'positionId', "positions"."id", 
+                    'positionName', "positions"."name",
+                    'organizationId', "organizations"."id",
+                    'organizationName', "organizations"."name"
+                )
+            ) as positions
+        FROM users
+        LEFT JOIN "usersPositions" on "users"."id" = "usersPositions"."userId"
+        LEFT JOIN "positions" on "positions"."id" = "usersPositions"."positionId"
+        LEFT JOIN "organizations" on "organizations"."id" = "positions"."organizationId"
+        WHERE "userId" = $1
+        GROUP BY "users"."id"`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+
+    return user[0]
+}
+
+authRepository.findPositions = async (positionsIds) => {
+    return db.query(
+        'SELECT id FROM positions WHERE id = ANY($1::int[])', {
+            bind: [positionsIds],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+authRepository.createUser = async (data) => {
+    await db.transaction(async (t) => {
+        const user = await insertUser(t, data)
+        data.userId = user[0].id
+        await insertUserPositions(t, data)
+    })
+}
+
+const insertUser = async (trx, data) => {
+    const { name, phone, password, username, email, sex, isMuballigh, birthdate } = data
+    const now = Date.now()
+    const results = await db.query(`
+        INSERT INTO "users" ("name", "phone", "password", "username", "email", "sex", "isMuballigh", "birthdate", "createdAt", "updatedAt", "isActive")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10)
+        RETURNING id`, {
+            bind: [name, phone, password, username, email, sex, isMuballigh, birthdate, now, true],
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
+    return results[0]
+}
+
+const insertUserPositions = async (trx, data) => {
+    const { userId } = data
+    const now = Date.now()
+    data.positionIds.forEach(async (positionId, index) => {
+        const isMain = index === 0 ? true : false
+        return db.query(`
+            INSERT INTO "usersPositions" ("userId", "positionId", "isMain", "createdAt")
+            VALUES ($1, $2, $3, $4)`, {
+                bind: [userId, positionId, isMain, now],
+                type: QueryTypes.INSERT,
+                transaction: trx,
+            }
+        )
+    })
 }
 
 module.exports = authRepository

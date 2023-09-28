@@ -18,6 +18,8 @@ const eventConstant = {
 					registeredCredentials: 'No. HP, email atau username sudah terdaftar',
 					invalidData: 'data tidak valid',
 					invalidDate: 'tanggal tidak valid',
+					incorrectPasswordCombination: 'konfirmasi password tidak sama.',
+					undefinedPosition: 'Posisi tidak ditemukan.',
 				},
 			},
 		},
@@ -37,6 +39,13 @@ const eventConstant = {
 				failed: {
 					notFoundEmailOrPassowrd: 'email atau No. HP tidak terdaftar'
 				}
+			},
+		},
+		me: {
+			event: 'me',
+			message: {
+				success: 'detail berhasil dimuat.',
+				failed: 'detail gagal dimuat.',
 			},
 		},
 	},
@@ -68,13 +77,6 @@ const eventConstant = {
 		},
 		detail: {
 			event: 'user-detail',
-			message: {
-				success: 'detail berhasil dimuat.',
-				failed: 'detail gagal dimuat.',
-			},
-		},
-		me: {
-			event: 'me',
 			message: {
 				success: 'detail berhasil dimuat.',
 				failed: 'detail gagal dimuat.',

@@ -41,4 +41,42 @@ authService.getUser = async ({ login, password, positionId }) => {
     }
 }
 
+authService.getUserProfile = async ({ userId, positionId }) => {
+    const user = await authRepository.findUserWithPosition(userId)
+    const currentPositionId = Number(positionId)
+    const currentPosition = user.positions.filter(position => position.positionId === currentPositionId)
+    user.currentPosition = currentPosition
+    return user
+}
+
+authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds }) => {
+    const event = eventConstant.auth.register
+
+    // password confirmation
+    if (password !== password2) throwError(event.message.failed.incorrectPasswordCombination, 400)
+    // check exist users
+    const register = { username, email, phone }
+    const existUsers = await authRepository.findRegisteredUser(register)
+    if (existUsers.length) throwError(event.message.failed.registeredCredentials, 400)
+    // check positions availability
+    const foundPositions = await authRepository.findPositions(positionIds)
+    if (!positionIds.length || foundPositions.length < positionIds.length) {
+        throwError(event.message.failed.undefinedPosition, 400)
+    }
+
+    // create user
+    const data = {
+        name,
+        phone,
+        username,
+        email,
+        sex,
+        isMuballigh,
+        birthdate,
+        password: await authUtils.generatePassword(password),
+        positionIds
+    }
+    await authRepository.createUser(data)
+}
+
 module.exports = authService

@@ -5,7 +5,7 @@ const eventConstant = {
 			message: {
 				success: 'login berhasil',
 				failed: {
-					incorrectPhoneOrPassword: 'No. HP atau password salah.',
+					incorrectPhoneOrPassword: 'No. HP, email, username atau password salah.',
 				},
 			},
 		},
@@ -37,7 +37,7 @@ const eventConstant = {
 			message: {
 				success: 'berhasil',
 				failed: {
-					notFoundEmailOrPassowrd: 'email atau No. HP tidak terdaftar'
+					notFound: 'No. HP, email atau username tidak terdaftar'
 				}
 			},
 		},

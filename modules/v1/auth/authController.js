@@ -40,4 +40,14 @@ authController.me = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    forgot password
+// @route   POST /auths/forgot-password
+// @access  Public
+authController.forgotPassword = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.forgotPassword.event
+    await authService.forgotPassword(req.body)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = authController

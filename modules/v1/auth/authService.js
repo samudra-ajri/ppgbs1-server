@@ -1,3 +1,4 @@
+const randomstring = require('randomstring')
 const authUtils = require('../../../utils/authUtils')
 const authRepository = require('./authRepository')
 const eventConstant = require('../../../constants/eventConstant')
@@ -78,6 +79,21 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         positions: foundPositions,
     }
     await authRepository.createUser(data)
+}
+
+authService.forgotPassword = async ({ login }) => {
+    const event = eventConstant.auth.forgotPassword
+    const foundUsers = await authRepository.findUser(login)
+    const user = foundUsers[0]
+
+    if (!user) throwError(event.message.failed.notFound, 404)
+    
+    const random = randomstring.generate({ length: 10, charset: 'alphabetic' })
+    const data = {
+        userId: user.id,
+        resetPasswordToken: `${user.id}${random}`
+    }
+    await authRepository.updateResetPasswordToken(data)
 }
 
 module.exports = authService

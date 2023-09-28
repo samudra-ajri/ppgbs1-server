@@ -7,5 +7,6 @@ const router = express.Router()
 router.route('/register').post(authController.register)
 router.route('/login').post(authController.login)
 router.route('/me').get(protect, authController.me)
+router.route('/forgot-password').put(authController.forgotPassword)
 
 module.exports = router

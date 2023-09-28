@@ -127,6 +127,19 @@ authRepository.createUser = async (data) => {
     })
 }
 
+authRepository.updateResetPasswordToken = async (data) => {
+    const { userId, resetPasswordToken } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE users
+        SET "resetPasswordToken" = $2, "updatedAt" = $3
+        WHERE "id" = $1`, {
+            bind: [userId, resetPasswordToken, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 const insertUser = async (trx, data) => {
     const { name, phone, password, username, email, sex, isMuballigh, birthdate } = data
     const now = Date.now()

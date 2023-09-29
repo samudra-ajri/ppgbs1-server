@@ -23,8 +23,8 @@ const eventConstant = {
 				},
 			},
 		},
-		resetPassword: {
-			event: 'reset-password',
+		tempPassword: {
+			event: 'temp-password',
 			message: {
 				success: 'berhasil',
 				failed: {
@@ -41,12 +41,13 @@ const eventConstant = {
 				}
 			},
 		},
-		updatePassword: {
-			event: 'update-password',
+		resetPassword: {
+			event: 'reset-password',
 			message: {
 				success: 'berhasil',
 				failed: {
-					mismatch: 'konfirmasi password tidak sama.'
+					mismatch: 'konfirmasi password tidak sama.',
+					invalid: 'token atau password semetara (tempPassword) salah.'
 				}
 			},
 		},

@@ -50,33 +50,34 @@ authController.forgotPassword = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
-// @desc    reset user password
-// @route   PUT /auths/reset-password/:token
+// @desc    temporary user password
+// @route   PUT /auths/temp-password/:token
 // @access  Protect, Admin
-authController.resetPassword = asyncHandler(async (req, res) => {
-    req.event = eventConstant.auth.resetPassword.event
+authController.tempPassword = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.tempPassword.event
     const data = {
         token: req.params.token,
         tempPassword: req.body.tempPassword,
         updatedBy: req.auth.data.id
     }
-    await authService.resetPasswordUser(data)
+    await authService.tempPasswordUser(data)
     res.json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
-// @desc    update user password
-// @route   POST /auths/update-password
+// @desc    reset user password
+// @route   PUT /auths/reset-password/:token
 // @access  Protect
-authController.updatePassword = asyncHandler(async (req, res) => {
-    req.event = eventConstant.auth.updatePassword.event
-    const { newPassword, confirmNewPassword } = req.body
+authController.resetPassword = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.resetPassword.event
+    const { tempPassword, newPassword, confirmNewPassword } = req.body
     const data = {
-        userId: req.auth.data.id,
+        token: req.params.token,
+        tempPassword,
         newPassword,
         confirmNewPassword,
     }
-    await authService.updatePassword(data)
+    await authService.resetPassword(data)
     res.json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

@@ -98,22 +98,30 @@ authService.forgotPassword = async ({ login }) => {
     await authRepository.updateResetPasswordToken(data)
 }
 
-authService.resetPasswordUser = async ({ token, tempPassword, updatedBy }) => {
+authService.tempPasswordUser = async ({ token, tempPassword, updatedBy }) => {
     const data = {
         token,
         password: await authUtils.generatePassword(tempPassword),
         updatedBy,
     }
-    await authRepository.resetUserPassword(data)
+    await authRepository.tempUserPassword(data)
 }
 
-authService.updatePassword = async ({ userId, newPassword, confirmNewPassword }) => {
+authService.resetPassword = async ({ token, tempPassword, newPassword, confirmNewPassword }) => {
+    const event = eventConstant.auth.resetPassword
+    const foundUsers = await authRepository.findUserByResetToken(token)
+    const user = foundUsers[0]
+
+    if (!user || !await authUtils.verifyPassword(tempPassword, user.password)) {
+        throwError(event.message.failed.invalid, 401)
+    }
+
     if (newPassword !== confirmNewPassword) {
-        throwError(eventConstant.auth.updatePassword.message.failed.mismatch, 400)
+        throwError(event.message.failed.mismatch, 400)
     }
 
     const data = {
-        userId,
+        userId: user.id,
         password: await authUtils.generatePassword(newPassword),
     }
 

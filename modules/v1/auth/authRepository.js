@@ -16,6 +16,14 @@ authRepository.findUser = async (login) => {
     )
 }
 
+authRepository.findUserByResetToken = async (token) => {
+    return db.query(` SELECT "id", "password" FROM "users" WHERE "resetPasswordToken" = $1`, {
+            bind: [token],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
 authRepository.updateLastLogin = async (userId) => {
     const now = Date.now()
     await db.query(`
@@ -152,12 +160,12 @@ authRepository.updateResetPasswordToken = async (data) => {
     )
 }
 
-authRepository.resetUserPassword = async (data) => {
+authRepository.tempUserPassword = async (data) => {
     const { token, password, updatedBy } = data
     const now = Date.now()
     await db.query(`
         UPDATE users
-        SET "password" = $2, "updatedBy" = $3, "updatedAt" = $4, "resetPasswordToken" = null, "needUpdatePassword" = true
+        SET "password" = $2, "updatedBy" = $3, "updatedAt" = $4, "needUpdatePassword" = true
         WHERE "resetPasswordToken" = $1`, {
             bind: [token, password, updatedBy, now],
             type: QueryTypes.UPDATE
@@ -170,7 +178,7 @@ authRepository.updateUserPassword = async (data) => {
     const now = Date.now()
     await db.query(`
         UPDATE "users"
-        SET "password" = $2, "updatedBy" = $3, "updatedAt" = $4, "needUpdatePassword" = false
+        SET "password" = $2, "updatedBy" = $3, "updatedAt" = $4, "resetPasswordToken" = null, "needUpdatePassword" = false
         WHERE id = $1`, {
             bind: [userId, password, userId, now],
             type: QueryTypes.UPDATE

@@ -5,4 +5,6 @@ const userController = require(`../modules/${config.APP_VERSION}/user/userContro
 
 const router = express.Router()
 
+router.route('/').get(protect, userController.list)
+
 module.exports = router

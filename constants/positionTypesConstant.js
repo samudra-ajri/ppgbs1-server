@@ -1,4 +1,3 @@
-
 const positionTypesConstant = {
     GENERUS: 'GENERUS',
     ORANGTUA: 'ORANGTUA',

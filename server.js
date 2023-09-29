@@ -7,6 +7,7 @@ const errorMiddleware = require('./middlewares/errorMiddleware')
 const redis = require('./pkg/redis')
 const homeRoutes = require('./routes/homeRoutes')
 const authRoutes = require('./routes/authRoutes')
+const userRoutes = require('./routes/userRoutes')
 
 // Connecting db
 db.authenticate()
@@ -30,6 +31,7 @@ if (config.NODE_ENV !== 'production') app.use(morgan('dev'))
 // Routes
 const version = `api/${config.APP_VERSION}`
 app.use(`/${version}/auths`, authRoutes)
+app.use(`/${version}/users`, userRoutes)
 app.use('/api', homeRoutes)
 
 // Error handler

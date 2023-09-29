@@ -8,6 +8,7 @@ router.route('/register').post(authController.register)
 router.route('/login').post(authController.login)
 router.route('/me').get(protect, authController.me)
 router.route('/forgot-password').put(authController.forgotPassword)
-router.route('/reset-password').put(protect, admin, authController.resetPassword)
+router.route('/reset-password/:token').put(protect, admin, authController.resetPassword)
+router.route('/update-password').put(protect, authController.updatePassword)
 
 module.exports = router

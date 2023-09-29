@@ -37,7 +37,16 @@ const eventConstant = {
 			message: {
 				success: 'berhasil',
 				failed: {
-					notFound: 'No. HP, email atau username tidak terdaftar'
+					notFound: 'No. HP, email atau username tidak terdaftar.'
+				}
+			},
+		},
+		updatePassword: {
+			event: 'update-password',
+			message: {
+				success: 'berhasil',
+				failed: {
+					mismatch: 'konfirmasi password tidak sama.'
 				}
 			},
 		},

@@ -41,11 +41,26 @@ authController.me = asyncHandler(async (req, res) => {
 })
 
 // @desc    forgot password
-// @route   POST /auths/forgot-password
+// @route   PUT /auths/forgot-password
 // @access  Public
 authController.forgotPassword = asyncHandler(async (req, res) => {
     req.event = eventConstant.auth.forgotPassword.event
     await authService.forgotPassword(req.body)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    reset user password
+// @route   PUT /auths/reset-password
+// @access  Protect, Admin
+authController.resetPassword = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.resetPassword.event
+    const data = {
+        userId: req.body.userId,
+        newPassword: req.body.newPassword,
+        updatedBy: req.auth.data.id
+    }
+    await authService.resetPasswordUser(data)
     res.json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

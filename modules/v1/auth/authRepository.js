@@ -16,6 +16,18 @@ authRepository.findUser = async (login) => {
     )
 }
 
+authRepository.updateLastLogin = async (userId) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE users
+        SET "lastLogin" = $2
+        WHERE "id" = $1`, {
+            bind: [userId, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 authRepository.findRegisteredUser = async (register) => {
     // generate query filters based on register data
     const filters = []
@@ -135,6 +147,19 @@ authRepository.updateResetPasswordToken = async (data) => {
         SET "resetPasswordToken" = $2, "updatedAt" = $3
         WHERE "id" = $1`, {
             bind: [userId, resetPasswordToken, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
+authRepository.resetUserPassword = async (data) => {
+    const { userId, password, updatedBy } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE users
+        SET "password" = $2, "updatedBy" = $3, "updatedAt" = $4, "resetPasswordToken" = null, "needUpdatePassword" = true
+        WHERE id = $1`, {
+            bind: [userId, password, updatedBy, now],
             type: QueryTypes.UPDATE
         }
     )

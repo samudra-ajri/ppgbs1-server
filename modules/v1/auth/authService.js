@@ -31,6 +31,8 @@ authService.getUser = async ({ login, password, positionId }) => {
     const positionHierarchy = await authRepository.findPoisitionHierarchy(userPosition.orgId)
     userPosition.hierarchy = positionHierarchy
 
+    await authRepository.updateLastLogin(user.id)
+
     return {
         login,
         token: authUtils.getToken({
@@ -94,6 +96,15 @@ authService.forgotPassword = async ({ login }) => {
         resetPasswordToken: `${user.id}${random}`
     }
     await authRepository.updateResetPasswordToken(data)
+}
+
+authService.resetPasswordUser = async ({ userId, newPassword, updatedBy }) => {
+    const data = {
+        userId,
+        password: await authUtils.generatePassword(newPassword),
+        updatedBy,
+    }
+    await authRepository.resetUserPassword(data)
 }
 
 module.exports = authService

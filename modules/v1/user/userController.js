@@ -53,7 +53,7 @@ userController.forgotPasswordList = asyncHandler(async (req, res) => {
 })
 
 // @desc    user profile
-// @route   POST /users/:id
+// @route   GET /users/:id
 // @access  Protect
 userController.detail = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.detail.event

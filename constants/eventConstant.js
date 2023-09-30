@@ -85,6 +85,13 @@ const eventConstant = {
 				failed: 'list gagal dimuat.',
 			},
 		},
+		forgotPasswordlist: {
+			event: 'forogt-password-list',
+			message: {
+				success: 'list berhasil dimuat.',
+				failed: 'list gagal dimuat.',
+			},
+		},
 		detail: {
 			event: 'user-detail',
 			message: {

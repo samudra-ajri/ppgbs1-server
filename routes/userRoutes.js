@@ -6,5 +6,6 @@ const userController = require(`../modules/${config.APP_VERSION}/user/userContro
 const router = express.Router()
 
 router.route('/').get(protect, userController.list)
+router.route('/forgot-password').get(protect, admin, userController.forgotPasswordList)
 
 module.exports = router

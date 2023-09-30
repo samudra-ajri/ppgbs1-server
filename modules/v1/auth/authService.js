@@ -45,6 +45,28 @@ authService.getUser = async ({ login, password, positionId }) => {
     }
 }
 
+authService.switchUserPosition = async ({ login, positionId }) => {
+    const event = eventConstant.auth.switchPosition
+    const foundUsers = await authRepository.findUser(login)
+    const user = foundUsers[0]
+
+    const userPosition = await authRepository.findUserPoisition(user.id, positionId)
+    if (!userPosition) throwError(event.message.failed.undefinedPosition, 401)
+
+    const positionHierarchy = await authRepository.findPoisitionHierarchy(userPosition.orgId)
+    userPosition.hierarchy = positionHierarchy
+
+    return {
+        login,
+        token: authUtils.getToken({
+            id: Number(user.id),
+            login,
+            name: user.name,
+            position: userPosition,
+        }),
+    }
+}
+
 authService.getUserProfile = async ({ userId, positionId }) => {
     const user = await authRepository.findUserWithPosition(userId)
     const currentPositionId = Number(positionId)

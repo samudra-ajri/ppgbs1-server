@@ -40,6 +40,20 @@ authController.me = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    switch position
+// @route   POST /auths/switch-position
+// @access  Protect
+authController.switchPosition = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.switchPosition.event
+    const payload = {
+        login: req.auth.data.login,
+        positionId: req.body.positionId
+    }
+    const data = await authService.switchUserPosition(payload)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    forgot password
 // @route   PUT /auths/forgot-password
 // @access  Public

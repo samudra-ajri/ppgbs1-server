@@ -8,6 +8,7 @@ router.route('/register').post(authController.register)
 router.route('/login').post(authController.login)
 router.route('/me').get(protect, authController.me)
 router.route('/forgot-password').put(authController.forgotPassword)
+router.route('/switch-position').post(protect, authController.switchPosition)
 router.route('/temp-password/:token').put(protect, admin, authController.tempPassword)
 router.route('/reset-password/:token').put(authController.resetPassword)
 

@@ -59,6 +59,15 @@ const eventConstant = {
 				failed: 'detail gagal dimuat.',
 			},
 		},
+		switchPosition: {
+			event: 'switch-position',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undefinedPosition: 'Posisi tidak ditemukan.',
+				}
+			},
+		},
 	},
 	user: {
 		updateProfile: {

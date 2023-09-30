@@ -1,11 +1,21 @@
+const { QueryTypes } = require('sequelize')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const db = require('../../../database/config/postgresql')
 
 const userRepository = {}
 
+userRepository.findById = async (id) => {
+    const query = selectQuery() + baseJoinQuery() + filterById() + groupByQuery()
+    const [data] = await db.query(query, {
+        bind: [id],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 userRepository.findAll = async (filters, search, page, pageSize) => {
-    const query = selectQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + paginateQuery(page, pageSize)
-    const queryTotal = totalQuery() + filtersQuery(filters) + searchQuery(search)
+    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + paginateQuery(page, pageSize)
+    const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
     return { data, total }
@@ -43,18 +53,17 @@ const selectQuery = () => {
                     'organizationName', organizations.name
                 )
             ) as positions
-        FROM users
-        LEFT JOIN teachers on users.id = teachers."userId"
-        LEFT JOIN students on users.id = students."userId"
-        LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
-        LEFT JOIN positions on positions.id = "usersPositions"."positionId"
-        LEFT JOIN organizations on organizations.id = "positions"."organizationId"
     `
 }
 
 const totalQuery = () => {
     return `
         SELECT count(DISTINCT users.id)
+    `
+}
+
+const baseJoinQuery = () => {
+    return`
         FROM users
         LEFT JOIN teachers on users.id = teachers."userId"
         LEFT JOIN students on users.id = students."userId"
@@ -174,6 +183,12 @@ const filterByGrade = (filters) => {
         AND students.grade = ${Number(grade)}
     `
     return ''
+}
+
+const filterById = () => {
+    return `
+        WHERE users.id = $1
+    `
 }
 
 module.exports = userRepository

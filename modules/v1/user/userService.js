@@ -9,4 +9,9 @@ userService.getUsers = async (filters, search, page, pageSize) => {
     return { data, total }
 }
 
+userService.getUser = async (id) => {
+    const user = await userRepository.findById(id)
+    return user
+}
+
 module.exports = userService

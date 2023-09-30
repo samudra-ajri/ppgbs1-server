@@ -52,4 +52,14 @@ userController.forgotPasswordList = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    user profile
+// @route   POST /users/:id
+// @access  Protect
+userController.detail = asyncHandler(async (req, res) => {
+    req.event = eventConstant.user.detail.event
+    const data = await userService.getUser(req.params.id)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = userController

@@ -71,6 +71,16 @@ const eventConstant = {
 				}
 			},
 		},
+		updateProfileStudent: {
+			event: 'update-profile-student',
+			message: {
+				success: 'berhasil',
+				failed: {
+					invalidGrade: 'kelas (grade) tidak valid.',
+					notFound: 'profil generus (student) tidak ditemukan.',
+				}
+			},
+		},
 		deleteUser: {
 			event: 'delete-user',
 			message: {

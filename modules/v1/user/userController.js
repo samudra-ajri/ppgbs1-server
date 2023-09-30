@@ -80,10 +80,14 @@ userController.updateMyProfile = asyncHandler(async (req, res) => {
 // @route   PUT /users/me/student
 // @access  Protect
 userController.updateMyStudentProfile = asyncHandler(async (req, res) => {
-    // req.event = eventConstant.user.detail.event
-    // const data = await userService.getUser(req.params.id)
-    // res.json({ data })
-    // logger({ req, status: loggerStatusConstant.SUCCESS })
+    req.event = eventConstant.user.updateProfileStudent.event
+    const data = {
+        userData: await userService.getUser(req.auth.data.id),
+        payload: req.body
+    }
+    await userService.updateMyStudentProfile(data)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    update my teacher data

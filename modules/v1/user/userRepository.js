@@ -26,6 +26,30 @@ userRepository.updateUser = async (data) => {
     )
 }
 
+userRepository.findUserStudent = async (userId) => {
+    return db.query(`
+        SELECT "userId"
+        FROM "students" 
+        WHERE "userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+userRepository.updateUserStudent = async (data) => {
+    const { userId, grade } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE students
+        SET "grade" = $2, "updatedAt" = $3, "updatedBy" = $1
+        WHERE "userId" = $1`, {
+            bind: [userId, grade, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 userRepository.findUserPassword = async (id) => {
     const [data] = await db.query('SELECT password FROM users WHERE id = $1', {
         bind: [id],

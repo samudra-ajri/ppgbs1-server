@@ -3,6 +3,8 @@ const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
 const authUtils = require('../../../utils/authUtils')
 const { isValidDate } = require('../../../utils/stringUtils')
+const gradeConstant = require('../../../constants/gradeConstant')
+const ageUtils = require('../../../utils/ageUtils')
 
 const userService = {}
 
@@ -34,17 +36,34 @@ userService.updateMyProfile = async (data) => {
         updatedPassword = password
     }
 
-    console.log(payload);
     const updatedDdata = {
         id: userData.id,
         name: payload.name || userData.name,
-        sex: String(payload.sex) || userData.sex,
-        isMuballigh: String(payload.isMuballigh) || userData.isMuballigh,
+        sex: payload.sex?.toString() || userData.sex,
+        isMuballigh: payload.isMuballigh?.toString() || userData.isMuballigh,
         birthdate: payload.birthdate || userData.birthdate,
         password: updatedPassword,
     }
 
     await userRepository.updateUser(updatedDdata)
+}
+
+userService.updateMyStudentProfile = async (data) => {
+    const event = eventConstant.user.updateProfileStudent
+    const { userData, payload } = data
+
+    // validate grade
+    if (payload.grade > gradeConstant.PN4) throwError(event.message.failed.invalidGrade, 400)
+    // find student profile
+    const existStudent = await userRepository.findUserStudent(userData.id)
+    if (!existStudent.length) throwError(event.message.failed.notFound, 400)
+
+    const updatedDdata = {
+        userId: userData.id,
+        grade: payload.grade?.toString() || userData.grade?.toString() || ageUtils.getGrade(userData.birthdate),
+    }
+    
+    await userRepository.updateUserStudent(updatedDdata)
 }
 
 module.exports = userService

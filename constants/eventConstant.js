@@ -137,6 +137,17 @@ const eventConstant = {
 			},
 		},
 	},
+	userPosition: {
+		deleteUserPosition: {
+			event: 'delete-user-position',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user dengan posisi tersebut tidak ditemukan'
+				}
+			},
+		},
+	},
 	attendance: {
 		create: {
 			event: 'create-attendance',

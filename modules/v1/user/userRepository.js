@@ -188,7 +188,7 @@ const filtersQuery = (filters) => {
 const filterByDefault = (filters) => {
     const { userId } = filters
     return `
-        WHERE "users"."deletedAt" IS NULL
+        WHERE "usersPositions"."deletedAt" IS NULL
         AND users.id <> ${userId}
     `
 }

@@ -103,6 +103,7 @@ const filtersQuery = (filters) => {
     filter += filterByAncestorId(filters)
     filter += filterBySex(filters)
     filter += filterByPositionType(filters)
+    filter += filterByGrade(filters)
     return filter
 }
 
@@ -163,6 +164,14 @@ const filterByPositionType = (filters) => {
     let { positionType } = filters
     if (positionType) return `
         AND positions.type = '${positionTypesConstant[positionType]}'
+    `
+    return ''
+}
+
+const filterByGrade = (filters) => {
+    let { grade } = filters
+    if (grade) return `
+        AND students.grade = ${Number(grade)}
     `
     return ''
 }

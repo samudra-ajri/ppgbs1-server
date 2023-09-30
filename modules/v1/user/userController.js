@@ -12,7 +12,7 @@ const userController = {}
 // @access  Private, Admin
 userController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.list.event
-    const { isActive, organizationId, forgotPassword, ancestorId, sex, positionType } = req.query
+    const { isActive, organizationId, forgotPassword, ancestorId, sex, positionType, grade } = req.query
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
@@ -23,12 +23,13 @@ userController.list = asyncHandler(async (req, res) => {
         forgotPassword,
         ancestorId,
         sex,
-        positionType
+        positionType,
+        grade,
     }
 
     const { data, total } = await userService.getUsers(filters, search, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
-    res.json({ data, ...metadata })
+    res.json({ ...metadata, data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 

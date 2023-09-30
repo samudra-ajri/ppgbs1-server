@@ -13,6 +13,27 @@ userRepository.findById = async (id) => {
     return data
 }
 
+userRepository.updateUser = async (data) => {
+    const { id, name, sex, isMuballigh, birthdate, password } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE users
+        SET "name" = $2, "sex" = $3, "isMuballigh" = $4, "birthdate" = $5, "password" = $6, "updatedAt" = $7, "updatedBy" = $1
+        WHERE "id" = $1`, {
+            bind: [id, name, sex, isMuballigh, birthdate, password, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
+userRepository.findUserPassword = async (id) => {
+    const [data] = await db.query('SELECT password FROM users WHERE id = $1', {
+        bind: [id],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 userRepository.findAll = async (filters, search, page, pageSize) => {
     const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search)

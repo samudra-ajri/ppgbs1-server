@@ -20,6 +20,7 @@ const eventConstant = {
 					invalidDate: 'tanggal tidak valid',
 					incorrectPasswordCombination: 'konfirmasi password tidak sama.',
 					undefinedPosition: 'Posisi tidak ditemukan.',
+					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid.',
 				},
 			},
 		},
@@ -65,7 +66,8 @@ const eventConstant = {
 			message: {
 				success: 'berhasil',
 				failed: {
-					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid'
+					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid.',
+					incorrectPasswordCombination: 'konfirmasi password tidak sama.',
 				}
 			},
 		},

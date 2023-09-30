@@ -3,6 +3,7 @@ const authUtils = require('../../../utils/authUtils')
 const authRepository = require('./authRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
+const { isValidDate } = require('../../../utils/stringUtils')
 
 const authService = {}
 
@@ -55,6 +56,8 @@ authService.getUserProfile = async ({ userId, positionId }) => {
 authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds }) => {
     const event = eventConstant.auth.register
 
+    // validate birthdate format
+    if (birthdate && !isValidDate(birthdate)) throwError(event.message.failed.invalidBirthdate, 400)
     // password confirmation
     if (password !== password2) throwError(event.message.failed.incorrectPasswordCombination, 400)
     // check exist users

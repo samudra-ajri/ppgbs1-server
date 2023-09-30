@@ -62,4 +62,38 @@ userController.detail = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    update my profile
+// @route   PUT /users/me
+// @access  Protect
+userController.updateMyProfile = asyncHandler(async (req, res) => {
+    req.event = eventConstant.user.updateProfile.event
+    const data = {
+        userData: await userService.getUser(req.auth.data.id),
+        payload: req.body
+    }
+    await userService.updateMyProfile(data)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    update my student data
+// @route   PUT /users/me/student
+// @access  Protect
+userController.updateMyStudentProfile = asyncHandler(async (req, res) => {
+    // req.event = eventConstant.user.detail.event
+    // const data = await userService.getUser(req.params.id)
+    // res.json({ data })
+    // logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    update my teacher data
+// @route   PUT /users/me/teacher
+// @access  Protect
+userController.updateMyTeacherProfile = asyncHandler(async (req, res) => {
+    // req.event = eventConstant.user.detail.event
+    // const data = await userService.getUser(req.params.id)
+    // res.json({ data })
+    // logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = userController

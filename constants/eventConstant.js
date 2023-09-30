@@ -81,6 +81,15 @@ const eventConstant = {
 				}
 			},
 		},
+		updateProfileTeacher: {
+			event: 'update-profile-teacher',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'profil pengajar (teacher) tidak ditemukan.',
+				}
+			},
+		},
 		deleteUser: {
 			event: 'delete-user',
 			message: {

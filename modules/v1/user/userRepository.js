@@ -50,6 +50,30 @@ userRepository.updateUserStudent = async (data) => {
     )
 }
 
+userRepository.findUserTeacher = async (userId) => {
+    return db.query(`
+        SELECT "userId"
+        FROM "teachers" 
+        WHERE "userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+userRepository.updateUserTeacher = async (data) => {
+    const { userId, isMarried, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE teachers
+        SET "isMarried" = $2, "pondok" = $3, "kertosonoYear" = $4, "firstDutyYear" = $5, "timesDuties" = $6, "greatHadiths" = $7, "education" = $8, "updatedAt" = $9, "updatedBy" = $1
+        WHERE "userId" = $1`, {
+            bind: [userId, isMarried, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 userRepository.findUserPassword = async (id) => {
     const [data] = await db.query('SELECT password FROM users WHERE id = $1', {
         bind: [id],

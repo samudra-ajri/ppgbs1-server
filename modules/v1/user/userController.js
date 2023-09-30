@@ -94,10 +94,14 @@ userController.updateMyStudentProfile = asyncHandler(async (req, res) => {
 // @route   PUT /users/me/teacher
 // @access  Protect
 userController.updateMyTeacherProfile = asyncHandler(async (req, res) => {
-    // req.event = eventConstant.user.detail.event
-    // const data = await userService.getUser(req.params.id)
-    // res.json({ data })
-    // logger({ req, status: loggerStatusConstant.SUCCESS })
+    req.event = eventConstant.user.updateProfileTeacher.event
+    const data = {
+        userData: await userService.getUser(req.auth.data.id),
+        payload: req.body
+    }
+    await userService.updateMyTeacherProfile(data)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 module.exports = userController

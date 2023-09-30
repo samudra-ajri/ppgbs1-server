@@ -62,8 +62,30 @@ userService.updateMyStudentProfile = async (data) => {
         userId: userData.id,
         grade: payload.grade?.toString() || userData.grade?.toString() || ageUtils.getGrade(userData.birthdate),
     }
-    
+
     await userRepository.updateUserStudent(updatedDdata)
+}
+
+userService.updateMyTeacherProfile = async (data) => {
+    const event = eventConstant.user.updateProfileTeacher
+    const { userData, payload } = data
+
+    // find student profile
+    const existTeacher = await userRepository.findUserTeacher(userData.id)
+    if (!existTeacher.length) throwError(event.message.failed.notFound, 400)
+
+    const updatedDdata = {
+        userId: userData.id,
+        isMarried: payload.isMarried?.toString() || userData.isMarried,
+        pondok: payload.pondok || userData.pondok,
+        kertosonoYear: payload.kertosonoYear || userData.kertosonoYear,
+        firstDutyYear: payload.firstDutyYear || userData.firstDutyYear,
+        timesDuties: payload.timesDuties?.toString() || userData.timesDuties || '0',
+        greatHadiths: payload.greatHadiths?.join(', ')  || userData.greatHadiths,
+        education: payload.education || userData.education,
+    }
+    
+    await userRepository.updateUserTeacher(updatedDdata)
 }
 
 module.exports = userService

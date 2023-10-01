@@ -113,4 +113,51 @@ userPositionRepository.changeUserPosition = async (userId, positionId, newPositi
     )
 }
 
+userPositionRepository.createUserPosition = async (userId, positionId, type) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "usersPositions"
+        SET "positionId" = $3, "createdAt" = $4
+        WHERE "userId" = $1 AND "positionId" = $2`, {
+            bind: [userId, positionId, newPositionId, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
+userPositionRepository.createUserPosition = async (data) => {
+    await db.transaction(async (t) => {
+        await insertUserPosition(t, data)
+        await insertUserRole(t, data)
+    })
+}
+
+const insertUserPosition = async (trx, data) => {
+    const { userId, newPositionId } = data
+    const now = Date.now()
+    await db.query(`
+        INSERT INTO "usersPositions" ("userId", "positionId", "isMain", "createdAt")
+        VALUES ($1, $2, $3, $4)`, {
+            bind: [userId, newPositionId, false, now],
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
+}
+
+const insertUserRole = async (trx, data) => {
+    const { userId, type } = data
+    const now = Date.now()
+    const positionType = positionTypesTableMap[type]
+    await db.query(`
+        INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt")
+        VALUES ($1, $2, $2)
+        ON CONFLICT ("userId") DO NOTHING`, {
+            bind: [userId, now],
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
+}
+
 module.exports = userPositionRepository

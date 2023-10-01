@@ -14,7 +14,9 @@ router.route('/me/teacher').put(protect, userController.updateMyTeacherProfile)
 router.route('/forgot-password').get(protect, admin, userController.forgotPasswordList)
 // user position
 router.route('/:userId/positions/:positionId').delete(protect, admin, userPositionController.delete)
-router.route('/positions/change').put(protect, userPositionController.change)
+router.route('/positions')
+    .post(protect, userPositionController.create)
+    .put(protect, userPositionController.change)
 
 
 module.exports = router

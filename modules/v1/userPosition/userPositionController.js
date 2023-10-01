@@ -3,7 +3,6 @@ const userPositionService = require('./userPositionService')
 const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
-const { paginate } = require('../../../utils/paginationUtils')
 
 const userPositionController = {}
 
@@ -20,13 +19,25 @@ userPositionController.delete = asyncHandler(async (req, res) => {
 })
 
 // @desc    change user position
-// @route   PUT /users/:userId/positions/:positionId/change
+// @route   PUT /users/positions
 // @access  Private
 userPositionController.change = asyncHandler(async (req, res) => {
     req.event = eventConstant.userPosition.changeUserPosition.event
     const userId = req.auth.data.id
     const { positionId, newPositionId } = req.body
     await userPositionService.change(userId, positionId, newPositionId)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    create user position
+// @route   POST /users/positions
+// @access  Private
+userPositionController.create = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.createUserPosition.event
+    const userId = req.auth.data.id
+    const { newPositionId } = req.body
+    await userPositionService.create(userId, newPositionId)
     res.json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

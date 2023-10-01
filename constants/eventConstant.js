@@ -143,7 +143,7 @@ const eventConstant = {
 			message: {
 				success: 'berhasil',
 				failed: {
-					notFound: 'user dengan posisi tersebut tidak ditemukan'
+					notFound: 'user dengan posisi tersebut tidak ditemukan.'
 				}
 			},
 		},
@@ -152,9 +152,19 @@ const eventConstant = {
 			message: {
 				success: 'berhasil',
 				failed: {
-					notFound: 'user dengan posisi tersebut tidak ditemukan',
-					notFoundPosition: 'posisi tidak ditemukan',
+					notFound: 'user dengan posisi tersebut tidak ditemukan.',
+					notFoundPosition: 'posisi tidak ditemukan.',
 					mismatch: 'tipe posisi baru tidak tidak sama dengan tipe yg akan diganti.',
+				}
+			},
+		},
+		createUserPosition: {
+			event: 'create-user-position',
+			message: {
+				success: 'berhasil',
+				failed: {
+					alreadyExists: 'user dengan posisi tersebut sudah ada.',
+					notFoundPosition: 'posisi tidak ditemukan.',
 				}
 			},
 		},

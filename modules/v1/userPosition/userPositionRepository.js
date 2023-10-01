@@ -1,5 +1,4 @@
 const { QueryTypes } = require('sequelize')
-const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const db = require('../../../database/config/postgresql')
 const positionTypesTableMap = require('../../../constants/positionTypesTableMap')
 
@@ -89,6 +88,29 @@ userPositionRepository.findUserPosition = async (userId, positionId) => {
         type: QueryTypes.SELECT,
     })
     return data
+}
+
+userPositionRepository.findPosition = async (positionId) => {
+    const [data] = await db.query(`
+        SELECT id, type
+        FROM positions
+        WHERE id = $1`, {
+        bind: [positionId],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
+userPositionRepository.changeUserPosition = async (userId, positionId, newPositionId) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "usersPositions"
+        SET "positionId" = $3, "createdAt" = $4
+        WHERE "userId" = $1 AND "positionId" = $2`, {
+            bind: [userId, positionId, newPositionId, now],
+            type: QueryTypes.UPDATE
+        }
+    )
 }
 
 module.exports = userPositionRepository

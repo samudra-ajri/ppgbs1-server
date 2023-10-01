@@ -147,6 +147,17 @@ const eventConstant = {
 				}
 			},
 		},
+		changeUserPosition: {
+			event: 'change-user-position',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user dengan posisi tersebut tidak ditemukan',
+					notFoundPosition: 'posisi tidak ditemukan',
+					mismatch: 'tipe posisi baru tidak tidak sama dengan tipe yg akan diganti.',
+				}
+			},
+		},
 	},
 	attendance: {
 		create: {

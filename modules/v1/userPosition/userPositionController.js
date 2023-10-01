@@ -19,4 +19,16 @@ userPositionController.delete = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    change user position
+// @route   PUT /users/:userId/positions/:positionId/change
+// @access  Private
+userPositionController.change = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.changeUserPosition.event
+    const userId = req.auth.data.id
+    const { positionId, newPositionId } = req.body
+    await userPositionService.change(userId, positionId, newPositionId)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = userPositionController

@@ -3,6 +3,7 @@ const eventService = require('./eventService')
 const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
+const { paginate } = require('../../../utils/paginationUtils')
 
 const eventController = {}
 
@@ -17,6 +18,27 @@ eventController.create = asyncHandler(async (req, res) => {
     }
     await eventService.createEvent(data)
     res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    list event
+// @route   GET /events
+// @access  Protect
+eventController.list = asyncHandler(async (req, res) => {
+    req.event = eventConstant.event.list.event
+    const { organizationIds, roomId } = req.query
+    const { search } = req.query
+    const page = req.query.page || 1
+    const pageSize = req.query.pageSize || 20
+    const session = req.auth.data
+    const filters = { 
+        organizationIds: organizationIds?.split(','),
+        roomId,
+    }
+
+    const { data, total } = await eventService.getEvents(session, filters, search, page, pageSize)
+    const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
+    res.json({ ...metadata, data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 

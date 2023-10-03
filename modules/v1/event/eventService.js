@@ -23,6 +23,12 @@ eventService.getEvents = async (session, filters, search, page, pageSize) => {
     return { data, total }
 }
 
+eventService.getEvent = async (id) => {
+    const user = await eventRepository.findById(id)
+    return user
+}
+
+
 const generateRoomId = () => {
     const roomId = Math.floor(Math.random() * 9000000000) + 1000000000
     return roomId.toString()

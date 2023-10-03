@@ -18,6 +18,15 @@ eventRepository.insertEvent = async (data) => {
     )
 }
 
+eventRepository.findById = async (id) => {
+    const query = selectQuery() + filterById()
+    const [data] = await db.query(query, {
+        bind: [id],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 eventRepository.findAll = async (session, filters, search, page, pageSize) => {
     const query = selectQuery() + filtersQuery(session, filters) + searchQuery(search) + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)
@@ -109,6 +118,12 @@ const filterBySession = (session) => {
             AND events."organizationId" IN (${findMyHierarchyQuery(session.position.orgId)})
         `
     }
+}
+
+const filterById = () => {
+    return `
+        WHERE events.id = $1
+    `
 }
 
 // find ancestors and descendants ids based on session orgId

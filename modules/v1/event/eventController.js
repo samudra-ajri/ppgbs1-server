@@ -42,4 +42,14 @@ eventController.list = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    event detail
+// @route   GET /events/:id
+// @access  Protect
+eventController.detail = asyncHandler(async (req, res) => {
+    req.event = eventConstant.event.detail.event
+    const data = await eventService.getEvent(req.params.id)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = eventController

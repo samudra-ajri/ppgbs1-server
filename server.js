@@ -8,6 +8,7 @@ const redis = require('./pkg/redis')
 const homeRoutes = require('./routes/homeRoutes')
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
+const eventRoutes = require('./routes/eventRoutes')
 
 // Connecting db
 db.authenticate()
@@ -32,6 +33,7 @@ if (config.NODE_ENV !== 'production') app.use(morgan('dev'))
 const version = `api/${config.APP_VERSION}`
 app.use(`/${version}/auths`, authRoutes)
 app.use(`/${version}/users`, userRoutes)
+app.use(`/${version}/events`, eventRoutes)
 app.use('/api', homeRoutes)
 
 // Error handler

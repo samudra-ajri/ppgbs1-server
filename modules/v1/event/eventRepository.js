@@ -46,7 +46,8 @@ const selectQuery = () => {
             "startDate",
             "endDate",
             location,
-            description
+            description,
+            "createdBy"
         FROM events
     `
 }
@@ -144,6 +145,18 @@ const findMyHierarchyQuery = (orgId) => {
         UNION ALL
         SELECT "orgId" FROM Descendants
     `
+}
+
+eventRepository.deleteEvent = async (createdBy, eventId) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "events"
+        SET "deletedAt" = $3, "deletedBy" = $2
+        WHERE "id" = $1 AND "createdBy" = $2`, {
+            bind: [eventId, createdBy, now],
+            type: QueryTypes.UPDATE
+        }
+    )
 }
 
 module.exports = eventRepository

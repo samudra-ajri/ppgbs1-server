@@ -7,6 +7,8 @@ const router = express.Router()
 router.route('/')
     .post(protect, admin, eventController.create)
     .get(protect, eventController.list)
-router.route('/:id').get(protect, eventController.detail)
+router.route('/:id')
+    .get(protect, eventController.detail)
+    .delete(protect, admin, eventController.delete)
 
 module.exports = router

@@ -52,4 +52,16 @@ eventController.detail = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    delete event
+// @route   DELETE /events/:id
+// @access  Protect, Admin
+eventController.delete = asyncHandler(async (req, res) => {
+    req.event = eventConstant.event.delete.event
+    const session = req.auth.data
+    const { id } = req.params
+    await eventService.deleteEvent(session, id)
+    res.json({ id })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = eventController

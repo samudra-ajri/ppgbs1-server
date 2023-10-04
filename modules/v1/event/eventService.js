@@ -1,3 +1,5 @@
+const eventConstant = require('../../../constants/eventConstant')
+const { throwError } = require('../../../utils/errorUtils')
 const eventRepository = require('./eventRepository')
 
 const eventService = {}
@@ -18,14 +20,20 @@ eventService.createEvent = async ({ session, payload }) => {
     await eventRepository.insertEvent(data)
 }
 
+eventService.deleteEvent = async (session, id) => {
+    const event = eventConstant.event.delete
+    const foundEvent = await eventRepository.findById(id)
+    if (!foundEvent || Number(foundEvent.createdBy) !== session.id) throwError(event.message.failed.notFound, 404)
+    await eventRepository.deleteEvent(session.id, id)
+}
+
 eventService.getEvents = async (session, filters, search, page, pageSize) => {
     const { data, total } = await eventRepository.findAll(session, filters, search, page, pageSize)
     return { data, total }
 }
 
 eventService.getEvent = async (id) => {
-    const user = await eventRepository.findById(id)
-    return user
+    return eventRepository.findById(id)
 }
 
 

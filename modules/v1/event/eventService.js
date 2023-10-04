@@ -33,7 +33,10 @@ eventService.getEvents = async (session, filters, search, page, pageSize) => {
 }
 
 eventService.getEvent = async (id) => {
-    return eventRepository.findById(id)
+    const event = eventConstant.event.detail
+    const foundEvent = await eventRepository.findById(id)
+    if (!foundEvent) throwError(event.message.failed.notFound, 404)
+    return foundEvent
 }
 
 

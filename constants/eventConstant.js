@@ -126,7 +126,9 @@ const eventConstant = {
 			event: 'user-detail',
 			message: {
 				success: 'detail berhasil dimuat.',
-				failed: 'detail gagal dimuat.',
+				failed: {
+					notFound: 'data tidak ditemukan.',
+				}
 			},
 		},
 		updateByManager: {

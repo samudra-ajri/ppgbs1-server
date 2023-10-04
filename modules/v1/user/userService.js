@@ -14,7 +14,9 @@ userService.getUsers = async (filters, search, page, pageSize) => {
 }
 
 userService.getUser = async (id) => {
+    const event = eventConstant.user.detail
     const user = await userRepository.findById(id)
+    if (!user) throwError(event.message.failed.notFound, 404)
     return user
 }
 

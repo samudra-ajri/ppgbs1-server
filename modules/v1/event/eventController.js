@@ -17,8 +17,8 @@ eventController.create = asyncHandler(async (req, res) => {
         payload: req.body,
     }
     await eventService.createEvent(data)
-    res.json({ message: 'SUCCESS' })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
+    res.status(201).json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
 // @desc    list event

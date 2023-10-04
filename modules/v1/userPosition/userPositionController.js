@@ -38,8 +38,8 @@ userPositionController.create = asyncHandler(async (req, res) => {
     const userId = req.auth.data.id
     const { newPositionId } = req.body
     await userPositionService.create(userId, newPositionId)
-    res.json({ message: 'SUCCESS' })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
+    res.status(201).json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
 module.exports = userPositionController

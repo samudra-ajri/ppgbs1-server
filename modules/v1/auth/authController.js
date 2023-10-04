@@ -12,8 +12,8 @@ const authController = {}
 authController.register = asyncHandler(async (req, res) => {
     req.event = eventConstant.auth.register.event
     await authService.createUser(req.body)
-    res.json({ message: 'SUCCESS' })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
+    res.status(201).json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
 // @desc    login

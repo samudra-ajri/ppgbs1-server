@@ -37,8 +37,8 @@ presenceController.list = asyncHandler(async (req, res) => {
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
-    res.json({ ...metadata, data })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
+    res.status(201).json({ ...metadata, data })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
 // @desc    event presence detail

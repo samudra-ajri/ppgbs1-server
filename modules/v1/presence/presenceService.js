@@ -30,4 +30,9 @@ presenceService.getPresence = async (userId, eventId) => {
     return presence
 }
 
+presenceService.delete = async (session, eventId, userId) => {
+    const deletedBy = session.id
+    await presenceRepository.deletePresence(eventId, userId, deletedBy)
+}
+
 module.exports = presenceService

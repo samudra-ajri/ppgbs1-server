@@ -119,4 +119,16 @@ const filterByUserAndEventId = () => {
     `
 }
 
+presenceRepository.deletePresence = async (eventId, userId, deletedBy) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "presences"
+        SET "deletedBy" = $3, "deletedAt" = $4
+        WHERE "userId" = $1 AND "eventId" = $2`, {
+            bind: [userId, eventId, deletedBy, now],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 module.exports = presenceRepository

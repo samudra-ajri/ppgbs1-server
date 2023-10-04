@@ -486,7 +486,7 @@ const eventConstant = {
 			message: {
 				success: 'berhasil.',
 				failed: {
-					notFound: 'presence tidak ditemukan.',
+					notFound: 'kehadiran (presence) tidak ditemukan.',
 				},
 			},
 		},
@@ -501,13 +501,12 @@ const eventConstant = {
 				},
 			},
 		},
-		deleteAttender: {
-			event: 'delete-attender',
+		delete: {
+			event: 'delete',
 			message: {
 				success: 'berhasil.',
 				failed: {
-					eventNotFound: 'kegiatan (event) tidak tersedia.',
-					userNotFound: 'generus tidak ditemukan.',
+					notFound: 'kehadiran (presence) tidak ditemukan.',
 				},
 			},
 		},

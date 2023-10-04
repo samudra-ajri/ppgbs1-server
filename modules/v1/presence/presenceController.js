@@ -68,4 +68,18 @@ presenceController.createByAdmin = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    delete event presence
+// @route   DELETE /events/:eventId/presences/:userId
+// @access  Protect, Admin
+presenceController.delete = asyncHandler(async (req, res) => {
+    req.event = eventConstant.presence.delete.event
+
+    const session = req.auth.data
+    const { userId, eventId } = req.params
+
+    await presenceService.delete(session, eventId, userId)
+    res.json({ userId, eventId })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = presenceController

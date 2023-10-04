@@ -8,7 +8,8 @@ module.exports = {
         "userId"    bigint,
         "eventId"   bigint,
         "status"    varchar,
-        "createdAt" bigint
+        "createdAt" bigint,
+        "createdBy" bigint
       );
     `)
   },

@@ -6,12 +6,12 @@ const { QueryTypes } = require('sequelize')
 const presenceRepository = {}
 
 presenceRepository.insertPresence = async (data) => {
-    const { userId, eventId, status } = data
+    const { userId, eventId, status, createdBy } = data
     const now = Date.now()
     await db.query(`
-        INSERT INTO "presences" ("userId", "eventId", status, "createdAt")
-        VALUES ($1, $2, $3, $4)`, {
-            bind: [userId, eventId, status, now],
+        INSERT INTO "presences" ("userId", "eventId", status, "createdBy", "createdAt")
+        VALUES ($1, $2, $3, $4, $5)`, {
+            bind: [userId, eventId, status, createdBy, now],
             type: QueryTypes.INSERT,
         }
     )

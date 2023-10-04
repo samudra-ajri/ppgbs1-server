@@ -52,4 +52,20 @@ presenceController.detail = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    create presence by admin
+// @route   POST /events/:eventId/presences/:userId
+// @access  Protect, Admin
+presenceController.createByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.presence.createByAdmin.event
+    req.body.status = presenceStatusConstant.HADIR // TODO: IZIN, ALPHA
+
+    const session = req.auth.data
+    const { eventId, userId } = req.params
+    const { status } = req.body
+
+    await presenceService.create(session, eventId, status, userId)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = presenceController

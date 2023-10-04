@@ -4,14 +4,16 @@ const presenceRepository = require('./presenceRepository')
 
 const presenceService = {}
 
-presenceService.create = async (session, eventId, status) => {
+presenceService.create = async (session, eventId, status, userId) => {
     const event = eventConstant.presence.create
-    const presence = await presenceRepository.findPresence(session.id, eventId)
-    if (presence) throwError(event.message.failed.alreadyExists, 403)
+    const foundUserId = userId || session.id //if has userId means created by admin
+    const presence = await presenceRepository.findPresence(foundUserId, eventId)
+    if (presence) throwError(event.message.failed.alreadyExists, 403);
     const data = {
-        userId: session.id,
+        userId: foundUserId,
         eventId,
         status,
+        createdBy: session.id
     }
     await presenceRepository.insertPresence(data)
 }

@@ -5,5 +5,6 @@ const materialController = require(`../modules/${config.APP_VERSION}/material/ma
 
 const router = express.Router()
 router.route('/').get(protect, materialController.list)
+router.route('/:id').get(protect, materialController.detail)
 
 module.exports = router

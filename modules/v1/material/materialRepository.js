@@ -3,6 +3,18 @@ const db = require('../../../database/config/postgresql')
 
 const materialRepository = {}
 
+materialRepository.find = async (id) => {
+    const [data] = await db.query(`
+        SELECT id, material, grade, subject, category, subcategory
+        FROM materials
+        WHERE id = $1`, {
+            bind: [id],
+            type: QueryTypes.SELECT,
+        }
+    )
+    return data
+}
+
 materialRepository.findAll = async (filters, page, pageSize) => {
     const query = selectQuery() + filtersQuery(filters) + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(filters)

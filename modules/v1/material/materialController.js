@@ -24,4 +24,15 @@ materialController.list = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    detail material
+// @route   GET /materials/:id
+// @access  Protect
+materialController.detail = asyncHandler(async (req, res) => {
+    req.event = eventConstant.material.detail.event
+    const { id } = req.params
+    const data = await materialService.getMaterial(id)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = materialController

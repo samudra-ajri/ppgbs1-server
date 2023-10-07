@@ -583,6 +583,15 @@ const eventConstant = {
 				failed: 'gagal.',
 			},
 		},
+		detail: {
+			event: 'material-detail',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'materi target tidak ditemukan.'
+				},
+			},
+		},
 	},
 }
 

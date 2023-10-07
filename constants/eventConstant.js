@@ -575,6 +575,15 @@ const eventConstant = {
 			},
 		},
 	},
+	material: {
+		list: {
+			event: 'material-list',
+			message: {
+				success: 'berhasil.',
+				failed: 'gagal.',
+			},
+		},
+	},
 }
 
 module.exports = eventConstant

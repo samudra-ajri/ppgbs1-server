@@ -9,6 +9,7 @@ const homeRoutes = require('./routes/homeRoutes')
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
 const eventRoutes = require('./routes/eventRoutes')
+const materialRoutes = require('./routes/materialRoutes')
 
 // Connecting db
 db.authenticate()
@@ -34,6 +35,7 @@ const version = `api/${config.APP_VERSION}`
 app.use(`/${version}/auths`, authRoutes)
 app.use(`/${version}/users`, userRoutes)
 app.use(`/${version}/events`, eventRoutes)
+app.use(`/${version}/materials`, materialRoutes)
 app.use('/api', homeRoutes)
 
 // Error handler

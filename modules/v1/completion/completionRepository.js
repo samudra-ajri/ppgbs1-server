@@ -5,11 +5,17 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 const completionRepository = {}
 
 completionRepository.findAll = async (filters, page, pageSize) => {
-    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + paginateQuery(page, pageSize)
+    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + orderBy() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
     return { data, total }
+}
+
+const orderBy = () => {
+    return `
+        ORDER BY materials.id
+    `
 }
 
 const paginateQuery = (page, pageSize) => {

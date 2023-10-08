@@ -204,130 +204,20 @@ const eventConstant = {
 		},
 	},
 	completion: {
+		list: {
+			event: 'completion-list',
+			message: {
+				success: 'berhasil.',
+				failed: 'gagal.',
+			},
+		},
 		detail: {
 			event: 'completion-detail',
 			message: {
 				success: 'berhasil.',
 				failed: {
-					notFound: 'user completion tidak ditemukan.',
+					notFound: 'materi target tidak ditemukan.'
 				},
-			},
-		},
-		detailBySubject: {
-			event: 'completion-detail-by-subject',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal',
-			},
-		},
-		detailBySubjectUserBased: {
-			event: 'completion-detail-by-subject-user-based',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					notFound: 'user completion tidak ditemukan.',
-				},
-			},
-		},
-		create: {
-			event: 'create-completion',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					invalid: 'data tidak valid',
-				},
-			},
-		},
-		update: {
-			event: 'update-completion',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					notFound: 'user completion tidak ditemukan.',
-				},
-			},
-		},
-		delete: {
-			event: 'delete-completion',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					notFound: 'user completion tidak ditemukan.',
-				},
-			},
-		},
-		listAdmin: {
-			event: 'completion-list-admin',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		detailAdmin: {
-			event: 'completion-detail-admin',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					notFound: 'user completion tidak ditemukan'
-				},
-			},
-		},
-		listUser: {
-			event: 'completion-list-user',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listUserBased: {
-			event: 'completion-list-user-based',
-			message: {
-				success: 'berhasil.',
-				failed: {
-					notFound: 'user completion tidak ditemukan'
-				},
-			},
-		},
-		listByCategory: {
-			event: 'completion-list-by-category',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listUserBasedByCategory: {
-			event: 'completion-list-user-based-category',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listScore: {
-			event: 'completion-list-score',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listScoreAll: {
-			event: 'completion-list-score-all',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listScoreByUserId: {
-			event: 'completion-list-score-by-userid',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
-			},
-		},
-		listSubjectDetailsScores: {
-			event: 'completion-list-subject-detail-score',
-			message: {
-				success: 'berhasil.',
-				failed: 'gagal.',
 			},
 		},
 	},

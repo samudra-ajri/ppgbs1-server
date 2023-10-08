@@ -35,4 +35,12 @@ materialController.detail = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    material structure
+// @route   GET /materials/structure
+// @access  Protect
+materialController.structure = asyncHandler(async (req, res) => {
+    const data = await materialService.getMaterialStructure()
+    res.json({ data })
+})
+
 module.exports = materialController

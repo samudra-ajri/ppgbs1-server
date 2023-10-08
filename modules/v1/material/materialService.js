@@ -16,4 +16,9 @@ materialService.getMaterial = async (id) => {
     return material
 }
 
+materialService.getMaterialStructure = async () => {
+    const structure = await materialRepository.getStructure()
+    return structure
+}
+
 module.exports = materialService

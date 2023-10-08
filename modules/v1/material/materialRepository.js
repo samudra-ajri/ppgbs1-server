@@ -3,6 +3,54 @@ const db = require('../../../database/config/postgresql')
 
 const materialRepository = {}
 
+materialRepository.getStructure = async () => {
+    const data = await db.query(`
+        WITH subcategory_agg AS (
+            SELECT
+                grade,
+                subject,
+                category,
+                ARRAY_AGG(DISTINCT subcategory) AS subcategories
+            FROM
+                materials
+            GROUP BY
+                grade, subject, category
+        ),
+        
+        category_agg AS (
+            SELECT
+                grade,
+                subject,
+                jsonb_object_agg(category, subcategories) AS categories
+            FROM
+                subcategory_agg
+            GROUP BY
+                grade, subject
+        ),
+        
+        subject_agg AS (
+            SELECT
+                grade,
+                jsonb_object_agg(subject, categories) AS subjects
+            FROM
+                category_agg
+            GROUP BY
+                grade
+        )
+        
+        SELECT
+            grade,
+            subjects
+        FROM
+            subject_agg
+        ORDER BY
+            grade`, {
+            type: QueryTypes.SELECT,
+        }
+    )
+    return data
+}
+
 materialRepository.find = async (id) => {
     const [data] = await db.query(`
         SELECT id, material, grade, subject, category, subcategory

@@ -204,6 +204,16 @@ const eventConstant = {
 		},
 	},
 	completion: {
+		create: {
+			event: 'create-completion',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undefinedMaterial: 'terdapat materi target tidak ditemukan.',
+					alreadyExists: 'terdapat materi target sudah terisi.',
+				},
+			},
+		},
 		list: {
 			event: 'completion-list',
 			message: {

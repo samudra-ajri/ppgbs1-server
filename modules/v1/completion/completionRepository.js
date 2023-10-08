@@ -4,6 +4,20 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 
 const completionRepository = {}
 
+completionRepository.insert = async (session, materialIds) => {
+    const now = Date.now()
+    const values = []
+    materialIds.forEach(materialId => {
+        values.push(`(${Number(session.id)}, ${Number(materialId)}, ${now})`)
+    })
+    await db.query(`
+        INSERT INTO "usersCompletions" ("userId", "materialId", "createdAt")
+        VALUES ${values.join(', ')}`, {
+            type: QueryTypes.INSERT,
+        }
+    )
+}
+
 completionRepository.findAll = async (filters, page, pageSize) => {
     const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + orderBy() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters)
@@ -149,5 +163,13 @@ const filterByOrganization = (filters) => {
     return ''
 }
 
+completionRepository.findMaterials = async (materialIds) => {
+    return db.query(
+        'SELECT id FROM materials WHERE id = ANY($1::int[])', {
+            bind: [materialIds],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
 
 module.exports = completionRepository

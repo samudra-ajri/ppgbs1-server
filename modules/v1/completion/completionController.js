@@ -54,4 +54,17 @@ completionController.create = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS, message: '', statusCode: 201 })
 })
 
+// @desc    delete completions
+// @route   DELETE /completions?materialIds=
+// @access  Protect
+completionController.delete = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.delete.event
+    const session = req.auth.data
+    const { materialIds } = req.query
+    const materialIdsArray = materialIds.split(',').map(Number)
+    await completionService.deleteCompletions(session, materialIdsArray)
+    res.json({ materialIds: materialIdsArray })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = completionController

@@ -7,6 +7,7 @@ const router = express.Router()
 router.route('/')
     .get(protect, completionController.list)
     .post(protect, completionController.create)
+    .delete(protect, completionController.delete)
 router.route('/me')
     .get(protect, completionController.me)
 module.exports = router

@@ -214,6 +214,15 @@ const eventConstant = {
 				},
 			},
 		},
+		delete: {
+			event: 'delete-completion',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undefinedMaterial: 'terdapat materi target tidak ditemukan.',
+				},
+			},
+		},
 		list: {
 			event: 'completion-list',
 			message: {

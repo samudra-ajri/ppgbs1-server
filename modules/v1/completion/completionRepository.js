@@ -4,16 +4,37 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 
 const completionRepository = {}
 
-completionRepository.insert = async (session, materialIds) => {
+completionRepository.insert = async (userId, materialIds) => {
     const now = Date.now()
     const values = []
     materialIds.forEach(materialId => {
-        values.push(`(${Number(session.id)}, ${Number(materialId)}, ${now})`)
+        values.push(`(${Number(userId)}, ${Number(materialId)}, ${now})`)
     })
     await db.query(`
         INSERT INTO "usersCompletions" ("userId", "materialId", "createdAt")
         VALUES ${values.join(', ')}`, {
             type: QueryTypes.INSERT,
+        }
+    )
+}
+
+completionRepository.findUsersCompletions = async (userId, materialIds) => {
+    return db.query(`
+        SELECT "materialId"
+        FROM "usersCompletions"
+        WHERE "userId" = $1 AND "materialId" = ANY($2::int[])`, {
+            bind: [userId, materialIds],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+completionRepository.delete = async (userId, materialIds) => {
+    await db.query(`
+        DELETE FROM "usersCompletions" 
+        WHERE "userId" = $1 AND "materialId" = ANY($2::int[])`, {
+            bind: [userId, materialIds],
+            type: QueryTypes.DELETE,
         }
     )
 }

@@ -56,6 +56,8 @@ const baseJoinQuery = () => {
 
 const filtersQuery = (filters) => {
     let filter = filterByDefault()
+    filter += filterByUserId(filters)
+    filter += filterByMaterialId(filters)
     filter += filterByGrade(filters)
     filter += filterBySubject(filters)
     filter += filterByCategory(filters)
@@ -69,6 +71,26 @@ const filterByDefault = () => {
         WHERE 1 = 1
         AND positions.type = '${positionTypesConstant.GENERUS}'
     `
+}
+
+const filterByUserId = (filters) => {
+    const { userId } = filters
+    if (userId) {
+        return `
+            AND "usersCompletions"."userId" = ${Number(userId)}
+        `
+    }
+    return ''
+}
+
+const filterByMaterialId = (filters) => {
+    const { materialId } = filters
+    if (materialId) {
+        return `
+            AND "usersCompletions"."materialId" = ${Number(materialId)}
+        `
+    }
+    return ''
 }
 
 const filterByGrade = (filters) => {

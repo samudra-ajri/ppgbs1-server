@@ -13,10 +13,10 @@ const completionController = {}
 completionController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.list.event
 
-    const { grade, subject, category, subcategory, organizationId } = req.query
+    const { grade, subject, category, subcategory, organizationId, userId, materialId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { grade, subject, category, subcategory, organizationId }
+    const filters = { grade, subject, category, subcategory, organizationId, userId, materialId }
 
     const { data, total } = await completionService.getCompletions(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })

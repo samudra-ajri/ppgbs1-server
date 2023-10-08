@@ -1,7 +1,16 @@
 const stringUtils = {}
 
-stringUtils.makeRedisKeyFromObject = (obj) => {
+stringUtils.generateKeyFromObject = (obj) => {
     return Object.keys(obj).map(key => `${key}.${obj[key]}`).join('.');
+}
+
+stringUtils.makeRedisKey = (modulname, params, sessionId) => {
+    const keyService = 'pigaru'
+    const keyParams = params ? stringUtils.generateKeyFromObject(params) : ''
+    const keys = [keyService, modulname]
+    if (params) keys.push(keyParams)
+    if (sessionId) keys.push(sessionId)
+    return keys.join('.')
 }
 
 stringUtils.isValidDate = (dateString) => {

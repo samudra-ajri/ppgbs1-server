@@ -8,6 +8,6 @@ router.route('/')
     .get(protect, completionController.list)
     .post(protect, completionController.create)
     .delete(protect, completionController.delete)
-router.route('/me')
-    .get(protect, completionController.me)
+router.route('/me').get(protect, completionController.me)
+router.route('/sum/:structure/users/:userId').get(protect, completionController.sum)
 module.exports = router

@@ -235,7 +235,17 @@ const eventConstant = {
 			message: {
 				success: 'berhasil.',
 				failed: {
-					notFound: 'materi target tidak ditemukan.'
+					notFound: 'materi target tidak ditemukan.',
+				},
+			},
+		},
+		sum: {
+			event: 'completion-sum',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					userNotFound: 'materi target dgn user tersebut tidak ditemukan.',
+					structureNotFound: 'struktur materi tidak ditemukan.',
 				},
 			},
 		},

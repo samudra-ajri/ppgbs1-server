@@ -34,4 +34,35 @@ completionService.deleteCompletions = async (session, materialIds) => {
     await completionRepository.delete(userId, materialIds)
 }
 
+completionService.sumCompletions = async (structure, userId) => {
+    const event = eventConstant.completion.sum
+    
+    const listedStructures = ['grade', 'subject', 'category', 'subcategory', 'material',]
+    const isListedStructure = listedStructures.includes(structure)
+    if (!isListedStructure) throwError(`${event.message.failed.structureNotFound} (structure=${structure})`, 404)
+    
+    const foundUserCompletion = await completionRepository.findOneByUserId(userId)
+    console.log(foundUserCompletion)
+    if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
+
+    const completionsCount = await completionRepository.countCompletions(structure, userId)
+    const materialsCount = await completionRepository.countMaterials(structure, userId)
+
+    const data = materialsCount.map(material => {
+        const completion = completionsCount.find(c => c.grade === material.grade)
+        const completionCount = completion ? parseInt(completion.count, 10) : 0
+        const materialCount = parseInt(material.count, 10)
+        const precentage = completionCount ? parseFloat((completionCount/materialCount*100).toFixed(2)) : 0
+        return {
+            grade: material.grade,
+            completionCount,
+            materialCount,
+            precentage,
+        }
+    })
+
+    return data
+}
+
+
 module.exports = completionService

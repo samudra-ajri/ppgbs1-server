@@ -67,4 +67,15 @@ completionController.delete = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    sum materials based on the structures
+// @route   GET /completions/:structure/users/:userId
+// @access  Protect
+completionController.sum = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.sum.event
+    const { structure, userId } = req.params
+    const data = await completionService.sumCompletions(structure, userId)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = completionController

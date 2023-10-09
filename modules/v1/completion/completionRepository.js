@@ -29,6 +29,18 @@ completionRepository.findUsersCompletions = async (userId, materialIds) => {
     )
 }
 
+completionRepository.findOneByUserId = async (userId) => {
+    const [data] = await db.query(`
+        SELECT "userId"
+        FROM "usersCompletions"
+        WHERE "userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+    return data
+}
+
 completionRepository.delete = async (userId, materialIds) => {
     await db.query(`
         DELETE FROM "usersCompletions" 
@@ -188,6 +200,31 @@ completionRepository.findMaterials = async (materialIds) => {
     return db.query(
         'SELECT id FROM materials WHERE id = ANY($1::int[])', {
             bind: [materialIds],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+completionRepository.countCompletions = async (structure, userId) => {
+    return db.query(`
+        SELECT ${structure}, COUNT(materials.id) as count
+        FROM "usersCompletions"
+        INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
+        WHERE "userId" = $1
+        GROUP BY ${structure}
+        ORDER BY ${structure}`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+completionRepository.countMaterials = async (structure) => {
+    return db.query(`
+        SELECT ${structure}, COUNT(id) as count
+        FROM materials
+        GROUP BY ${structure}
+        ORDER BY ${structure}`, {
             type: QueryTypes.SELECT,
         }
     )

@@ -75,7 +75,7 @@ completionController.sumUser = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure, userId } = req.params
     const { grade, subject, category, subcategory } = req.query
-    const filters = { grade, subject, category, subcategory }
+    const filters = { grade, subject, category, subcategory, userId }
     const data = await completionService.sumCompletions(structure, userId, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })

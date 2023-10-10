@@ -36,44 +36,45 @@ completionService.deleteCompletions = async (session, materialIds) => {
 }
 
 completionService.sumCompletions = async (structure, userId, filters) => {
+    validateStructure(structure)
+    await validateUser(userId)
+    const materialsMultiplier = await getUsersCount(userId, filters) // needed if sumUsers service
+    const completionsCount = await completionRepository.countCompletions(structure, filters)
+    const materialsCount = await completionRepository.countMaterials(structure, filters)
+    return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
+}
+
+const validateStructure = (structure) => {
     const event = eventConstant.completion.sum
-    
     const listedStructures = ['grade', 'subject', 'category', 'subcategory', 'material',]
     const isListedStructure = listedStructures.includes(structure)
     if (!isListedStructure) throwError(`${event.message.failed.structureNotFound} (structure=${structure})`, 404)
-    
-    if (userId) {
-        const foundUserCompletion = await completionRepository.findOneByUserId(userId)
-        if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
-    }
+}
 
-    filters.userId = userId // it is needed for filter pupose
-    const completionsCount = await completionRepository.countCompletions(structure, userId, filters)
-    delete filters.userId // removed since the meterials not depend on the user
-    const materialsCount = await completionRepository.countMaterials(structure, filters)
+const validateUser = async (userId) => {
+    const event = eventConstant.completion.sum
+    if (!userId) return
+    const foundUserCompletion = await completionRepository.findOneByUserId(userId)
+    if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
+}
 
-    const { usersCount } = userId 
-        ? { usersCount: 1 }
-        : await completionRepository.countUsers(positionTypesConstant.GENERUS, filters.organizationId)
-    const materialsMultiplier = Number(usersCount) // needed if sumUsers service
-    
-    const data = materialsCount.map(material => {
+const getUsersCount = async (userId, filters) => {
+    if (userId) return 1
+    const { usersCount } = await completionRepository.countUsers(positionTypesConstant.GENERUS, filters.organizationId)
+    return Number(usersCount)
+}
+
+const calculateSumCompletions = (completionsCount, materialsCount, structure, materialsMultiplier) => {
+    return materialsCount.map(material => {
         const completion = completionsCount.find(c => c[structure] === material[structure])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
-        const precentage = (+(completionCount/(materialCount*materialsMultiplier)*100).toFixed(2))
-        const sumData = {
-            completionCount,
-            materialCount,
-            materialsMultiplier,
-            precentage,
-        }
+        const percentage = (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
+        
+        const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
         sumData[structure] = material[structure]
         return sumData
     })
-
-    return data
 }
-
 
 module.exports = completionService

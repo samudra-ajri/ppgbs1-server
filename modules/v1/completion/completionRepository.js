@@ -130,7 +130,7 @@ const filterByPosition = (filters) => {
     const { position } = filters
     if (position) {
         return `
-            AND positions.type = '${positionTypesConstant.GENERUS}'
+            AND positions.type = '${position}'
         `
     }
     return ''
@@ -215,15 +215,14 @@ completionRepository.findMaterials = async (materialIds) => {
     )
 }
 
-completionRepository.countCompletions = async (structure, userId) => {
+completionRepository.countCompletions = async (structure, filters) => {
     return db.query(`
         SELECT ${structure}, COUNT(materials.id) as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
-        WHERE "usersCompletions"."userId" = $1
+        ${sumFiltersQuery(filters)}
         GROUP BY ${structure}
         ORDER BY ${structure}`, {
-            bind: [userId],
             type: QueryTypes.SELECT,
         }
     )
@@ -236,6 +235,7 @@ completionRepository.countMaterials = async (structure, filters) => {
     return db.query(`
         SELECT ${structure}, COUNT(id) as count
         FROM materials
+        ${sumFiltersQuery(filters)}
         GROUP BY ${structure}
         ORDER BY ${structure}`, {
             type: QueryTypes.SELECT,
@@ -254,6 +254,16 @@ completionRepository.countUsers = async (positionType) => {
         }
     )
     return data
+}
+
+const sumFiltersQuery = (filters) => {
+    let filter = filterByDefault()
+    filter += filterByUserId(filters)
+    filter += filterByGrade(filters)
+    filter += filterBySubject(filters)
+    filter += filterByCategory(filters)
+    filter += filterBySubcategory(filters)
+    return filter
 }
 
 module.exports = completionRepository

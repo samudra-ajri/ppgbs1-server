@@ -1,6 +1,7 @@
 const completionRepository = require('./completionRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const completionService = {}
 
@@ -41,23 +42,30 @@ completionService.sumCompletions = async (structure, userId, filters) => {
     const isListedStructure = listedStructures.includes(structure)
     if (!isListedStructure) throwError(`${event.message.failed.structureNotFound} (structure=${structure})`, 404)
     
-    const foundUserCompletion = await completionRepository.findOneByUserId(userId)
-    console.log(foundUserCompletion)
-    if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
+    if (userId) {
+        const foundUserCompletion = await completionRepository.findOneByUserId(userId)
+        if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
+    }
 
     filters.userId = userId // it is needed for filter pupose
     const completionsCount = await completionRepository.countCompletions(structure, userId, filters)
     delete filters.userId // removed since the meterials not depend on the user
     const materialsCount = await completionRepository.countMaterials(structure, filters)
 
+    const { usersCount } = userId 
+        ? { usersCount: 1 }
+        : await completionRepository.countUsers(positionTypesConstant.GENERUS, filters.organizationId)
+    const materialsMultiplier = Number(usersCount) // needed if sumUsers service
+    
     const data = materialsCount.map(material => {
         const completion = completionsCount.find(c => c[structure] === material[structure])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
-        const precentage = completionCount ? parseFloat((completionCount/materialCount*100).toFixed(2)) : 0
+        const precentage = (+(completionCount/(materialCount*materialsMultiplier)*100).toFixed(2))
         const sumData = {
             completionCount,
             materialCount,
+            materialsMultiplier,
             precentage,
         }
         sumData[structure] = material[structure]

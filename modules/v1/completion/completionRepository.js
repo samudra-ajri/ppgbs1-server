@@ -215,12 +215,27 @@ completionRepository.findMaterials = async (materialIds) => {
     )
 }
 
-completionRepository.countCompletions = async (structure, userId, filters) => {
+completionRepository.countCompletions = async (structure, userId) => {
     return db.query(`
         SELECT ${structure}, COUNT(materials.id) as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
-        ${filtersQuery(filters)}
+        WHERE "usersCompletions"."userId" = $1
+        GROUP BY ${structure}
+        ORDER BY ${structure}`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+completionRepository.countMaterials = async (structure, filters) => {
+    delete filters.userId
+    delete filters.organizationId
+    delete filters.position
+    return db.query(`
+        SELECT ${structure}, COUNT(id) as count
+        FROM materials
         GROUP BY ${structure}
         ORDER BY ${structure}`, {
             type: QueryTypes.SELECT,
@@ -228,16 +243,17 @@ completionRepository.countCompletions = async (structure, userId, filters) => {
     )
 }
 
-completionRepository.countMaterials = async (structure, filters) => {
-    return db.query(`
-        SELECT ${structure}, COUNT(id) as count
-        FROM materials
-        ${filtersQuery(filters)}
-        GROUP BY ${structure}
-        ORDER BY ${structure}`, {
+completionRepository.countUsers = async (positionType) => {
+    const [data] = await db.query(`
+        SELECT COUNT("userId") as "usersCount"
+        FROM "usersPositions"
+        INNER JOIN positions on "usersPositions"."positionId" = positions.id
+        WHERE positions.type = $1`, {
+            bind: [positionType],
             type: QueryTypes.SELECT,
         }
     )
+    return data
 }
 
 module.exports = completionRepository

@@ -68,12 +68,26 @@ completionController.delete = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
-// @desc    sum materials based on the structures
+// @desc    sum materials based on the structures for specific user
 // @route   GET /completions/:structure/users/:userId
 // @access  Protect
-completionController.sum = asyncHandler(async (req, res) => {
+completionController.sumUser = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure, userId } = req.params
+    const { grade, subject, category, subcategory } = req.query
+    const filters = { grade, subject, category, subcategory }
+    const data = await completionService.sumCompletions(structure, userId, filters)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    sum materials based on the structures for all users
+// @route   GET /completions/:structure/users
+// @access  Protect
+completionController.sumUsers = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.sum.event
+    const userId = '' // means no specific user
+    const { structure } = req.params
     const { grade, subject, category, subcategory } = req.query
     const filters = { grade, subject, category, subcategory }
     const data = await completionService.sumCompletions(structure, userId, filters)

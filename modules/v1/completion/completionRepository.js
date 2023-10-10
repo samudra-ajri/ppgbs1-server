@@ -109,6 +109,7 @@ const baseJoinQuery = () => {
 
 const filtersQuery = (filters) => {
     let filter = filterByDefault()
+    filter += filterByPosition(filters)
     filter += filterByUserId(filters)
     filter += filterByMaterialId(filters)
     filter += filterByGrade(filters)
@@ -122,8 +123,17 @@ const filtersQuery = (filters) => {
 const filterByDefault = () => {
     return `
         WHERE 1 = 1
-        AND positions.type = '${positionTypesConstant.GENERUS}'
     `
+}
+
+const filterByPosition = (filters) => {
+    const { position } = filters
+    if (position) {
+        return `
+            AND positions.type = '${positionTypesConstant.GENERUS}'
+        `
+    }
+    return ''
 }
 
 const filterByUserId = (filters) => {
@@ -205,24 +215,24 @@ completionRepository.findMaterials = async (materialIds) => {
     )
 }
 
-completionRepository.countCompletions = async (structure, userId) => {
+completionRepository.countCompletions = async (structure, userId, filters) => {
     return db.query(`
         SELECT ${structure}, COUNT(materials.id) as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
-        WHERE "userId" = $1
+        ${filtersQuery(filters)}
         GROUP BY ${structure}
         ORDER BY ${structure}`, {
-            bind: [userId],
             type: QueryTypes.SELECT,
         }
     )
 }
 
-completionRepository.countMaterials = async (structure) => {
+completionRepository.countMaterials = async (structure, filters) => {
     return db.query(`
         SELECT ${structure}, COUNT(id) as count
         FROM materials
+        ${filtersQuery(filters)}
         GROUP BY ${structure}
         ORDER BY ${structure}`, {
             type: QueryTypes.SELECT,

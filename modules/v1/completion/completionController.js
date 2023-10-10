@@ -4,6 +4,7 @@ const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { paginate } = require('../../../utils/paginationUtils')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const completionController = {}
 
@@ -16,7 +17,7 @@ completionController.list = asyncHandler(async (req, res) => {
     const { grade, subject, category, subcategory, organizationId, userId, materialId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { grade, subject, category, subcategory, organizationId, userId, materialId }
+    const filters = { grade, subject, category, subcategory, organizationId, userId, materialId, position: positionTypesConstant.GENERUS }
 
     const { data, total } = await completionService.getCompletions(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
@@ -34,7 +35,7 @@ completionController.me = asyncHandler(async (req, res) => {
     const { grade, subject, category, subcategory, materialId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { grade, subject, category, subcategory, userId, materialId }
+    const filters = { grade, subject, category, subcategory, userId, materialId, position: positionTypesConstant.GENERUS }
 
     const { data, total } = await completionService.getCompletions(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
@@ -73,7 +74,9 @@ completionController.delete = asyncHandler(async (req, res) => {
 completionController.sum = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure, userId } = req.params
-    const data = await completionService.sumCompletions(structure, userId)
+    const { grade, subject, category, subcategory } = req.query
+    const filters = { grade, subject, category, subcategory }
+    const data = await completionService.sumCompletions(structure, userId, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

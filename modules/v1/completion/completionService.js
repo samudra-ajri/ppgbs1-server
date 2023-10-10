@@ -34,7 +34,7 @@ completionService.deleteCompletions = async (session, materialIds) => {
     await completionRepository.delete(userId, materialIds)
 }
 
-completionService.sumCompletions = async (structure, userId) => {
+completionService.sumCompletions = async (structure, userId, filters) => {
     const event = eventConstant.completion.sum
     
     const listedStructures = ['grade', 'subject', 'category', 'subcategory', 'material',]
@@ -45,20 +45,23 @@ completionService.sumCompletions = async (structure, userId) => {
     console.log(foundUserCompletion)
     if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
 
-    const completionsCount = await completionRepository.countCompletions(structure, userId)
-    const materialsCount = await completionRepository.countMaterials(structure, userId)
+    filters.userId = userId // it is needed for filter pupose
+    const completionsCount = await completionRepository.countCompletions(structure, userId, filters)
+    delete filters.userId // removed since the meterials not depend on the user
+    const materialsCount = await completionRepository.countMaterials(structure, filters)
 
     const data = materialsCount.map(material => {
-        const completion = completionsCount.find(c => c.grade === material.grade)
+        const completion = completionsCount.find(c => c[structure] === material[structure])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
         const precentage = completionCount ? parseFloat((completionCount/materialCount*100).toFixed(2)) : 0
-        return {
-            grade: material.grade,
+        const sumData = {
             completionCount,
             materialCount,
             precentage,
         }
+        sumData[structure] = material[structure]
+        return sumData
     })
 
     return data

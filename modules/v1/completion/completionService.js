@@ -46,7 +46,7 @@ completionService.sumCompletion = async (structure, userId, filters) => {
 
 completionService.sumCompletions = async (structure, filters) => {
     validateStructure(structure)
-    const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS)
+    const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters.organizationId)
     const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
     const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
@@ -60,14 +60,14 @@ const validateStructure = (structure) => {
 }
 
 const validateUser = async (userId) => {
-    const event = eventConstant.completion.sum
     if (!userId) return
+    const event = eventConstant.completion.sum
     const foundUserCompletion = await completionRepository.findOneByUserId(userId)
     if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
 }
 
-const getUsersCount = async (positionTypes) => {
-    const { usersCount } = await completionRepository.countUsers(positionTypes)
+const getUsersCount = async (positionTypes, organizationId) => {
+    const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId)
     return Number(usersCount)
 }
 

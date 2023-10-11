@@ -101,10 +101,25 @@ authRepository.findPoisitionHierarchy = async (positionId) => {
 authRepository.findUserWithPosition = async (userId) => {
     const user = await db.query(`
         SELECT 
-            "users"."id", 
-            "users"."name", 
-            "phone",
-            "isActive", 
+        users.id, 
+        users.name, 
+        users.email,
+        users.phone,
+        users."isActive", 
+        users."lastLogin",
+        users."resetPasswordToken",
+        users.sex,
+        users."isMuballigh",
+        users.birthdate,
+        users."needUpdatePassword",
+        students.grade,
+        teachers."isMarried",
+        teachers.pondok,
+        teachers."kertosonoYear",
+        teachers."firstDutyYear",
+        teachers."timesDuties",
+        teachers."greatHadiths",
+        teachers.education, 
             JSON_AGG(
                 JSON_BUILD_OBJECT(
                     'isMain', "usersPositions"."isMain",
@@ -116,11 +131,22 @@ authRepository.findUserWithPosition = async (userId) => {
                 )
             ) as positions
         FROM users
+        LEFT JOIN teachers on users.id = teachers."userId"
+        LEFT JOIN students on users.id = students."userId"
         LEFT JOIN "usersPositions" on "users"."id" = "usersPositions"."userId"
         LEFT JOIN "positions" on "positions"."id" = "usersPositions"."positionId"
         LEFT JOIN "organizations" on "organizations"."id" = "positions"."organizationId"
-        WHERE "userId" = $1
-        GROUP BY "users"."id"`, {
+        WHERE "users"."id" = $1
+        GROUP BY
+            users.id, 
+            students.grade,
+            teachers."isMarried",
+            teachers.pondok,
+            teachers."kertosonoYear",
+            teachers."firstDutyYear",
+            teachers."timesDuties",
+            teachers."greatHadiths",
+            teachers.education`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }

@@ -46,7 +46,7 @@ completionService.sumCompletion = async (structure, userId, filters) => {
 
 completionService.sumCompletions = async (structure, filters) => {
     validateStructure(structure)
-    const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters.organizationId)
+    const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters)
     const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
     const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
@@ -66,8 +66,9 @@ const validateUser = async (userId) => {
     if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
 }
 
-const getUsersCount = async (positionTypes, organizationId) => {
-    const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId)
+const getUsersCount = async (positionTypes, filters) => {
+    const { organizationId, usersGrade } = filters
+    const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId, usersGrade)
     return Number(usersCount)
 }
 
@@ -76,7 +77,9 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
         const completion = completionsCount.find(c => c[structure] === material[structure])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
-        const percentage = (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
+        const percentage = materialsMultiplier 
+            ? (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
+            : 0
 
         const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
         sumData[structure] = material[structure]

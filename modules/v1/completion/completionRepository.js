@@ -128,6 +128,7 @@ const sumFiltersQuery = (filters) => {
     filter += filterByCategory(filters)
     filter += filterBySubcategory(filters)
     filter += filterByOrganization(filters)
+    filter += filterByUsersGrade(filters)
     return filter
 }
 
@@ -217,6 +218,16 @@ const filterByOrganization = (filters) => {
     return ''
 }
 
+const filterByUsersGrade = (filters) => {
+    const { usersGrade } = filters
+    if (usersGrade) {
+        return `
+            AND "students"."grade" = ${Number(usersGrade)}
+        `
+    }
+    return ''
+}
+
 completionRepository.findMaterials = async (materialIds) => {
     return db.query(
         'SELECT id FROM materials WHERE id = ANY($1::int[])', {
@@ -229,13 +240,13 @@ completionRepository.findMaterials = async (materialIds) => {
 // completion of a specific user
 completionRepository.countUserCompletions = async (structure, userId, filters) => {
     return db.query(`
-        SELECT ${structure}, COUNT("materialId") as count
+        SELECT materials.${structure}, COUNT("materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
         ${sumFiltersQuery(filters)}
         AND "usersCompletions"."userId" = $1
-        GROUP BY ${structure}
-        ORDER BY ${structure}`, {
+        GROUP BY materials.${structure}
+        ORDER BY materials.${structure}`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }
@@ -246,11 +257,11 @@ completionRepository.countUserCompletionsMaterials = async (structure, filtersIn
     const { grade, subject, category, subcategory } = filtersInput
     const filters = { grade, subject, category, subcategory }
     return db.query(`
-        SELECT ${structure}, COUNT(id) as count
+        SELECT materials.${structure}, COUNT(id) as count
         FROM materials
         ${sumFiltersQuery(filters)}
-        GROUP BY ${structure}
-        ORDER BY ${structure}`, {
+        GROUP BY materials.${structure}
+        ORDER BY materials.${structure}`, {
             type: QueryTypes.SELECT,
         }
     )
@@ -259,28 +270,30 @@ completionRepository.countUserCompletionsMaterials = async (structure, filtersIn
 // completion of users
 completionRepository.countUsersCompletions = async (structure, filters) => {
     return db.query(`
-        SELECT ${structure}, COUNT("materialId") as count
+        SELECT materials.${structure}, COUNT("materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
         INNER JOIN users ON "usersCompletions"."userId" = users.id
         INNER JOIN "usersPositions" ON users.id = "usersPositions"."userId"
         INNER JOIN positions ON "usersPositions"."positionId" = positions.id
+        INNER JOIN students ON users.id = students."userId"
         ${sumFiltersQuery(filters)}
         AND "usersPositions"."deletedAt" IS NULL
         AND positions.type = '${positionTypesConstant.GENERUS}'
-        GROUP BY ${structure}
-        ORDER BY ${structure}`, {
+        GROUP BY materials.${structure}
+        ORDER BY materials.${structure}`, {
             type: QueryTypes.SELECT,
         }
     )
 }
 
-completionRepository.countUsers = async (positionType, organizationId) => {
+completionRepository.countUsers = async (positionType, organizationId, usersGrade) => {
     const selecQuery = () => {
         return `
-            SELECT COUNT("userId") as "usersCount"
+            SELECT COUNT("usersPositions"."userId") as "usersCount"
             FROM "usersPositions"
             INNER JOIN positions on "usersPositions"."positionId" = positions.id
+            INNER JOIN students on "usersPositions"."userId" = students."userId"
         `
     }
 
@@ -291,6 +304,9 @@ completionRepository.countUsers = async (positionType, organizationId) => {
         `
         if (organizationId) filters += `
             AND positions."organizationId" = ${Number(organizationId)}
+        `
+        if (usersGrade) filters += `
+            AND students.grade = ${Number(usersGrade)}
         `
         return filters
     }

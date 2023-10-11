@@ -75,8 +75,8 @@ completionController.sumUser = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure, userId } = req.params
     const { grade, subject, category, subcategory } = req.query
-    const filters = { grade, subject, category, subcategory, userId }
-    const data = await completionService.sumCompletions(structure, userId, filters)
+    const filters = { grade, subject, category, subcategory }
+    const data = await completionService.sumCompletion(structure, userId, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
@@ -86,11 +86,10 @@ completionController.sumUser = asyncHandler(async (req, res) => {
 // @access  Protect
 completionController.sumUsers = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
-    const userId = '' // means no specific user
     const { structure } = req.params
     const { grade, subject, category, subcategory } = req.query
     const filters = { grade, subject, category, subcategory }
-    const data = await completionService.sumCompletions(structure, userId, filters)
+    const data = await completionService.sumCompletions(structure, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

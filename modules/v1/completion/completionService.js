@@ -35,12 +35,20 @@ completionService.deleteCompletions = async (session, materialIds) => {
     await completionRepository.delete(userId, materialIds)
 }
 
-completionService.sumCompletions = async (structure, userId, filters) => {
+completionService.sumCompletion = async (structure, userId, filters) => {
     validateStructure(structure)
     await validateUser(userId)
-    const materialsMultiplier = await getUsersCount(userId, filters) // needed if sumUsers service
-    const completionsCount = await completionRepository.countCompletions(structure, filters)
-    const materialsCount = await completionRepository.countMaterials(structure, filters)
+    const materialsMultiplier = 1
+    const completionsCount = await completionRepository.countUserCompletions(structure, userId, filters)
+    const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
+    return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
+}
+
+completionService.sumCompletions = async (structure, filters) => {
+    validateStructure(structure)
+    const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS)
+    const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
+    const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 
@@ -58,9 +66,8 @@ const validateUser = async (userId) => {
     if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
 }
 
-const getUsersCount = async (userId, filters) => {
-    if (userId) return 1
-    const { usersCount } = await completionRepository.countUsers(positionTypesConstant.GENERUS, filters.organizationId)
+const getUsersCount = async (positionTypes) => {
+    const { usersCount } = await completionRepository.countUsers(positionTypes)
     return Number(usersCount)
 }
 
@@ -70,7 +77,7 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
         const percentage = (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
-        
+
         const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
         sumData[structure] = material[structure]
         return sumData

@@ -1,6 +1,5 @@
 const { QueryTypes } = require('sequelize')
 const db = require('../../../database/config/postgresql')
-const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const completionRepository = {}
 
@@ -120,9 +119,25 @@ const filtersQuery = (filters) => {
     return filter
 }
 
+const sumFiltersQuery = (filters) => {
+    let filter = filterByDefault()
+    filter += filterByGrade(filters)
+    filter += filterBySubject(filters)
+    filter += filterByCategory(filters)
+    filter += filterBySubcategory(filters)
+    return filter
+}
+
+const countUsersFiltersQuery = (filters) => {
+    let filter = filterByDefault()
+    filter += filterByPosition(filters)
+    filter += filterByOrganization(filters)
+    return filter
+}
+
 const filterByDefault = () => {
     return `
-        WHERE 1 = 1
+        WHERE materials."deletedAt" IS NULL
     `
 }
 
@@ -200,7 +215,7 @@ const filterByOrganization = (filters) => {
     const { organizationId } = filters
     if (organizationId) {
         return `
-            AND organizations.id = ${Number(organizationId)}
+            AND "positions"."organizationId" = ${Number(organizationId)}
         `
     }
     return ''
@@ -215,9 +230,26 @@ completionRepository.findMaterials = async (materialIds) => {
     )
 }
 
-completionRepository.countCompletions = async (structure, filters) => {
+// completion of a specific user
+completionRepository.countUserCompletions = async (structure, userId, filters) => {
     return db.query(`
-        SELECT ${structure}, COUNT(materials.id) as count
+        SELECT ${structure}, COUNT("materialId") as count
+        FROM "usersCompletions"
+        INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
+        ${sumFiltersQuery(filters)}
+        AND "usersCompletions"."userId" = $1
+        GROUP BY ${structure}
+        ORDER BY ${structure}`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
+// completion of users
+completionRepository.countUsersCompletions = async (structure, filters) => {
+    return db.query(`
+        SELECT ${structure}, COUNT("materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
         ${sumFiltersQuery(filters)}
@@ -228,10 +260,7 @@ completionRepository.countCompletions = async (structure, filters) => {
     )
 }
 
-completionRepository.countMaterials = async (structure, filters) => {
-    delete filters.userId
-    delete filters.organizationId
-    delete filters.position
+completionRepository.countUserCompletionsMaterials = async (structure, filters) => {
     return db.query(`
         SELECT ${structure}, COUNT(id) as count
         FROM materials
@@ -248,22 +277,13 @@ completionRepository.countUsers = async (positionType) => {
         SELECT COUNT("userId") as "usersCount"
         FROM "usersPositions"
         INNER JOIN positions on "usersPositions"."positionId" = positions.id
-        WHERE positions.type = $1`, {
+        WHERE positions.type = $1
+        AND "usersPositions"."deletedAt" IS NULL`, {
             bind: [positionType],
             type: QueryTypes.SELECT,
         }
     )
     return data
-}
-
-const sumFiltersQuery = (filters) => {
-    let filter = filterByDefault()
-    filter += filterByUserId(filters)
-    filter += filterByGrade(filters)
-    filter += filterBySubject(filters)
-    filter += filterByCategory(filters)
-    filter += filterBySubcategory(filters)
-    return filter
 }
 
 module.exports = completionRepository

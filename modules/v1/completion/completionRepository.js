@@ -269,49 +269,93 @@ completionRepository.countUserCompletionsMaterials = async (structure, filtersIn
 
 // completion of users
 completionRepository.countUsersCompletions = async (structure, filters) => {
-    return db.query(`
+    let selectQuery = `
         SELECT materials.${structure}, COUNT("materialId") as count
+    `
+    let baseJoinQuery = `
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
         INNER JOIN users ON "usersCompletions"."userId" = users.id
         INNER JOIN "usersPositions" ON users.id = "usersPositions"."userId"
         INNER JOIN positions ON "usersPositions"."positionId" = positions.id
-        INNER JOIN students ON users.id = students."userId"
+    `
+    let filtersQuery = `
         ${sumFiltersQuery(filters)}
         AND "usersPositions"."deletedAt" IS NULL
         AND positions.type = '${positionTypesConstant.GENERUS}'
+    `
+
+    let groupQuery = `
         GROUP BY materials.${structure}
-        ORDER BY materials.${structure}`, {
+    `
+
+    let orderQuery = `
+        ORDER BY materials.${structure}
+    `
+
+    if (filters?.usersGrade) {
+        baseJoinQuery += `
+            INNER JOIN students ON users.id = students."userId"
+        `
+        filtersQuery += filterByUsersGrade(filters)
+    }
+
+    if (filters?.ancestorId) {
+        baseJoinQuery += `
+            INNER JOIN organizations on positions."organizationId" = organizations.id
+            INNER JOIN "organizationHierarchies" on organizations.id = "organizationHierarchies"."descendantId"
+        `
+        filtersQuery += `
+            AND "organizationHierarchies"."ancestorId" = ${Number(filters.ancestorId)}
+        `
+    }
+
+    const query = selectQuery + baseJoinQuery + filtersQuery + groupQuery + orderQuery
+    return db.query(query, {
             type: QueryTypes.SELECT,
         }
     )
 }
 
-completionRepository.countUsers = async (positionType, organizationId, usersGrade) => {
-    const selecQuery = () => {
-        return `
-            SELECT COUNT("usersPositions"."userId") as "usersCount"
-            FROM "usersPositions"
-            INNER JOIN positions on "usersPositions"."positionId" = positions.id
-            INNER JOIN students on "usersPositions"."userId" = students."userId"
-        `
-    }
+completionRepository.countUsers = async (positionType, organizationId, usersGrade, ancestorId) => {
+    let selectQuery = `
+        SELECT COUNT("usersPositions"."userId") as "usersCount"
+    `
+    let baseJoinQuery = `
+        FROM "usersPositions"
+        INNER JOIN positions on "usersPositions"."positionId" = positions.id
+    `
+    let filtersQuery = `
+        WHERE "usersPositions"."deletedAt" IS NULL
+        AND positions.type = '${positionType}'
+    `
 
-    const filtersQuery = () => {
-        let filters = `
-            WHERE "usersPositions"."deletedAt" IS NULL
-            AND positions.type = '${positionType}'
-        `
-        if (organizationId) filters += `
+    if (organizationId) {
+        filtersQuery += `
             AND positions."organizationId" = ${Number(organizationId)}
         `
-        if (usersGrade) filters += `
-            AND students.grade = ${Number(usersGrade)}
-        `
-        return filters
     }
 
-    const query = selecQuery() + filtersQuery()
+    if (usersGrade) {
+        baseJoinQuery += `
+            INNER JOIN students on "usersPositions"."userId" = students."userId"
+        `
+        filtersQuery += `
+            AND students.grade = ${Number(usersGrade)}
+        `
+    }
+    
+    if (ancestorId) {
+        baseJoinQuery += `
+            INNER JOIN organizations on positions."organizationId" = organizations.id
+            INNER JOIN "organizationHierarchies" on organizations.id = "organizationHierarchies"."descendantId"
+        `
+        filtersQuery += `
+            AND "organizationHierarchies"."ancestorId" = ${Number(ancestorId)}
+        `
+    }
+
+    const query = selectQuery + baseJoinQuery + filtersQuery
     const [data] = await db.query(query)
     return data[0]
 }

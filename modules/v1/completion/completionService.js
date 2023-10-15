@@ -67,8 +67,8 @@ const validateUser = async (userId) => {
 }
 
 const getUsersCount = async (positionTypes, filters) => {
-    const { organizationId, usersGrade } = filters
-    const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId, usersGrade)
+    const { organizationId, usersGrade, ancestorId } = filters
+    const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId, usersGrade, ancestorId)
     return Number(usersCount)
 }
 

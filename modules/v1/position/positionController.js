@@ -8,10 +8,10 @@ const positionController = {}
 // @route   GET /positions
 // @access  Public
 positionController.list = asyncHandler(async (req, res) => {
-    const { positionType, organizationId } = req.query
+    const { positionTypes, organizationId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { organizationId, positionType }
+    const filters = { organizationId, positionTypes }
     const { data, total } = await positionService.getPositions(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
     res.json({ ...metadata, data })

@@ -41,6 +41,7 @@ const paginateQuery = (page, pageSize) => {
 const filtersQuery = (filters) => {
     let filter = filterByDefault()
     filter += filterByOrganizationId(filters)
+    filter += filterByPositionTypes(filters)
     return filter
 }
 
@@ -54,6 +55,14 @@ const filterByOrganizationId = (filters) => {
     let { organizationId } = filters
     if (organizationId) return `
         AND positions."organizationId" = ${Number(organizationId)}
+    `
+    return ''
+}
+
+const filterByPositionTypes = (filters) => {
+    let { positionTypes } = filters
+    if (positionTypes) return `
+        AND positions.type = ANY('{${positionTypes}}'::text[])
     `
     return ''
 }

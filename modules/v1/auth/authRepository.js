@@ -9,8 +9,8 @@ authRepository.findUser = async (login) => {
     return db.query(`
         SELECT "id", "name", "isActive", "password", "resetPasswordToken"
         FROM "users" 
-        WHERE "phone" = $1 OR "email" = $1 OR "username" = $1`, {
-            bind: [login],
+        WHERE "phone" = :login OR "email" = :login OR "username" = :login`, {
+            replacements: { login },
             type: QueryTypes.SELECT,
         }
     )

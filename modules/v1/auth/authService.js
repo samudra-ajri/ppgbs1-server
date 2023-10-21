@@ -95,9 +95,9 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
     // create user
     const data = {
         name,
-        phone,
-        username,
-        email,
+        phone: phone || '',
+        username: username || '',
+        email: email || '',
         sex,
         isMuballigh,
         birthdate,

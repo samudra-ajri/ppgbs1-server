@@ -246,6 +246,7 @@ const eventConstant = {
 				failed: {
 					userNotFound: 'materi target dgn user tersebut tidak ditemukan.',
 					structureNotFound: 'struktur materi tidak ditemukan.',
+					subcategoryNotFound: 'subcategory harus diisi.'
 				},
 			},
 		},

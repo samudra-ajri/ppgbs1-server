@@ -40,7 +40,7 @@ completionService.sumCompletion = async (structure, userId, filters) => {
     await validateUser(userId)
     const materialsMultiplier = 1
     const completionsCount = await completionRepository.countUserCompletions(structure, userId, filters)
-    const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
+    const materialsCount = await getMaterialCount(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 
@@ -48,8 +48,18 @@ completionService.sumCompletions = async (structure, filters) => {
     validateStructure(structure)
     const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters)
     const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
-    const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
+    const materialsCount = await getMaterialCount(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
+}
+
+const getMaterialCount = async (structure, filters) => {
+    if (structure === 'material') {
+        const event = eventConstant.completion.sum
+        if (!filters?.subcategory) throwError(`${event.message.failed.subcategoryNotFound}`, 404)
+        return completionRepository.countUserCompletionsMaterialsWithId(filters)
+    } else {
+        return completionRepository.countUserCompletionsMaterials(structure, filters)
+    }
 }
 
 const validateStructure = (structure) => {
@@ -83,6 +93,7 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
 
         const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
         sumData[structure] = material[structure]
+        sumData.materialId = material.id
         return sumData
     })
 }

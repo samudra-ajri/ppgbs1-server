@@ -48,7 +48,7 @@ completionService.sumCompletions = async (structure, filters) => {
     validateStructure(structure)
     const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters)
     const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
-    const materialsCount = await getMaterialCount(structure, filters)
+    const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 

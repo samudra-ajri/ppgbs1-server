@@ -212,6 +212,23 @@ authRepository.updateUserPassword = async (data) => {
     )
 }
 
+authRepository.findCurrentAncestorOrganization = async (currentOrganizationId) => {
+    const result = await db.query(`
+        SELECT "ancestorId", "organizations"."name"
+        FROM "organizationHierarchies"
+        LEFT JOIN "organizations" on "organizations"."id" = "organizationHierarchies"."ancestorId"
+        WHERE "descendantId" = $1 AND depth = 1`, {
+            bind: [currentOrganizationId],
+            type: QueryTypes.SELECT,
+        }
+    )
+
+    return {
+        organizationAncestorId: Number(result[0]?.ancestorId), 
+        organizationAncestorName: result[0]?.name, 
+    }
+}
+
 const insertUser = async (trx, data) => {
     const { name, phone, password, username, email, sex, isMuballigh, birthdate } = data
     const now = Date.now()

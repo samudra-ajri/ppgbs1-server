@@ -14,6 +14,13 @@ userRepository.findById = async (id) => {
 }
 
 userRepository.updateUser = async (data) => {
+    await db.transaction(async (t) => {
+        await updateUserProfile(t, data)
+        await updateUserPositions(t, data)
+    })
+}
+
+const updateUserProfile = async (trx, data) => {
     const { id, name, sex, isMuballigh, birthdate, password } = data
     const now = Date.now()
     await db.query(`
@@ -21,10 +28,27 @@ userRepository.updateUser = async (data) => {
         SET "name" = $2, "sex" = $3, "isMuballigh" = $4, "birthdate" = $5, "password" = $6, "updatedAt" = $7, "updatedBy" = $1
         WHERE "id" = $1`, {
             bind: [id, name, sex, isMuballigh, birthdate, password, now],
-            type: QueryTypes.UPDATE
+            type: QueryTypes.UPDATE,
+            transaction: trx,
         }
     )
 }
+
+const updateUserPositions = async (trx, data) => {
+    const { id, currentPositionId, newPositionId } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE "usersPositions"
+        SET "positionId" = $3, "createdAt" = $4
+        WHERE "userId" = $1 AND "positionId" = $2`, {
+            bind: [id, currentPositionId, newPositionId, now],
+            type: QueryTypes.UPDATE,
+            transaction: trx,
+        }
+    )
+}
+
+
 
 userRepository.findUserStudent = async (userId) => {
     return db.query(`
@@ -80,6 +104,15 @@ userRepository.findUserPassword = async (id) => {
         type: QueryTypes.SELECT,
     })
     return data
+}
+
+userRepository.findPositions = async (positionsIds) => {
+    return db.query(
+        'SELECT id, type FROM positions WHERE id = ANY($1::int[])', {
+            bind: [positionsIds],
+            type: QueryTypes.SELECT,
+        }
+    )
 }
 
 userRepository.findAll = async (filters, search, page, pageSize) => {

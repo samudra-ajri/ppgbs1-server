@@ -27,8 +27,17 @@ userService.updateMyProfile = async (data) => {
     // validate birthdate format
     if (payload.birthdate && !isValidDate(payload.birthdate)) throwError(event.message.failed.invalidBirthdate, 400)
     // password confirmation
-    const { password, password2 } = payload
+    const { password, password2, currentPositionId, newPositionId } = payload
     if (password !== password2) throwError(event.message.failed.incorrectPasswordCombination, 400)
+    // check positions availability
+    const positionIds = [currentPositionId, newPositionId]
+    const foundPositions = await userRepository.findPositions(positionIds)
+    if (!currentPositionId || !newPositionId || foundPositions.length < positionIds.length) {
+        throwError(event.message.failed.undefinedPosition, 400)
+    }
+    if (foundPositions[0].type !== foundPositions[1].type) {
+        throwError(event.message.failed.differentPositionType, 400)
+    }
 
     let updatedPassword
     if (payload.password) {
@@ -45,6 +54,8 @@ userService.updateMyProfile = async (data) => {
         isMuballigh: payload.isMuballigh?.toString() || userData.isMuballigh,
         birthdate: payload.birthdate || userData.birthdate,
         password: updatedPassword,
+        currentPositionId,
+        newPositionId,
     }
 
     await userRepository.updateUser(updatedDdata)

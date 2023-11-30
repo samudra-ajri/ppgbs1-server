@@ -71,7 +71,7 @@ authService.getUserProfile = async ({ userId, positionId }) => {
     const user = await authRepository.findUserWithPosition(userId)
     const currentPositionId = Number(positionId)
     const currentPosition = user.positions.filter(position => position.positionId === currentPositionId)
-    user.currentPosition = currentPosition
+    user.currentPosition = currentPosition[0]
     return user
 }
 

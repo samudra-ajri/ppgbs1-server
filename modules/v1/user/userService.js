@@ -35,7 +35,7 @@ userService.updateMyProfile = async (data) => {
     if (!currentPositionId || !newPositionId || foundPositions.length < positionIds.length) {
         throwError(event.message.failed.undefinedPosition, 400)
     }
-    if (foundPositions[0].type !== foundPositions[1].type) {
+    if (positionIds.length !== 1 && foundPositions[0].type !== foundPositions[1].type) {
         throwError(event.message.failed.differentPositionType, 400)
     }
 

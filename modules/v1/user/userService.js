@@ -30,7 +30,7 @@ userService.updateMyProfile = async (data) => {
     const { password, password2, currentPositionId, newPositionId } = payload
     if (password !== password2) throwError(event.message.failed.incorrectPasswordCombination, 400)
     // check positions availability
-    const positionIds = [currentPositionId, newPositionId]
+    const positionIds = [...new Set([currentPositionId, newPositionId])]
     const foundPositions = await userRepository.findPositions(positionIds)
     if (!currentPositionId || !newPositionId || foundPositions.length < positionIds.length) {
         throwError(event.message.failed.undefinedPosition, 400)

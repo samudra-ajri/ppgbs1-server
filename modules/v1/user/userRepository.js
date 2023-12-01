@@ -21,13 +21,13 @@ userRepository.updateUser = async (data) => {
 }
 
 const updateUserProfile = async (trx, data) => {
-    const { id, name, sex, isMuballigh, birthdate, password } = data
+    const { id, name, phone, email, sex, isMuballigh, birthdate, password } = data
     const now = Date.now()
     await db.query(`
         UPDATE users
-        SET "name" = $2, "sex" = $3, "isMuballigh" = $4, "birthdate" = $5, "password" = $6, "updatedAt" = $7, "updatedBy" = $1
+        SET "name" = $2, "sex" = $3, "isMuballigh" = $4, "birthdate" = $5, "password" = $6, "updatedAt" = $7, "phone" = $8, "email" = $9,"updatedBy" = $1
         WHERE "id" = $1`, {
-            bind: [id, name, sex, isMuballigh, birthdate, password, now],
+            bind: [id, name, sex, isMuballigh, birthdate, password, now, phone, email],
             type: QueryTypes.UPDATE,
             transaction: trx,
         }

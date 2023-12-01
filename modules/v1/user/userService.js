@@ -50,6 +50,8 @@ userService.updateMyProfile = async (data) => {
     const updatedDdata = {
         id: userData.id,
         name: payload.name || userData.name,
+        phone: payload.phone || userData.phone,
+        email: payload.email || userData.email,
         sex: payload.sex?.toString() || userData.sex,
         isMuballigh: payload.isMuballigh?.toString() || userData.isMuballigh,
         birthdate: payload.birthdate || userData.birthdate,

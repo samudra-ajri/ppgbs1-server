@@ -105,6 +105,7 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
         const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
         sumData[structure] = material[structure]
         sumData.materialId = material.id
+        sumData.grade = material.grade
         return sumData
     })
 }

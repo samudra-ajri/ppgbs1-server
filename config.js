@@ -14,6 +14,7 @@ module.exports = {
     DB_URL: `${process.env.DB_DIALECT}://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
     POOL_SIZE: Number(process.env.POOL_SIZE) || 10,
     POOL_IDLE_TIMEOUT: Number(process.env.POOL_IDLE_TIMEOUT) || 60000,
+    DB_ACTIVE_LOGGING: process.env.DB_ACTIVE_LOGGING === 'true' ? true : false,
 
     REDIS_HOST: process.env.REDIS_HOST || 'localhost',
     REDIS_PORT: process.env.REDIS_PORT || 6379,

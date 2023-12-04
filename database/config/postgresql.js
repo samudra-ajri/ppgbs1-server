@@ -8,5 +8,5 @@ module.exports = new Sequelize(config.DB_URL, {
         acquire: 30000,
         idle: config.POOL_IDLE_TIMEOUT
     },
-    logging: false,
+    logging: config.DB_ACTIVE_LOGGING,
 })

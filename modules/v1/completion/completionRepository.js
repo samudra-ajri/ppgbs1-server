@@ -253,6 +253,21 @@ completionRepository.countUserCompletions = async (structure, userId, filters) =
     )
 }
 
+completionRepository.countUserCompletionsWithId = async (userId, filters) => {
+    return db.query(`
+        SELECT materials.id, materials.material, COUNT("materialId") as count
+        FROM "usersCompletions"
+        INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
+        ${sumFiltersQuery(filters)}
+        AND "usersCompletions"."userId" = $1
+        GROUP BY materials.material, materials.id
+        ORDER BY materials.material`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
 completionRepository.countUserCompletionsMaterials = async (structure, filtersInput) => {
     const { grade, subject, category, subcategory } = filtersInput
     const filters = { grade, subject, category, subcategory }

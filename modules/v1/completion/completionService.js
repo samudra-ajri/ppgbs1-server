@@ -39,9 +39,9 @@ completionService.sumCompletion = async (structure, userId, filters) => {
     validateStructure(structure)
     await validateUser(userId)
     const materialsMultiplier = 1
-    const completionsCount = await completionRepository.countUserCompletions(structure, userId, filters)
+    const completionsCount = await getCompletionCount(structure, userId, filters)
     const materialsCount = await getMaterialCount(structure, filters)
-    return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
+    return calculateSumCompletion(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 
 completionService.sumCompletions = async (structure, filters) => {
@@ -50,6 +50,16 @@ completionService.sumCompletions = async (structure, filters) => {
     const completionsCount = await completionRepository.countUsersCompletions(structure, filters)
     const materialsCount = await completionRepository.countUserCompletionsMaterials(structure, filters)
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
+}
+
+const getCompletionCount = async (structure, userId, filters) => {
+    if (structure === 'material') {
+        const event = eventConstant.completion.sum
+        if (!filters?.subcategory) throwError(`${event.message.failed.subcategoryNotFound}`, 404)
+        return completionRepository.countUserCompletionsWithId(userId, filters)
+    } else {
+        return completionRepository.countUserCompletions(structure, userId, filters)
+    }
 }
 
 const getMaterialCount = async (structure, filters) => {
@@ -80,6 +90,23 @@ const getUsersCount = async (positionTypes, filters) => {
     const { organizationId, usersGrade, ancestorId } = filters
     const { usersCount } = await completionRepository.countUsers(positionTypes, organizationId, usersGrade, ancestorId)
     return Number(usersCount)
+}
+
+const calculateSumCompletion = (completionsCount, materialsCount, structure, materialsMultiplier) => {
+    const findCompletionIndex = structure === 'material' ? 'id' : structure
+    return materialsCount.map(material => {
+        const completion = completionsCount.find(c => c[findCompletionIndex] === material[findCompletionIndex])
+        const completionCount = completion ? parseInt(completion.count, 10) : 0
+        const materialCount = parseInt(material.count, 10)
+        const percentage = materialsMultiplier 
+            ? (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
+            : 0
+
+        const sumData = { completionCount, materialCount, materialsMultiplier, percentage }
+        sumData[structure] = material[structure]
+        sumData.materialId = material.id
+        return sumData
+    })
 }
 
 const calculateSumCompletions = (completionsCount, materialsCount, structure, materialsMultiplier) => {

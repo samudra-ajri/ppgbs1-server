@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('sequelize')
 const config = require('../../config')
 
 module.exports = new Sequelize(config.DB_URL, {
@@ -8,4 +8,5 @@ module.exports = new Sequelize(config.DB_URL, {
         acquire: 30000,
         idle: config.POOL_IDLE_TIMEOUT
     },
-});
+    logging: false,
+})

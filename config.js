@@ -1,25 +1,34 @@
-require('dotenv').config()
+require('dotenv').config();
+
+// Helper functions for common operations
+const getEnv = (key, defaultValue = '') => process.env[key] || defaultValue;
+const getEnvNumber = (key, defaultValue = 0) => Number(process.env[key] || defaultValue);
+const getEnvBoolean = (key, defaultValue = false) => process.env[key] === 'true' ? true : defaultValue;
 
 module.exports = {
-    NODE_ENV: process.env.NODE_ENV || 'development',
-    APP_URL: process.env.APP_URL || 'http://localhost',
-    APP_NAME: process.env.APP_NAME,
-    PORT: process.env.PORT || 5000,
-    ORIGIN: process.env.ORIGIN || '*',
-    APP_VERSION: process.env.APP_VERSION || 'v1',
+    NODE_ENV: getEnv('NODE_ENV', 'development'),
+    APP_URL: getEnv('APP_URL', 'http://localhost'),
+    APP_NAME: getEnv('APP_NAME'),
+    PORT: getEnvNumber('PORT', 5000),
+    ORIGIN: getEnv('ORIGIN', '*'),
+    APP_VERSION: getEnv('APP_VERSION', 'v1'),
 
-    JWT_KEY: process.env.JWT_KEY || 'jwtkey',
+    JWT_KEY: getEnv('JWT_KEY', 'jwtkey'),
 
-    DB_DIALECT: process.env.DB_DIALECT,
-    DB_URL: `${process.env.DB_DIALECT}://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-    POOL_SIZE: Number(process.env.POOL_SIZE) || 10,
-    POOL_IDLE_TIMEOUT: Number(process.env.POOL_IDLE_TIMEOUT) || 60000,
+    // Database configuration
+    DB_DIALECT: getEnv('DB_DIALECT'),
+    DB_URL: `${getEnv('DB_DIALECT')}://${getEnv('DB_USER')}:${getEnv('DB_PWD')}@${getEnv('DB_HOST')}:${getEnv('DB_PORT')}/${getEnv('DB_NAME')}`,
+    POOL_SIZE: getEnvNumber('POOL_SIZE', 10),
+    POOL_IDLE_TIMEOUT: getEnvNumber('POOL_IDLE_TIMEOUT', 60000),
 
-    REDIS_HOST: process.env.REDIS_HOST || 'localhost',
-    REDIS_PORT: process.env.REDIS_PORT || 6379,
-    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-    REDIS_TTL: process.env.REDIS_TTL || 7200,
+    // Redis configuration
+    REDIS_HOST: getEnv('REDIS_HOST', 'localhost'),
+    REDIS_PORT: getEnvNumber('REDIS_PORT', 6379),
+    REDIS_PASSWORD: getEnv('REDIS_PASSWORD'),
+    REDIS_TTL: getEnvNumber('REDIS_TTL', 7200),
   
-    ELASTICSEARCH_HOST: process.env.ELASTICSEARCH_HOST,
-    ELASTICSEARCH_PORT: process.env.ELASTICSEARCH_PORT,
-}
+    // Elasticsearch configuration
+    ELASTICSEARCH_HOST: getEnv('ELASTICSEARCH_HOST'),
+    ELASTICSEARCH_PORT: getEnv('ELASTICSEARCH_PORT'),
+    LOGGING_ENABLED: getEnvBoolean('LOGGING_ENABLED', false)
+};

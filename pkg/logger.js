@@ -4,7 +4,7 @@ const ElasticsearchTransport = require('winston-elasticsearch').ElasticsearchTra
 const config = require('../config')
 
 // Create an Elasticsearch client
-const esClient = new Client({ 
+const esClient = new Client({
     node: `http://${config.ELASTICSEARCH_HOST}:${config.ELASTICSEARCH_PORT}`
 })
 
@@ -16,12 +16,11 @@ const esTransport = new ElasticsearchTransport({
 })
 
 // Create a logger instance
+const transportPipes = [new transports.Console()]
+if (config.LOGGING_ENABLED) transportPipes.push(esTransport)
 const logger = createLogger({
     format: format.combine(format.timestamp(), format.json()),
-    transports: [
-        esTransport,
-        new transports.Console()
-    ],
+    transports: transportPipes,
 })
 
 module.exports = logger

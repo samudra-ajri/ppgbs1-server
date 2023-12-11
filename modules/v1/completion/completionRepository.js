@@ -12,9 +12,11 @@ completionRepository.insert = async (userId, materialIds) => {
     })
     await db.query(`
         INSERT INTO "usersCompletions" ("userId", "materialId", "createdAt")
-        VALUES ${values.join(', ')}`, {
+        VALUES ${values.join(', ')}
+        ON CONFLICT ON CONSTRAINT "uniqueUserIdMaterialId" DO NOTHING`, {
             type: QueryTypes.INSERT,
         }
+        
     )
 }
 

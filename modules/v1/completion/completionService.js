@@ -20,7 +20,6 @@ completionService.createCompletions = async (session, materialIds) => {
     try {
         await completionRepository.insert(session.id, materialIds)
     } catch (error) {
-        if (error.original?.constraint === 'uniqueUserIdMaterialId') throwError(event.message.failed.alreadyExists, 403)
         throwError(error.message, 500)
     }
 }

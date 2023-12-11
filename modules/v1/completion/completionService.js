@@ -27,7 +27,7 @@ completionService.createCompletions = async (session, materialIds) => {
 completionService.deleteCompletions = async (session, materialIds) => {
     const event = eventConstant.completion.delete
     const userId = session.id
-    const foundMaterials = await completionRepository.findUsersCompletions(userId, materialIds)
+    const foundMaterials = await completionRepository.findMaterials(materialIds)
     if (!materialIds.length || foundMaterials.length < materialIds.length) {
         throwError(event.message.failed.undefinedMaterial, 404)
     }

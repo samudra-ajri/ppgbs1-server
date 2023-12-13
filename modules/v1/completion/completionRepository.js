@@ -263,7 +263,7 @@ completionRepository.countUserCompletionsWithId = async (userId, filters) => {
         ${sumFiltersQuery(filters)}
         AND "usersCompletions"."userId" = $1
         GROUP BY materials.material, materials.id
-        ORDER BY materials.material`, {
+        ORDER BY materials.id`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }
@@ -292,7 +292,7 @@ completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) 
         FROM materials
         ${sumFiltersQuery(filters)}
         GROUP BY materials.material, materials.grade, materials.id
-        ORDER BY materials.material`, {
+        ORDER BY materials.id`, {
             type: QueryTypes.SELECT,
         }
     )

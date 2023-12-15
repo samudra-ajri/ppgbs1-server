@@ -1,5 +1,15 @@
 const eventConstant = {
 	auth: {
+		verify: {
+			event: 'verify',
+			message: {
+				success: 'berhasil',
+				failed: {
+					unauthenticated: 'Unauthenticated.',
+					missing: 'Missing authentication.',
+				},
+			},
+		},
 		login: {
 			event: 'login',
 			message: {

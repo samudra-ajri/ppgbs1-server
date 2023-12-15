@@ -2,9 +2,12 @@ const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const config = require('../config.js')
 const positionTypesConstant = require('../constants/positionTypesConstant.js')
+const { throwError } = require('../utils/errorUtils.js')
+const eventConstant = require('../constants/eventConstant.js')
 const authRepository = require(`../modules/${config.APP_VERSION}/auth/authRepository`)
 
 const authMiddleware = {}
+const event = eventConstant.auth.verify
 
 authMiddleware.protect = asyncHandler(async (req, res, next) => {
     let token
@@ -21,21 +24,18 @@ authMiddleware.protect = asyncHandler(async (req, res, next) => {
                 next()
             }
         } catch (error) {
-            res.status(401)
-            throw new Error('Missing authentication.')
+            throwError(event.message.failed.missing, 401)
         }
     }
 
     if (!token) {
-        res.status(401)
-        throw new Error('Missing authentication.')
+        throwError(event.message.failed.missing, 401)
     }
 })
 
 authMiddleware.admin = asyncHandler(async (req, res, next) => {
     if (req.auth.data.position.type !== positionTypesConstant.ADMIN) {
-        res.status(401)
-        throw new Error('Unauthenticated.')
+        throwError(event.message.failed.unauthenticated, 401)
     }
     next()
 })

@@ -40,6 +40,7 @@ const selectQuery = () => {
         SELECT 
             id, 
             "organizationId", 
+            "organizationName", 
             name,
             "roomId",
             "passcode", 

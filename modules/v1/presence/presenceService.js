@@ -4,11 +4,19 @@ const presenceRepository = require('./presenceRepository')
 
 const presenceService = {}
 
-presenceService.create = async (session, eventId, status, userId) => {
+presenceService.create = async (payload) => {
     const event = eventConstant.presence.create
-    const foundUserId = userId || session.id //if has userId means created by admin
+    const { session, eventId, status, passcode, userId } = payload
+    const isCreatedByAdmin = userId ? true : false
+    const foundUserId = isCreatedByAdmin ? userId : session.id
+
+    const foundEventDetail = await presenceRepository.findEvent(eventId)
+    if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)
+    if (!isCreatedByAdmin && foundEventDetail.passcode !== passcode) throwError(event.message.failed.wrongAccessCode, 403)
+
     const presence = await presenceRepository.findPresence(foundUserId, eventId)
-    if (presence) throwError(event.message.failed.alreadyExists, 403);
+    if (presence) throwError(event.message.failed.alreadyExists, 403)
+
     const data = {
         userId: foundUserId,
         eventId,

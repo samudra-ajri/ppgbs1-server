@@ -17,9 +17,10 @@ presenceController.create = asyncHandler(async (req, res) => {
 
     const session = req.auth.data
     const { eventId } = req.params
-    const { status } = req.body
+    const { status, passcode } = req.body
+    const data = { session, eventId, status, passcode }
 
-    await presenceService.create(session, eventId, status)
+    await presenceService.create(data)
     res.status(201).json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
@@ -63,7 +64,8 @@ presenceController.createByAdmin = asyncHandler(async (req, res) => {
     const { eventId, userId } = req.params
     const { status } = req.body
 
-    await presenceService.create(session, eventId, status, userId)
+    const data = { session, eventId, status, userId }
+    await presenceService.create(data)
     res.json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

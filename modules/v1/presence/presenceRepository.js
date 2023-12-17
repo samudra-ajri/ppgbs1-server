@@ -17,6 +17,16 @@ presenceRepository.insertPresence = async (data) => {
     )
 }
 
+presenceRepository.findEvent = async (eventId) => {
+    const [data] = await db.query(`
+        SELECT id, passcode FROM events WHERE "id" = $1`, {
+            bind: [eventId],
+            type: QueryTypes.SELECT,
+        }
+    )
+    return data
+}
+
 presenceRepository.findPresence = async (userId, eventId) => {
     const [data] = await db.query(`
         SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2`, {

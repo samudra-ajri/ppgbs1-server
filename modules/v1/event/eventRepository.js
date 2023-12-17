@@ -28,7 +28,7 @@ eventRepository.findById = async (id) => {
 }
 
 eventRepository.findAll = async (session, filters, search, page, pageSize) => {
-    const query = selectQuery() + filtersQuery(session, filters) + searchQuery(search) + paginateQuery(page, pageSize)
+    const query = selectQuery() + filtersQuery(session, filters) + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
@@ -72,6 +72,12 @@ const paginateQuery = (page, pageSize) => {
     const offset = (pageSize * page) - pageSize
     return `
         LIMIT ${pageSize} OFFSET ${offset}
+    `
+}
+
+const orderBy = () => {
+    return `
+        ORDER BY "startDate" DESC
     `
 }
 

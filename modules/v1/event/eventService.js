@@ -9,6 +9,7 @@ eventService.createEvent = async ({ session, payload }) => {
     const data = {
         createdBy: session.id,
         organizationId: session.position.orgId,
+        organizationName: session.position.orgName,
         roomId: generateRoomId(),
         name,
         passcode,

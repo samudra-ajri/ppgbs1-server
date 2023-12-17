@@ -18,8 +18,8 @@ eventRepository.insertEvent = async (data) => {
     )
 }
 
-eventRepository.findById = async (id) => {
-    const query = selectQuery() + filterById()
+eventRepository.findById = async (session, id) => {
+    const query = selectQuery(session) + filterById()
     const [data] = await db.query(query, {
         bind: [id],
         type: QueryTypes.SELECT,

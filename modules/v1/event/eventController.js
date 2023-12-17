@@ -47,7 +47,8 @@ eventController.list = asyncHandler(async (req, res) => {
 // @access  Protect
 eventController.detail = asyncHandler(async (req, res) => {
     req.event = eventConstant.event.detail.event
-    const data = await eventService.getEvent(req.params.id)
+    const session = req.auth.data
+    const data = await eventService.getEvent(session, req.params.id)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

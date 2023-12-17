@@ -28,14 +28,14 @@ eventRepository.findById = async (id) => {
 }
 
 eventRepository.findAll = async (session, filters, search, page, pageSize) => {
-    const query = selectQuery() + filtersQuery(session, filters) + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
+    const query = selectQuery(session) + filtersQuery(session, filters) + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
     return { data, total }
 }
 
-const selectQuery = () => {
+const selectQuery = (session) => {
     return `
         SELECT 
             id, 
@@ -43,11 +43,11 @@ const selectQuery = () => {
             "organizationName", 
             name,
             "roomId",
-            "passcode", 
             "startDate",
             "endDate",
             location,
             description,
+            ${session.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
             "createdBy"
         FROM events
     `

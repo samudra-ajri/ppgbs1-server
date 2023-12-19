@@ -57,7 +57,7 @@ presenceRepository.findAll = async (filters, page, pageSize) => {
 const selectQuery = () => {
     return `
         SELECT 
-            presences."userId", presences."eventId", presences.status, presences."createdAt",
+            presences."userId", presences."eventId", presences.status, presences."createdAt", presences."createdBy",
             users.name as "userName", users.sex as "userSex", organizations.id as "organizationId", organizations.name as "organizationName"
     `
 }

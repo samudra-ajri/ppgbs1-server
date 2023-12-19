@@ -47,7 +47,7 @@ presenceRepository.findOneiWithUser = async (userId, eventId) => {
 }
 
 presenceRepository.findAll = async (filters, page, pageSize) => {
-    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + paginateQuery(page, pageSize)
+    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + orderBy() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
@@ -75,6 +75,12 @@ const baseJoinQuery = () => {
         LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
         LEFT JOIN positions on positions.id = "usersPositions"."positionId"
         LEFT JOIN organizations on organizations.id = "positions"."organizationId"
+    `
+}
+
+const orderBy = () => {
+    return `
+        ORDER BY presences."createdAt"
     `
 }
 

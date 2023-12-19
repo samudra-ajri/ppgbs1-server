@@ -36,7 +36,6 @@ completionService.deleteCompletions = async (session, materialIds) => {
 
 completionService.sumCompletion = async (structure, userId, filters) => {
     validateStructure(structure)
-    await validateUser(userId)
     const materialsMultiplier = 1
     const completionsCount = await getCompletionCount(structure, userId, filters)
     const materialsCount = await getMaterialCount(structure, filters)
@@ -76,13 +75,6 @@ const validateStructure = (structure) => {
     const listedStructures = ['grade', 'subject', 'category', 'subcategory', 'material',]
     const isListedStructure = listedStructures.includes(structure)
     if (!isListedStructure) throwError(`${event.message.failed.structureNotFound} (structure=${structure})`, 404)
-}
-
-const validateUser = async (userId) => {
-    if (!userId) return
-    const event = eventConstant.completion.sum
-    const foundUserCompletion = await completionRepository.findOneByUserId(userId)
-    if (!foundUserCompletion) throwError(event.message.failed.userNotFound, 404)
 }
 
 const getUsersCount = async (positionTypes, filters) => {

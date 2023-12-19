@@ -11,8 +11,9 @@ presenceService.create = async (payload) => {
     const isCreatedByAdmin = userId ? true : false
     const foundUserId = isCreatedByAdmin ? userId : session.id
 
-    if (isCreatedByAdmin && session.position.type === positionTypesConstant.GENERUS) throwError(event.message.failed.unauthorized, 403)
-
+    if (isCreatedByAdmin && session.position.type === positionTypesConstant.GENERUS) {
+        throwError(event.message.failed.unauthorized, 403)
+    }
 
     const foundEventDetail = await presenceRepository.findEvent(eventId)
     if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)

@@ -15,7 +15,7 @@ router.route('/:id')
 // presences
 router.route('/:eventId/presences')
     .post(protect, presenceController.create)
-    .get(protect, admin, presenceController.list)
+    .get(protect, presenceController.list)
 router.route('/:eventId/presences/:userId')
     .get(protect, presenceController.detail)
     .post(protect, admin, presenceController.createByAdmin)

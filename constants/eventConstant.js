@@ -392,6 +392,7 @@ const eventConstant = {
 					wrongAccessCode: 'kode akses salah.',
 					alreadyExists: 'sudah mengisi daftar hadir.',
 					eventNotFound: 'kegiatan (event) tidak tersedia.',
+					unauthorized: 'Unauthorized.',
 				},
 			},
 		},

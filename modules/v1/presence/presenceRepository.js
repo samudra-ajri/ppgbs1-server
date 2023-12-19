@@ -29,7 +29,7 @@ presenceRepository.findEvent = async (eventId) => {
 
 presenceRepository.findPresence = async (userId, eventId) => {
     const [data] = await db.query(`
-        SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2`, {
+        SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2 AND "deletedAt" IS NULL`, {
             bind: [userId, eventId],
             type: QueryTypes.SELECT,
         }

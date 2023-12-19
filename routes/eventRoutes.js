@@ -18,7 +18,7 @@ router.route('/:eventId/presences')
     .get(protect, presenceController.list)
 router.route('/:eventId/presences/:userId')
     .get(protect, presenceController.detail)
-    .post(protect, admin, presenceController.createByAdmin)
+    .post(protect, presenceController.createByAdmin)
     .delete(protect, presenceController.delete)
 
 module.exports = router

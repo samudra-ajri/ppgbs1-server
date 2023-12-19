@@ -1,4 +1,5 @@
 const eventConstant = require('../../../constants/eventConstant')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const { throwError } = require('../../../utils/errorUtils')
 const presenceRepository = require('./presenceRepository')
 
@@ -39,6 +40,9 @@ presenceService.getPresence = async (userId, eventId) => {
 }
 
 presenceService.delete = async (session, eventId, userId) => {
+    const event = eventConstant.presence.delete
+    const presence = await presenceRepository.findPresence(userId, eventId)
+    if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
     const deletedBy = session.id
     await presenceRepository.deletePresence(eventId, userId, deletedBy)
 }

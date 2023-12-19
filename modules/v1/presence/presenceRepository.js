@@ -105,6 +105,7 @@ const filterByDefault = (filters) => {
     return `
         WHERE presences."eventId" = ${Number(eventId)}
         AND positions.type = '${positionTypesConstant.GENERUS}'
+        AND presences."deletedAt" IS NULL
     `
 }
 

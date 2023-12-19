@@ -439,6 +439,7 @@ const eventConstant = {
 				success: 'berhasil.',
 				failed: {
 					notFound: 'kehadiran (presence) tidak ditemukan.',
+					unauthorized: 'Unauthorized.',
 				},
 			},
 		},

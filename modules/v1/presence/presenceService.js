@@ -46,8 +46,7 @@ presenceService.delete = async (session, eventId, userId) => {
     const event = eventConstant.presence.delete
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
-    const deletedBy = session.id
-    await presenceRepository.deletePresence(eventId, userId, deletedBy)
+    await presenceRepository.deletePresence(eventId, userId)
 }
 
 module.exports = presenceService

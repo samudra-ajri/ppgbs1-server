@@ -29,7 +29,7 @@ presenceRepository.findEvent = async (eventId) => {
 
 presenceRepository.findPresence = async (userId, eventId) => {
     const [data] = await db.query(`
-        SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2 AND "deletedAt" IS NULL`, {
+        SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2`, {
             bind: [userId, eventId],
             type: QueryTypes.SELECT,
         }
@@ -105,7 +105,6 @@ const filterByDefault = (filters) => {
     return `
         WHERE presences."eventId" = ${Number(eventId)}
         AND positions.type = '${positionTypesConstant.GENERUS}'
-        AND presences."deletedAt" IS NULL
     `
 }
 
@@ -136,14 +135,12 @@ const filterByUserAndEventId = () => {
     `
 }
 
-presenceRepository.deletePresence = async (eventId, userId, deletedBy) => {
-    const now = Date.now()
+presenceRepository.deletePresence = async (eventId, userId) => {
     await db.query(`
-        UPDATE "presences"
-        SET "deletedBy" = $3, "deletedAt" = $4
+        DELETE FROM "presences"
         WHERE "userId" = $1 AND "eventId" = $2`, {
-            bind: [userId, eventId, deletedBy, now],
-            type: QueryTypes.UPDATE
+            bind: [userId, eventId],
+            type: QueryTypes.DELETE
         }
     )
 }

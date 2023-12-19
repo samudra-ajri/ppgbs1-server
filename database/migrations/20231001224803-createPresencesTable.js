@@ -9,9 +9,7 @@ module.exports = {
         "eventId"    bigint,
         "status"     varchar,
         "createdAt"  bigint,
-        "createdBy"  bigint,
-        "deleteddAt" bigint,
-        "deletedBy"  bigin
+        "createdBy"  bigint
       );
     `)
   },

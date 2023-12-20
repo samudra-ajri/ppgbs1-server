@@ -12,15 +12,15 @@ const userController = {}
 // @access  Private
 userController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.list.event
-    const { isActive, organizationId, ancestorId, sex, positionType, grade } = req.query
+    const { isActive, organizationId, sex, positionType, grade } = req.query
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
     const filters = { 
         userId: req.auth.data.id,
+        ancestorId: req.auth.data.position.hierarchy[1]?.id, // data restriction
         isActive,
         organizationId,
-        ancestorId,
         sex,
         positionType,
         grade,

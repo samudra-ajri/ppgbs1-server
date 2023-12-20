@@ -116,7 +116,7 @@ userRepository.findPositions = async (positionsIds) => {
 }
 
 userRepository.findAll = async (filters, search, page, pageSize) => {
-    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + paginateQuery(page, pageSize)
+    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + orderByQuery() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
@@ -187,6 +187,12 @@ const groupByQuery = () => {
             teachers."timesDuties",
             teachers."greatHadiths",
             teachers.education
+    `
+}
+
+const orderByQuery = () => {
+    return `
+        ORDER BY users.name
     `
 }
 

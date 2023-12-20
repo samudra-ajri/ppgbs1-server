@@ -4,6 +4,7 @@ const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { paginate } = require('../../../utils/paginationUtils')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const userController = {}
 
@@ -16,9 +17,14 @@ userController.list = asyncHandler(async (req, res) => {
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
+
+    const isAdmin = req.auth.data.position.type === positionTypesConstant.ADMIN
+    // Admin only can view users in the same level with the Admin
+    const organizationScope = isAdmin ? req.auth.data.position.orgId : req.auth.data.position.hierarchy[1]?.id // data restriction
+    
     const filters = { 
         userId: req.auth.data.id,
-        ancestorId: req.auth.data.position.hierarchy[1]?.id, // data restriction
+        ancestorId: organizationScope,
         isActive,
         organizationId,
         sex,

@@ -222,6 +222,7 @@ const filterByDefault = (filters) => {
     const { userId } = filters
     return `
         WHERE "usersPositions"."deletedAt" IS NULL
+        AND positions.id IS NOT NULL
         AND users.id <> ${userId}
     `
 }

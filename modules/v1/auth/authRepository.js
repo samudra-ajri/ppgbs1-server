@@ -72,6 +72,7 @@ authRepository.findUserPoisition = async (userId, positionId) => {
             p."name" as "positionName", 
             o."id" as "orgId",
             o."name" as "orgName",
+            o."level" as "orgLevel",
             p."type"
         FROM "usersPositions" up
         JOIN "users" u on u."id" = up."userId"

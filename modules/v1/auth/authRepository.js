@@ -127,7 +127,8 @@ authRepository.findUserWithPosition = async (userId) => {
                     'positionId', "positions"."id", 
                     'positionName', "positions"."name",
                     'organizationId', "organizations"."id",
-                    'organizationName', "organizations"."name"
+                    'organizationName', "organizations"."name",
+                    'organizationLevel', "organizations"."level"
                 )
             ) as positions
         FROM users

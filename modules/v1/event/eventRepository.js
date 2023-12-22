@@ -38,18 +38,20 @@ eventRepository.findAll = async (session, filters, search, page, pageSize) => {
 const selectQuery = (session) => {
     return `
         SELECT 
-            id, 
-            "organizationId", 
-            "organizationName", 
-            name,
-            "roomId",
-            "startDate",
-            "endDate",
-            location,
-            description,
+            events.id, 
+            events."organizationId", 
+            organizations.name as "organizationName", 
+            organizations.level as "organizationLevel",
+            events.name,
+            events."roomId",
+            events."startDate",
+            events."endDate",
+            events.location,
+            events.description,
             ${session.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
-            "createdBy"
+            events."createdBy"
         FROM events
+        LEFT JOIN organizations on organizations.id = "events"."organizationId"
     `
 }
 

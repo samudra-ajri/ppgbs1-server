@@ -31,10 +31,10 @@ presenceController.create = asyncHandler(async (req, res) => {
 presenceController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.list.event
     const { eventId } = req.params
-    const { sex, organizationId } = req.query
+    const { sex, ancestorOrganizationId, organizationId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { eventId, sex, organizationId }
+    const filters = { eventId, sex, ancestorOrganizationId, organizationId }
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })

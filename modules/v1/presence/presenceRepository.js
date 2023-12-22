@@ -97,6 +97,7 @@ const filtersQuery = (filters) => {
     let filter = filterByDefault(filters)
     filter += filterByUserSex(filters)
     filter += filterByOrganizationId(filters)
+    filter += filterByAncestorOrganizationId(filters)
     return filter
 }
 
@@ -133,6 +134,16 @@ const filterByUserAndEventId = () => {
         WHERE presences."userId" = $1
         AND presences."eventId" = $2
     `
+}
+
+const filterByAncestorOrganizationId = (filters) => {
+    let { ancestorOrganizationId } = filters
+    if (ancestorOrganizationId) return `
+        AND organizations.id in (
+            SELECT "descendantId" FROM "organizationHierarchies" WHERE "ancestorId" = ${Number(ancestorOrganizationId)}
+        )
+    `
+    return ''
 }
 
 presenceRepository.deletePresence = async (eventId, userId) => {

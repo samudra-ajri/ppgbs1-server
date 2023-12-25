@@ -5,6 +5,7 @@ const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { paginate } = require('../../../utils/paginationUtils')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
+const { calculateAncestorIdScope } = require('../../../utils/userUtils')
 
 const completionController = {}
 
@@ -88,7 +89,16 @@ completionController.sumUsers = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure } = req.params
     const { grade, subject, category, subcategory, usersGrade, organizationId, ancestorId } = req.query
-    const filters = { grade, subject, category, subcategory, usersGrade, organizationId, ancestorId }
+    const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)
+    const filters = {
+        grade,
+        subject,
+        category,
+        subcategory,
+        usersGrade,
+        organizationId,
+        ancestorId: ancestorIdScope
+    }
     const data = await completionService.sumCompletions(structure, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })

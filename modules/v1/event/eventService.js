@@ -23,7 +23,7 @@ eventService.createEvent = async ({ session, payload }) => {
 
 eventService.deleteEvent = async (session, id) => {
     const event = eventConstant.event.delete
-    const foundEvent = await eventRepository.findById(id)
+    const foundEvent = await eventRepository.findById(session, id)
     if (!foundEvent || Number(foundEvent.createdBy) !== session.id) throwError(event.message.failed.notFound, 404)
     await eventRepository.deleteEvent(session.id, id)
 }

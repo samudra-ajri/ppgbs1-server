@@ -96,4 +96,21 @@ authController.resetPassword = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    update my password
+// @route   PUT /auths/update-password
+// @access  Protect
+authController.updatePassword = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.updatePassword.event
+    const { currentPassword, newPassword, confirmNewPassword } = req.body
+    const data = {
+        userId: req.auth.data.id,
+        currentPassword,
+        newPassword,
+        confirmNewPassword
+    }
+    await authService.updatePassword(data)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = authController

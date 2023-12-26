@@ -62,6 +62,16 @@ const eventConstant = {
 				}
 			},
 		},
+		updatePassword: {
+			event: 'update-password',
+			message: {
+				success: 'berhasil',
+				failed: {
+					mismatch: 'konfirmasi password tidak sama.',
+					invalidCurrentPassword: "'password saat ini' salah."
+				}
+			},
+		},
 		me: {
 			event: 'me',
 			message: {

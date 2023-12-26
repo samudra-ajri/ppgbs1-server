@@ -154,4 +154,25 @@ authService.resetPassword = async ({ token, tempPassword, newPassword, confirmNe
     await authRepository.updateUserPassword(data)
 }
 
+authService.updatePassword = async ({ userId, currentPassword, newPassword, confirmNewPassword }) => {
+    const event = eventConstant.auth.updatePassword
+    const foundUsers = await authRepository.findUserById(userId)
+    const user = foundUsers[0]
+
+    if (!user || !await authUtils.verifyPassword(currentPassword, user.password)) {
+        throwError(event.message.failed.invalidCurrentPassword, 401)
+    }
+
+    if (newPassword !== confirmNewPassword) {
+        throwError(event.message.failed.mismatch, 400)
+    }
+
+    const data = {
+        userId: user.id,
+        password: await authUtils.generatePassword(newPassword),
+    }
+
+    await authRepository.updateUserPassword(data)
+}
+
 module.exports = authService

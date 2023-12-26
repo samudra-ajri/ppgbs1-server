@@ -5,6 +5,16 @@ const { QueryTypes } = require('sequelize')
 
 const authRepository = {}
 
+authRepository.findUserById = async (userId) => {
+    return db.query(`
+        SELECT "id", "password" FROM "users" 
+        WHERE "id" = :userId`, {
+            replacements: { userId },
+            type: QueryTypes.SELECT,
+        }
+    )
+}
+
 authRepository.findUser = async (login) => {
     return db.query(`
         SELECT "id", "name", "isActive", "password", "resetPasswordToken"

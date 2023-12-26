@@ -27,7 +27,7 @@ authController.login = asyncHandler(async (req, res) => {
 })
 
 // @desc    my profile
-// @route   POST /auths/me
+// @route   GET /auths/me
 // @access  Protect
 authController.me = asyncHandler(async (req, res) => {
     req.event = eventConstant.auth.me.event

@@ -17,9 +17,10 @@ userController.list = asyncHandler(async (req, res) => {
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)    
+    const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)   
     const filters = { 
         userId: req.auth.data.id,
+        positionId: req.auth.data.position.positionId,
         ancestorId: ancestorIdScope,
         isActive,
         organizationId,

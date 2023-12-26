@@ -350,7 +350,7 @@ completionRepository.countUsersCompletions = async (structure, filters) => {
 
 completionRepository.countUsers = async (positionType, organizationId, usersGrade, ancestorId) => {
     let selectQuery = `
-        SELECT COUNT("usersPositions"."userId") as "usersCount"
+        SELECT COUNT(DISTINCT "usersPositions"."userId") AS "usersCount"
     `
     let baseJoinQuery = `
         FROM "usersPositions"

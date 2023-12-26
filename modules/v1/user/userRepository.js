@@ -226,11 +226,11 @@ const filtersQuery = (filters) => {
 }
 
 const filterByDefault = (filters) => {
-    const { userId } = filters
+    const { userId, positionId } = filters
     return `
         WHERE "usersPositions"."deletedAt" IS NULL
         AND positions.id IS NOT NULL
-        AND users.id <> ${userId}
+        AND NOT ("usersPositions"."userId" = ${userId} AND "usersPositions"."positionId" = ${Number(positionId)})
     `
 }
 

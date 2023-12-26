@@ -6,9 +6,7 @@ module.exports = {
         "createdAt" bigint,
         "createdBy" bigint,
         "updatedAt" bigint,
-        "updatedBy" bigint,
-        "deletedAt" bigint,
-        "deletedBy" bigint
+        "updatedBy" bigint
       );
     `)
   },

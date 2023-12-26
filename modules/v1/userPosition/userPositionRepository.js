@@ -8,7 +8,6 @@ userPositionRepository.delete = async (userId, positionId, deletedBy, type) => {
     const data = { userId, positionId, deletedBy, type }
     await db.transaction(async (t) => {
         await deleteUserPosition(t, data)
-        await deleteUserRole(t, data)
         const userPositions = await findUserPositions(t, data)
         if (!userPositions.length) await deleteUser(t, data)
     })
@@ -22,21 +21,6 @@ const deleteUserPosition = async (trx, data) => {
         SET "deletedAt" = $3
         WHERE "userId" = $1 AND "positionId" = $2`, {
             bind: [userId, positionId, now],
-            type: QueryTypes.UPDATE,
-            transaction: trx
-        }
-    )
-}
-
-const deleteUserRole = async (trx, data) => {
-    const { userId, deletedBy, type } = data
-    const now = Date.now()
-    const positionType = positionTypesTableMap[type]
-    await db.query(`
-        UPDATE ${positionType} 
-        SET "deletedAt" = $2, "deletedBy" = $3
-        WHERE "userId" = $1`, {
-            bind: [userId, now, deletedBy],
             type: QueryTypes.UPDATE,
             transaction: trx
         }

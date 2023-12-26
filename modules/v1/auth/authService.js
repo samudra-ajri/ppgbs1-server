@@ -16,18 +16,11 @@ authService.getUser = async ({ login, password, positionId }) => {
         throwError(event.message.failed.incorrectPhoneOrPassword, 401)
     }
 
-    if (!user.isActive) {
-        throwError(event.message.failed.invalidAccount, 401)
-    }
-
-    if (user.deletedAt) {
-        throwError(event.message.failed.removedAccount, 401)
-    }
+    if (!user.isActive) await authRepository.restoreUser(user.id)
 
     const userPosition = await authRepository.findUserPoisition(user.id, positionId)
-    if (!userPosition) {
-        throwError(event.message.failed.undefinedPosition, 401)
-    }
+    if (!userPosition) throwError(event.message.failed.undefinedPosition, 401)
+    await authRepository.restoreUserPosition(user.id)
 
     const positionHierarchy = await authRepository.findPoisitionHierarchy(userPosition.orgId)
     userPosition.hierarchy = positionHierarchy
@@ -115,7 +108,7 @@ authService.forgotPassword = async ({ login }) => {
     const user = foundUsers[0]
 
     if (!user) throwError(event.message.failed.notFound, 404)
-    
+
     const random = randomstring.generate({ length: 10, charset: 'alphabetic' })
     const data = {
         userId: user.id,

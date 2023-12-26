@@ -72,8 +72,8 @@ authRepository.findRegisteredUser = async (register) => {
 
 authRepository.findUserPoisition = async (userId, positionId) => {
     const positionFilter = positionId => {
-        if (positionId) return `AND "positionId" = ${Number(positionId)}`
-        return ''
+        if (!positionId) return `AND "isMain" = TRUE`
+        return `AND "positionId" = ${Number(positionId)}`
     }
 
     const results = await db.query(`
@@ -88,7 +88,7 @@ authRepository.findUserPoisition = async (userId, positionId) => {
         JOIN "users" u on u."id" = up."userId"
         JOIN "positions" p on p."id" = up."positionId"
         JOIN "organizations" o on o."id" = p."organizationId"
-        WHERE "userId" = $1 AND up."deletedAt" IS NULL ${positionFilter(positionId)}`, {
+        WHERE "userId" = $1 ${positionFilter(positionId)}`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }
@@ -148,7 +148,7 @@ authRepository.findUserWithPosition = async (userId) => {
         LEFT JOIN "usersPositions" on "users"."id" = "usersPositions"."userId"
         LEFT JOIN "positions" on "positions"."id" = "usersPositions"."positionId"
         LEFT JOIN "organizations" on "organizations"."id" = "positions"."organizationId"
-        WHERE "users"."id" = $1 AND "usersPositions"."deletedAt" IS NULL
+        WHERE "users"."id" = $1
         GROUP BY
             users.id, 
             students.grade,
@@ -239,6 +239,28 @@ authRepository.findCurrentAncestorOrganization = async (currentOrganizationId) =
         organizationAncestorId: Number(result[0]?.ancestorId), 
         organizationAncestorName: result[0]?.name, 
     }
+}
+
+authRepository.restoreUser = async (userId) => {
+    await db.query(`
+        UPDATE "users"
+        SET "isActive" = TRUE, "deletedAt" = NULL, "deletedBy" = NULL
+        WHERE id = $1`, {
+            bind: [userId],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
+authRepository.restoreUserPosition = async (userId) => {
+    await db.query(`
+        UPDATE "usersPositions"
+        SET "deletedAt" = NULL
+        WHERE "userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.UPDATE
+        }
+    )
 }
 
 const insertUser = async (trx, data) => {

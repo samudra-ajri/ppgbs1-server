@@ -45,6 +45,7 @@ userController.forgotPasswordList = asyncHandler(async (req, res) => {
     const pageSize = req.query.pageSize || 20
     const filters = { 
         userId: req.auth.data.id,
+        positionId: req.auth.data.position.positionId,
         forgotPassword: 'true',
         ancestorId: req.auth.data.position.orgId,
     }

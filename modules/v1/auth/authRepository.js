@@ -71,6 +71,11 @@ authRepository.findRegisteredUser = async (register) => {
 }
 
 authRepository.findUserPoisition = async (userId, positionId) => {
+    const positionFilter = positionId => {
+        if (positionId) return `AND "positionId" = ${Number(positionId)}`
+        return ''
+    }
+
     const results = await db.query(`
         SELECT
             p."id" as "positionId", 
@@ -83,7 +88,7 @@ authRepository.findUserPoisition = async (userId, positionId) => {
         JOIN "users" u on u."id" = up."userId"
         JOIN "positions" p on p."id" = up."positionId"
         JOIN "organizations" o on o."id" = p."organizationId"
-        WHERE "userId" = $1 AND up."deletedAt" IS NULL`, {
+        WHERE "userId" = $1 AND up."deletedAt" IS NULL ${positionFilter(positionId)}`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }

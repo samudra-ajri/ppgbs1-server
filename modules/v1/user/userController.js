@@ -4,8 +4,6 @@ const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { paginate } = require('../../../utils/paginationUtils')
-const positionTypesConstant = require('../../../constants/positionTypesConstant')
-const organizationLevelsConstant = require('../../../constants/organizationLevelsConstant')
 const { calculateAncestorIdScope } = require('../../../utils/userUtils')
 
 const userController = {}

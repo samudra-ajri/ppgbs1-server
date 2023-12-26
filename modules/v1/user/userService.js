@@ -30,13 +30,15 @@ userService.updateMyProfile = async (data) => {
     const { password, password2, currentPositionId, newPositionId } = payload
     if (password !== password2) throwError(event.message.failed.incorrectPasswordCombination, 400)
     // check positions availability
-    const positionIds = [...new Set([currentPositionId, newPositionId])]
-    const foundPositions = await userRepository.findPositions(positionIds)
-    if (!currentPositionId || !newPositionId || foundPositions.length < positionIds.length) {
-        throwError(event.message.failed.undefinedPosition, 400)
-    }
-    if (positionIds.length !== 1 && foundPositions[0].type !== foundPositions[1].type) {
-        throwError(event.message.failed.differentPositionType, 400)
+    if (newPositionId) {
+        const positionIds = [...new Set([currentPositionId, newPositionId])]
+        const foundPositions = await userRepository.findPositions(positionIds)
+        if (!currentPositionId || !newPositionId || foundPositions.length < positionIds.length) {
+            throwError(event.message.failed.undefinedPosition, 400)
+        }
+        if (positionIds.length !== 1 && foundPositions[0].type !== foundPositions[1].type) {
+            throwError(event.message.failed.differentPositionType, 400)
+        }
     }
 
     let updatedPassword
@@ -96,10 +98,10 @@ userService.updateMyTeacherProfile = async (data) => {
         kertosonoYear: payload.kertosonoYear || userData.kertosonoYear,
         firstDutyYear: payload.firstDutyYear || userData.firstDutyYear,
         timesDuties: payload.timesDuties?.toString() || userData.timesDuties || '0',
-        greatHadiths: payload.greatHadiths?.join(', ')  || userData.greatHadiths,
+        greatHadiths: payload.greatHadiths?.join(', ') || userData.greatHadiths,
         education: payload.education || userData.education,
     }
-    
+
     await userRepository.updateUserTeacher(updatedDdata)
 }
 

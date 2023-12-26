@@ -14,9 +14,10 @@ userRepository.findById = async (id) => {
 }
 
 userRepository.updateUser = async (data) => {
+    const { newPositionId } = data
     await db.transaction(async (t) => {
         await updateUserProfile(t, data)
-        await updateUserPositions(t, data)
+        if (newPositionId) await updateUserPositions(t, data)
     })
 }
 

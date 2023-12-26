@@ -71,11 +71,6 @@ authRepository.findRegisteredUser = async (register) => {
 }
 
 authRepository.findUserPoisition = async (userId, positionId) => {
-    const positionFilter = positionId => {
-        if (!positionId) return 'AND "isMain" = TRUE'
-        return `AND "positionId" = ${Number(positionId)}`
-    }
-
     const results = await db.query(`
         SELECT
             p."id" as "positionId", 
@@ -88,7 +83,7 @@ authRepository.findUserPoisition = async (userId, positionId) => {
         JOIN "users" u on u."id" = up."userId"
         JOIN "positions" p on p."id" = up."positionId"
         JOIN "organizations" o on o."id" = p."organizationId"
-        WHERE "userId" = $1 ${positionFilter(positionId)}`, {
+        WHERE "userId" = $1 AND up."deletedAt" IS NULL`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }
@@ -148,7 +143,7 @@ authRepository.findUserWithPosition = async (userId) => {
         LEFT JOIN "usersPositions" on "users"."id" = "usersPositions"."userId"
         LEFT JOIN "positions" on "positions"."id" = "usersPositions"."positionId"
         LEFT JOIN "organizations" on "organizations"."id" = "positions"."organizationId"
-        WHERE "users"."id" = $1
+        WHERE "users"."id" = $1 AND "usersPositions"."deletedAt" IS NULL
         GROUP BY
             users.id, 
             students.grade,

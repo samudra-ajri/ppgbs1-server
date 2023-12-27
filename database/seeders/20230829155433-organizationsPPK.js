@@ -20,7 +20,7 @@ module.exports = {
     const parseCsvLineHierarchy = (line) => {
       return [
         {
-          ancestorId: 1, // DPP organization id
+          ancestorId: 1, // PPG organization id
           descendantId: line.id,
           depth: 2,
           updatedAt: now,

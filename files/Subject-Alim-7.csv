@@ -1,13 +1,13 @@
 material,grade,subject,category,subcategory
-Al-Qur'an juz 7 dan 8,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-"Al-Qur'an juz 12, 13, 14, 15, 16, dan 17",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Hukum Isti'adzah dan Basmalah,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-"Hukum Nun Sukun dan Tanwin (Idhhar halqi, Idghom Bigunnah, Idhhar Wajib, Idghom Bilaa Ghunnah, Iqlab, Ikhfa' Haqiqi)",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-"Hukum Mim Sukun (Ikhfa' Syafawy, Idghom Mimy, Idhhar Syafawy)",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Al-Quran juz 7 dan 8,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Al-Quran juz 12, 13, 14, 15, 16, dan 17",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Hukum Istiadzah dan Basmalah,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Hukum Nun Sukun dan Tanwin (Idhhar halqi, Idghom Bigunnah, Idhhar Wajib, Idghom Bilaa Ghunnah, Iqlab, Ikhfa Haqiqi)",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Hukum Mim Sukun (Ikhfa Syafawy, Idghom Mimy, Idhhar Syafawy)",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Hukum Mim Tasydud dab Nun Tasydid (Guhnnah),7,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Hukum takbir,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Hukum Al Ma'rifat (Idhhar Qomariyah dan Idghom Syamsiyah),7,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Hukum Lam yang terdapat dalam kalimah fi'il,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Hukum Al Marifat (Idhhar Qomariyah dan Idghom Syamsiyah),7,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Hukum Lam yang terdapat dalam kalimah fiil,7,ALIM,Baca-Tulis,Baca huruf Al-Quran
 "Hukum Idghom (Mutamtsilain, Mutaqoribain, Mutajanisain)",7,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Menjaga hafalan surat An-Naas s.d. at-Thoriq,7,ALIM,Hafalan,Hafalan surat-surat Al-Quran
 Surat Al Buruuj,7,ALIM,Hafalan,Hafalan surat-surat Al-Quran
@@ -18,11 +18,11 @@ Menampilkan hafalan dalil pada jenjang sebelumnya,7,ALIM,Hafalan,Dalil
 Wajibnya berjamaah,7,ALIM,Hafalan,Dalil
 Dasar-dasar aqidah,7,ALIM,Keilmuan,Dasar Keagamaan
 "Rukun iman, rukun islam dan ihsan",7,ALIM,Keilmuan,Dasar Keagamaan
-Pengertian Qur'an Hadits Jamaah,7,ALIM,Keilmuan,Dasar Keagamaan
+Pengertian Quran Hadits Jamaah,7,ALIM,Keilmuan,Dasar Keagamaan
 "Ilmu manqul, musnad, muttashil",7,ALIM,Keilmuan,Dasar Keagamaan
 Kemurnian ibadah,7,ALIM,Keilmuan,Dasar Keagamaan
 Pengetahuan wajibnya taat dan haromnya maksiat,7,ALIM,Keilmuan,Dasar Keagamaan
-Pengetahuan hukum halAl-harom,7,ALIM,Keilmuan,Dasar Keagamaan
+Pengetahuan hukum halal-harom,7,ALIM,Keilmuan,Dasar Keagamaan
 Thoharoh dan sholat,7,ALIM,Keilmuan,Dasar Keagamaan
 Mandi junub,7,ALIM,Keilmuan,Dasar Keagamaan
 "Hukum haid, mani, madzi, dan wadhi",7,ALIM,Keilmuan,Dasar Keagamaan
@@ -32,66 +32,66 @@ Kefadlolan puasa dan hal-hal yang diperbolehkan serta membatalkan puasa,7,ALIM,K
 Puasa sunah,7,ALIM,Keilmuan,Dasar Keagamaan
 Hukum mahrom,7,ALIM,Keilmuan,Dasar Keagamaan
 Aurot,7,ALIM,Keilmuan,Dasar Keagamaan
-402,7,ALIM,Al-Qur'an,Juz 21
-403,7,ALIM,Al-Qur'an,Juz 21
-404,7,ALIM,Al-Qur'an,Juz 21
-405,7,ALIM,Al-Qur'an,Juz 21
-406,7,ALIM,Al-Qur'an,Juz 21
-407,7,ALIM,Al-Qur'an,Juz 21
-408,7,ALIM,Al-Qur'an,Juz 21
-409,7,ALIM,Al-Qur'an,Juz 21
-410,7,ALIM,Al-Qur'an,Juz 21
-411,7,ALIM,Al-Qur'an,Juz 21
-412,7,ALIM,Al-Qur'an,Juz 21
-413,7,ALIM,Al-Qur'an,Juz 21
-414,7,ALIM,Al-Qur'an,Juz 21
-415,7,ALIM,Al-Qur'an,Juz 21
-416,7,ALIM,Al-Qur'an,Juz 21
-417,7,ALIM,Al-Qur'an,Juz 21
-418,7,ALIM,Al-Qur'an,Juz 21
-419,7,ALIM,Al-Qur'an,Juz 21
-420,7,ALIM,Al-Qur'an,Juz 21
-421,7,ALIM,Al-Qur'an,Juz 21
-422,7,ALIM,Al-Qur'an,Juz 22
-423,7,ALIM,Al-Qur'an,Juz 22
-424,7,ALIM,Al-Qur'an,Juz 22
-425,7,ALIM,Al-Qur'an,Juz 22
-426,7,ALIM,Al-Qur'an,Juz 22
-427,7,ALIM,Al-Qur'an,Juz 22
-428,7,ALIM,Al-Qur'an,Juz 22
-429,7,ALIM,Al-Qur'an,Juz 22
-430,7,ALIM,Al-Qur'an,Juz 22
-431,7,ALIM,Al-Qur'an,Juz 22
-432,7,ALIM,Al-Qur'an,Juz 22
-433,7,ALIM,Al-Qur'an,Juz 22
-434,7,ALIM,Al-Qur'an,Juz 22
-435,7,ALIM,Al-Qur'an,Juz 22
-436,7,ALIM,Al-Qur'an,Juz 22
-437,7,ALIM,Al-Qur'an,Juz 22
-438,7,ALIM,Al-Qur'an,Juz 22
-439,7,ALIM,Al-Qur'an,Juz 22
-440,7,ALIM,Al-Qur'an,Juz 22
-441,7,ALIM,Al-Qur'an,Juz 23
-442,7,ALIM,Al-Qur'an,Juz 23
-443,7,ALIM,Al-Qur'an,Juz 23
-444,7,ALIM,Al-Qur'an,Juz 23
-445,7,ALIM,Al-Qur'an,Juz 23
-446,7,ALIM,Al-Qur'an,Juz 23
-447,7,ALIM,Al-Qur'an,Juz 23
-448,7,ALIM,Al-Qur'an,Juz 23
-449,7,ALIM,Al-Qur'an,Juz 23
-450,7,ALIM,Al-Qur'an,Juz 23
-451,7,ALIM,Al-Qur'an,Juz 23
-452,7,ALIM,Al-Qur'an,Juz 23
-453,7,ALIM,Al-Qur'an,Juz 23
-454,7,ALIM,Al-Qur'an,Juz 23
-455,7,ALIM,Al-Qur'an,Juz 23
-456,7,ALIM,Al-Qur'an,Juz 23
-457,7,ALIM,Al-Qur'an,Juz 23
-458,7,ALIM,Al-Qur'an,Juz 23
-459,7,ALIM,Al-Qur'an,Juz 23
-460,7,ALIM,Al-Qur'an,Juz 23
-461,7,ALIM,Al-Qur'an,Juz 23
+402,7,ALIM,Al-Quran,Juz 21
+403,7,ALIM,Al-Quran,Juz 21
+404,7,ALIM,Al-Quran,Juz 21
+405,7,ALIM,Al-Quran,Juz 21
+406,7,ALIM,Al-Quran,Juz 21
+407,7,ALIM,Al-Quran,Juz 21
+408,7,ALIM,Al-Quran,Juz 21
+409,7,ALIM,Al-Quran,Juz 21
+410,7,ALIM,Al-Quran,Juz 21
+411,7,ALIM,Al-Quran,Juz 21
+412,7,ALIM,Al-Quran,Juz 21
+413,7,ALIM,Al-Quran,Juz 21
+414,7,ALIM,Al-Quran,Juz 21
+415,7,ALIM,Al-Quran,Juz 21
+416,7,ALIM,Al-Quran,Juz 21
+417,7,ALIM,Al-Quran,Juz 21
+418,7,ALIM,Al-Quran,Juz 21
+419,7,ALIM,Al-Quran,Juz 21
+420,7,ALIM,Al-Quran,Juz 21
+421,7,ALIM,Al-Quran,Juz 21
+422,7,ALIM,Al-Quran,Juz 22
+423,7,ALIM,Al-Quran,Juz 22
+424,7,ALIM,Al-Quran,Juz 22
+425,7,ALIM,Al-Quran,Juz 22
+426,7,ALIM,Al-Quran,Juz 22
+427,7,ALIM,Al-Quran,Juz 22
+428,7,ALIM,Al-Quran,Juz 22
+429,7,ALIM,Al-Quran,Juz 22
+430,7,ALIM,Al-Quran,Juz 22
+431,7,ALIM,Al-Quran,Juz 22
+432,7,ALIM,Al-Quran,Juz 22
+433,7,ALIM,Al-Quran,Juz 22
+434,7,ALIM,Al-Quran,Juz 22
+435,7,ALIM,Al-Quran,Juz 22
+436,7,ALIM,Al-Quran,Juz 22
+437,7,ALIM,Al-Quran,Juz 22
+438,7,ALIM,Al-Quran,Juz 22
+439,7,ALIM,Al-Quran,Juz 22
+440,7,ALIM,Al-Quran,Juz 22
+441,7,ALIM,Al-Quran,Juz 23
+442,7,ALIM,Al-Quran,Juz 23
+443,7,ALIM,Al-Quran,Juz 23
+444,7,ALIM,Al-Quran,Juz 23
+445,7,ALIM,Al-Quran,Juz 23
+446,7,ALIM,Al-Quran,Juz 23
+447,7,ALIM,Al-Quran,Juz 23
+448,7,ALIM,Al-Quran,Juz 23
+449,7,ALIM,Al-Quran,Juz 23
+450,7,ALIM,Al-Quran,Juz 23
+451,7,ALIM,Al-Quran,Juz 23
+452,7,ALIM,Al-Quran,Juz 23
+453,7,ALIM,Al-Quran,Juz 23
+454,7,ALIM,Al-Quran,Juz 23
+455,7,ALIM,Al-Quran,Juz 23
+456,7,ALIM,Al-Quran,Juz 23
+457,7,ALIM,Al-Quran,Juz 23
+458,7,ALIM,Al-Quran,Juz 23
+459,7,ALIM,Al-Quran,Juz 23
+460,7,ALIM,Al-Quran,Juz 23
+461,7,ALIM,Al-Quran,Juz 23
 1,7,ALIM,Hadits,Kitabusholah
 2,7,ALIM,Hadits,Kitabusholah
 3,7,ALIM,Hadits,Kitabusholah

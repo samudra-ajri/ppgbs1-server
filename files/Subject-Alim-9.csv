@@ -1,9 +1,9 @@
 material,grade,subject,category,subcategory
-"Al-Qur'an juz 24, 25, 26, 27, 28, 29, dan 30",9,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Al-Quran juz 24, 25, 26, 27, 28, 29, dan 30",9,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Hukum makhorijul huruf,9,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Hukum sifat-sifat huruf,9,ALIM,Baca-Tulis,Baca huruf Al-Quran
 "Hukum pembagian waqof (Tam, Kafy, Hasan, Qobih)",9,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Hukum bid'ah dalam bacaan,9,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Hukum bidah dalam bacaan,9,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Hukum takbir,9,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Menjaga hafalan surat An-Naas s.d. Al-Infithor,9,ALIM,Hafalan,Hafalan surat-surat Al-Quran
 Surat Abasa,9,ALIM,Hafalan,Hafalan surat-surat Al-Quran
@@ -16,7 +16,7 @@ Empat Roda Berputar dalam Jamaah,9,ALIM,Hafalan,Dalil
 Lima Usaha mencari kefahaman,9,ALIM,Hafalan,Dalil
 Dasar-dasar aqidah,9,ALIM,Keilmuan,Dasar Keagamaan
 "Rukun iman, rukun islam dan ihsan",9,ALIM,Keilmuan,Dasar Keagamaan
-Pengertian Qur'an Hadits Jamaah,9,ALIM,Keilmuan,Dasar Keagamaan
+Pengertian Quran Hadits Jamaah,9,ALIM,Keilmuan,Dasar Keagamaan
 "Ilmu manqul, musnad, muttashil",9,ALIM,Keilmuan,Dasar Keagamaan
 Kemurnian ibadah,9,ALIM,Keilmuan,Dasar Keagamaan
 Pengetahuan wajibnya taat dan haromnya maksiat,9,ALIM,Keilmuan,Dasar Keagamaan
@@ -30,66 +30,66 @@ Kefadlolan puasa dan hal-hal yang diperbolehkan serta membatalkan puasa,9,ALIM,K
 Puasa sunah,9,ALIM,Keilmuan,Dasar Keagamaan
 Hukum mahrom,9,ALIM,Keilmuan,Dasar Keagamaan
 Aurot,9,ALIM,Keilmuan,Dasar Keagamaan
-522,9,ALIM,Al-Qur'an,Juz 27
-523,9,ALIM,Al-Qur'an,Juz 27
-524,9,ALIM,Al-Qur'an,Juz 27
-525,9,ALIM,Al-Qur'an,Juz 27
-526,9,ALIM,Al-Qur'an,Juz 27
-527,9,ALIM,Al-Qur'an,Juz 27
-528,9,ALIM,Al-Qur'an,Juz 27
-529,9,ALIM,Al-Qur'an,Juz 27
-530,9,ALIM,Al-Qur'an,Juz 27
-531,9,ALIM,Al-Qur'an,Juz 27
-532,9,ALIM,Al-Qur'an,Juz 27
-533,9,ALIM,Al-Qur'an,Juz 27
-534,9,ALIM,Al-Qur'an,Juz 27
-535,9,ALIM,Al-Qur'an,Juz 27
-536,9,ALIM,Al-Qur'an,Juz 27
-537,9,ALIM,Al-Qur'an,Juz 27
-538,9,ALIM,Al-Qur'an,Juz 27
-539,9,ALIM,Al-Qur'an,Juz 27
-540,9,ALIM,Al-Qur'an,Juz 27
-541,9,ALIM,Al-Qur'an,Juz 27
-542,9,ALIM,Al-Qur'an,Juz 28
-543,9,ALIM,Al-Qur'an,Juz 28
-544,9,ALIM,Al-Qur'an,Juz 28
-545,9,ALIM,Al-Qur'an,Juz 28
-546,9,ALIM,Al-Qur'an,Juz 28
-547,9,ALIM,Al-Qur'an,Juz 28
-548,9,ALIM,Al-Qur'an,Juz 28
-549,9,ALIM,Al-Qur'an,Juz 28
-550,9,ALIM,Al-Qur'an,Juz 28
-551,9,ALIM,Al-Qur'an,Juz 28
-552,9,ALIM,Al-Qur'an,Juz 28
-553,9,ALIM,Al-Qur'an,Juz 28
-554,9,ALIM,Al-Qur'an,Juz 28
-555,9,ALIM,Al-Qur'an,Juz 28
-556,9,ALIM,Al-Qur'an,Juz 28
-557,9,ALIM,Al-Qur'an,Juz 28
-558,9,ALIM,Al-Qur'an,Juz 28
-559,9,ALIM,Al-Qur'an,Juz 28
-560,9,ALIM,Al-Qur'an,Juz 28
-561,9,ALIM,Al-Qur'an,Juz 28
-562,9,ALIM,Al-Qur'an,Juz 29
-563,9,ALIM,Al-Qur'an,Juz 29
-564,9,ALIM,Al-Qur'an,Juz 29
-565,9,ALIM,Al-Qur'an,Juz 29
-566,9,ALIM,Al-Qur'an,Juz 29
-567,9,ALIM,Al-Qur'an,Juz 29
-568,9,ALIM,Al-Qur'an,Juz 29
-569,9,ALIM,Al-Qur'an,Juz 29
-570,9,ALIM,Al-Qur'an,Juz 29
-571,9,ALIM,Al-Qur'an,Juz 29
-572,9,ALIM,Al-Qur'an,Juz 29
-573,9,ALIM,Al-Qur'an,Juz 29
-574,9,ALIM,Al-Qur'an,Juz 29
-575,9,ALIM,Al-Qur'an,Juz 29
-576,9,ALIM,Al-Qur'an,Juz 29
-577,9,ALIM,Al-Qur'an,Juz 29
-578,9,ALIM,Al-Qur'an,Juz 29
-579,9,ALIM,Al-Qur'an,Juz 29
-580,9,ALIM,Al-Qur'an,Juz 29
-581,9,ALIM,Al-Qur'an,Juz 29
+522,9,ALIM,Al-Quran,Juz 27
+523,9,ALIM,Al-Quran,Juz 27
+524,9,ALIM,Al-Quran,Juz 27
+525,9,ALIM,Al-Quran,Juz 27
+526,9,ALIM,Al-Quran,Juz 27
+527,9,ALIM,Al-Quran,Juz 27
+528,9,ALIM,Al-Quran,Juz 27
+529,9,ALIM,Al-Quran,Juz 27
+530,9,ALIM,Al-Quran,Juz 27
+531,9,ALIM,Al-Quran,Juz 27
+532,9,ALIM,Al-Quran,Juz 27
+533,9,ALIM,Al-Quran,Juz 27
+534,9,ALIM,Al-Quran,Juz 27
+535,9,ALIM,Al-Quran,Juz 27
+536,9,ALIM,Al-Quran,Juz 27
+537,9,ALIM,Al-Quran,Juz 27
+538,9,ALIM,Al-Quran,Juz 27
+539,9,ALIM,Al-Quran,Juz 27
+540,9,ALIM,Al-Quran,Juz 27
+541,9,ALIM,Al-Quran,Juz 27
+542,9,ALIM,Al-Quran,Juz 28
+543,9,ALIM,Al-Quran,Juz 28
+544,9,ALIM,Al-Quran,Juz 28
+545,9,ALIM,Al-Quran,Juz 28
+546,9,ALIM,Al-Quran,Juz 28
+547,9,ALIM,Al-Quran,Juz 28
+548,9,ALIM,Al-Quran,Juz 28
+549,9,ALIM,Al-Quran,Juz 28
+550,9,ALIM,Al-Quran,Juz 28
+551,9,ALIM,Al-Quran,Juz 28
+552,9,ALIM,Al-Quran,Juz 28
+553,9,ALIM,Al-Quran,Juz 28
+554,9,ALIM,Al-Quran,Juz 28
+555,9,ALIM,Al-Quran,Juz 28
+556,9,ALIM,Al-Quran,Juz 28
+557,9,ALIM,Al-Quran,Juz 28
+558,9,ALIM,Al-Quran,Juz 28
+559,9,ALIM,Al-Quran,Juz 28
+560,9,ALIM,Al-Quran,Juz 28
+561,9,ALIM,Al-Quran,Juz 28
+562,9,ALIM,Al-Quran,Juz 29
+563,9,ALIM,Al-Quran,Juz 29
+564,9,ALIM,Al-Quran,Juz 29
+565,9,ALIM,Al-Quran,Juz 29
+566,9,ALIM,Al-Quran,Juz 29
+567,9,ALIM,Al-Quran,Juz 29
+568,9,ALIM,Al-Quran,Juz 29
+569,9,ALIM,Al-Quran,Juz 29
+570,9,ALIM,Al-Quran,Juz 29
+571,9,ALIM,Al-Quran,Juz 29
+572,9,ALIM,Al-Quran,Juz 29
+573,9,ALIM,Al-Quran,Juz 29
+574,9,ALIM,Al-Quran,Juz 29
+575,9,ALIM,Al-Quran,Juz 29
+576,9,ALIM,Al-Quran,Juz 29
+577,9,ALIM,Al-Quran,Juz 29
+578,9,ALIM,Al-Quran,Juz 29
+579,9,ALIM,Al-Quran,Juz 29
+580,9,ALIM,Al-Quran,Juz 29
+581,9,ALIM,Al-Quran,Juz 29
 1,9,ALIM,Hadits,Kitabul Adillah
 2,9,ALIM,Hadits,Kitabul Adillah
 3,9,ALIM,Hadits,Kitabul Adillah

@@ -1,8 +1,8 @@
 material,grade,subject,category,subcategory
-Al-Qur'an juz 3 dan 4,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Tajwid: Memperaktikkan tajwid yang sudah dipelajari dalam bacaan Al-Qur'an juz 3 dan 4,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Al-Qur'an juz 5 dan 6,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Tajwid Memperaktikkan tajwid yang sudah dipelajari dalam bacaan Al-Qur'an juz 5 dan 6,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Al-Quran juz 3 dan 4,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Tajwid: Memperaktikkan tajwid yang sudah dipelajari dalam bacaan Al-Quran juz 3 dan 4,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Al-Quran juz 5 dan 6,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Tajwid Memperaktikkan tajwid yang sudah dipelajari dalam bacaan Al-Quran juz 5 dan 6,5,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Terampil menulis Arab,5,ALIM,Baca-Tulis,Tulis huruf Al-Quran
 Terampil menulis makna pegon,5,ALIM,Baca-Tulis,Tulis huruf Al-Quran
 Menjaga hafalan surat An-Naas s.d. As-Sharh,5,ALIM,Hafalan,Hafalan surat-surat Al-Quran
@@ -13,19 +13,19 @@ Surat Adh-Dhuhaa,5,ALIM,Hafalan,Hafalan surat-surat Al-Quran
 Menerampilkan hafalan doa pada jenjang sebelumnya,5,ALIM,Hafalan,Hafalan doa-doa harian
 Doa minta dimudahkan dalam segala urusan,5,ALIM,Hafalan,Hafalan doa-doa harian
 Doa minta dipilihkan sesuatu yang baik,5,ALIM,Hafalan,Hafalan doa-doa harian
-"Doa minta 10 kebaikan (tetapnya iman, hati khusyu', tegaknya agama dll)",5,ALIM,Hafalan,Hafalan doa-doa harian
+"Doa minta 10 kebaikan (tetapnya iman, hati khusyu, tegaknya agama dll)",5,ALIM,Hafalan,Hafalan doa-doa harian
 Doa ketika ada petir,5,ALIM,Hafalan,Hafalan doa-doa harian
 Doa perlindungan dari bencana,5,ALIM,Hafalan,Hafalan doa-doa harian
-"Kewajiban beribadah kepada Alloh, beragama islam dan menetapi Qur'an Hadits Jamaah",5,ALIM,Hafalan,Dalil
+"Kewajiban beribadah kepada Alloh, beragama islam dan menetapi Quran Hadits Jamaah",5,ALIM,Hafalan,Dalil
 Lima Bab,5,ALIM,Hafalan,Dalil
 Empat Tali Keimanan,5,ALIM,Hafalan,Dalil
 Dasar-dasar aqidah,5,ALIM,Keilmuan,Dasar Keagamaan
 "Rukun iman, rukun islam dan ihsan",5,ALIM,Keilmuan,Dasar Keagamaan
-Pengertian Qur'an Hadits Jamaah,5,ALIM,Keilmuan,Dasar Keagamaan
+Pengertian Quran Hadits Jamaah,5,ALIM,Keilmuan,Dasar Keagamaan
 "Ilmu manqul, musnad, muttashil",5,ALIM,Keilmuan,Dasar Keagamaan
 Kemurnian ibadah,5,ALIM,Keilmuan,Dasar Keagamaan
 Pengetahuan wajibnya taat dan haromnya maksiat,5,ALIM,Keilmuan,Dasar Keagamaan
-Pengetahuan hukum halAl-harom,5,ALIM,Keilmuan,Dasar Keagamaan
+Pengetahuan hukum halal-harom,5,ALIM,Keilmuan,Dasar Keagamaan
 Thoharoh dan sholat,5,ALIM,Keilmuan,Dasar Keagamaan
 Mandi junub,5,ALIM,Keilmuan,Dasar Keagamaan
 "Hukum haid, mani, madzi, dan wadhi",5,ALIM,Keilmuan,Dasar Keagamaan
@@ -34,14 +34,14 @@ Puasa Romadhon,5,ALIM,Keilmuan,Dasar Keagamaan
 Kefadlolan puasa dan hal-hal yang diperbolehkan serta membatalkan puasa,5,ALIM,Keilmuan,Dasar Keagamaan
 Hukum mahrom,5,ALIM,Keilmuan,Dasar Keagamaan
 Aurot,5,ALIM,Keilmuan,Dasar Keagamaan
-594,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-595,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-596,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-597,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-598,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-599,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-600,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-601,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-602,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-603,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
-604,5,ALIM,Al-Qur'an,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+594,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+595,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+596,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+597,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+598,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+599,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+600,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+601,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+602,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+603,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)
+604,5,ALIM,Al-Quran,Juz 30 (surat Al-Balaad s.d. surat An-Nas)

@@ -1,12 +1,12 @@
 material,grade,subject,category,subcategory
 Cara membaca qolqolah,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Cara membaca iqlab,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
-"Bacaan Idhar, Idghom bila ghunnah",3,ALIM,Baca-Tulis,Baca huruf Al-Quran
+"Bacaan idhar, idghom bila ghunnah",3,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Bacaan mad Lazim Mustaqqol Kalimi dan mad Lazim Muthoffaf Harfi,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Tanda-tanda Waqof,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Surat-surat pendek mulai surat ad-Dhuha s.d. An-Nas,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Tanda-tanda waqof,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Surat-surat pendek mulai surat Ad-Dhuha s.d. An-Nas,3,ALIM,Baca-Tulis,Baca huruf Al-Quran
 ayat-ayat pilihan (doa-doa dalam Al-Quran),3,ALIM,Baca-Tulis,Baca huruf Al-Quran
-Musykilat dan Ghorib (bacaAn-bacaan asing dan tidak sesuai dengan tulisan),3,ALIM,Baca-Tulis,Baca huruf Al-Quran
+Musykilat dan Ghorib (bacaan-bacaan asing dan tidak sesuai dengan tulisan),3,ALIM,Baca-Tulis,Baca huruf Al-Quran
 Menulis rangkaian kata,3,ALIM,Baca-Tulis,Tulis huruf Al-Quran
 Menulis kata arab baku/potongan ayat,3,ALIM,Baca-Tulis,Tulis huruf Al-Quran
 Menjaga hafalan surat An-Nas s.d. Al-Zalzalah,3,ALIM,Hafalan,Hafalan surat-surat Al-Quran
@@ -26,7 +26,7 @@ Dasar-dasar aqidah,3,ALIM,Keilmuan,Dasar Keagamaan
 "Pengertian Quran, Hadits, Jamaah",3,ALIM,Keilmuan,Dasar Keagamaan
 Kemurnian ibadah,3,ALIM,Keilmuan,Dasar Keagamaan
 Pengetahuan wajibnya taat dan haromnya maksiat,3,ALIM,Keilmuan,Dasar Keagamaan
-Pengetahuan hukum halAl-harom,3,ALIM,Keilmuan,Dasar Keagamaan
+Pengetahuan hukum halal-harom,3,ALIM,Keilmuan,Dasar Keagamaan
 Thoharoh dan sholat,3,ALIM,Keilmuan,Dasar Keagamaan
 sholat sunah rowatib,3,ALIM,Keilmuan,Dasar Keagamaan
 Puasa Romadhon,3,ALIM,Keilmuan,Dasar Keagamaan

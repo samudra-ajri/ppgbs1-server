@@ -26,7 +26,7 @@ module.exports = {
           updatedAt: now,
         },
         {
-          ancestorId: line.dpwId,
+          ancestorId: line.ppdId,
           descendantId: line.id,
           depth: 1,
           updatedAt: now,

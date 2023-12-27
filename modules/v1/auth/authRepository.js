@@ -17,7 +17,7 @@ authRepository.findUserById = async (userId) => {
 
 authRepository.findUser = async (login) => {
     return db.query(`
-        SELECT "id", "name", "isActive", "password", "resetPasswordToken"
+        SELECT "id", "name", "isActive", "password", "resetPasswordToken", "needUpdatePassword"
         FROM "users" 
         WHERE "phone" = :login OR "email" = :login OR "username" = :login`, {
             replacements: { login },
@@ -257,6 +257,17 @@ authRepository.restoreUserPosition = async (userId) => {
         UPDATE "usersPositions"
         SET "deletedAt" = NULL
         WHERE "userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
+authRepository.restoreResetPasswordToken = async (userId) => {
+    await db.query(`
+        UPDATE "users"
+        SET "resetPasswordToken" = NULL
+        WHERE "id" = $1`, {
             bind: [userId],
             type: QueryTypes.UPDATE
         }

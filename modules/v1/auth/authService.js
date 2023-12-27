@@ -16,6 +16,8 @@ authService.getUser = async ({ login, password, positionId }) => {
         throwError(event.message.failed.incorrectPhoneOrPassword, 401)
     }
 
+    if (user.resetPasswordToken && !user.needUpdatePassword) await authRepository.restoreResetPasswordToken(user.id)
+
     if (!user.isActive) await authRepository.restoreUser(user.id)
 
     const userPosition = await authRepository.findUserPoisition(user.id, positionId)

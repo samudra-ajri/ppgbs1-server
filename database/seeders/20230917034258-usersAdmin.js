@@ -14,8 +14,6 @@ module.exports = {
         phone: line.phone,
         password: line.password,
         isActive: line.isActive,
-        lastLogin: new Date(line.lastLogin).getTime() / 1000,
-        resetPasswordToken: line.resetPasswordToken,
         createdAt: now,
         updatedAt: now,
         createdBy: 1,

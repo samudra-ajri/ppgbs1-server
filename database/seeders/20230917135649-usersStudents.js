@@ -18,8 +18,6 @@ module.exports = {
         birthdate: line.birthdate ? (line.birthdate).split('T')[0] : null,
         sex: line.sex === 'male' ? 1 : 0,
         isActive: line.isActive,
-        lastLogin: line.lastLogin ? new Date(line.lastLogin).getTime() / 1000 : null,
-        resetPasswordToken: line.resetPasswordToken,
         createdAt: now,
         updatedAt: now,
         createdBy: 1,

@@ -73,7 +73,7 @@ module.exports = {
       const readStream = fs.createReadStream(filePath)
       readStream.pipe(csv())
         .on('data', (line) => {
-          const completedArray = JSON.parse(line.completed)
+          const completedArray = [...new Set(JSON.parse(line.completed))]
           completedArray.forEach(materialId => {
             line.materialId = materials[materialId]
             rows.push(parseCsv(line))

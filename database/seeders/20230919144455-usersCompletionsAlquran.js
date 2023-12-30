@@ -614,7 +614,7 @@ module.exports = {
 
     const parseCsv = (line) => {
       return {
-        userId: line.id,
+        userId: line.userId,
         materialId: line.materialId,
         createdAt: now,
       }
@@ -622,11 +622,11 @@ module.exports = {
 
     const data = await new Promise((resolve, reject) => {
       const rows = []
-      const filePath = 'files/users-completions-alquran.csv'
+      const filePath = 'files/users-completions-quran.csv'
       const readStream = fs.createReadStream(filePath)
       readStream.pipe(csv())
         .on('data', (line) => {
-          const completedArray = JSON.parse(line.completed)
+          const completedArray = [...new Set(JSON.parse(line.completed))]
           completedArray.forEach(materialId => {
             line.materialId = materials[materialId]
             rows.push(parseCsv(line))

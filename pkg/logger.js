@@ -1,13 +1,11 @@
-import { createLogger, format, transports } from 'winston'
-import { Client } from '@elastic/elasticsearch'
-import { ElasticsearchTransport } from 'winston-elasticsearch'
-import dotenv from 'dotenv'
-
-dotenv.config()
+const { createLogger, format, transports } = require('winston')
+const { Client } = require('@elastic/elasticsearch')
+const ElasticsearchTransport = require('winston-elasticsearch').ElasticsearchTransport
+const config = require('../config')
 
 // Create an Elasticsearch client
-const esClient = new Client({ 
-    node: `http://${process.env.ELASTICSEARCH_HOST}:${process.env.ELASTICSEARCH_PORT}`
+const esClient = new Client({
+    node: `http://${config.ELASTICSEARCH_HOST}:${config.ELASTICSEARCH_PORT}`
 })
 
 // Configure Elasticsearch transport
@@ -18,12 +16,11 @@ const esTransport = new ElasticsearchTransport({
 })
 
 // Create a logger instance
+const transportPipes = [new transports.Console()]
+if (config.LOGGING_ENABLED) transportPipes.push(esTransport)
 const logger = createLogger({
     format: format.combine(format.timestamp(), format.json()),
-    transports: [
-        esTransport,
-        new transports.Console()
-    ],
+    transports: transportPipes,
 })
 
-export default logger
+module.exports = logger

@@ -1,45 +1,43 @@
-import jwt from 'jsonwebtoken'
-import asyncHandler from 'express-async-handler'
-import User from '../models/userModel.js'
-import roleTypes from '../consts/roleTypes.js'
+const jwt = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
+const config = require('../config.js')
+const positionTypesConstant = require('../constants/positionTypesConstant.js')
+const { throwError } = require('../utils/errorUtils.js')
+const eventConstant = require('../constants/eventConstant.js')
+const authRepository = require(`../modules/${config.APP_VERSION}/auth/authRepository`)
 
-const protect = asyncHandler (async (req, res, next) => {
+const authMiddleware = {}
+const event = eventConstant.auth.verify
+
+authMiddleware.protect = asyncHandler(async (req, res, next) => {
     let token
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    if (req.headers.authorization) {
         try {
             token = req.headers.authorization.split(' ')[1]
-            const decoded = jwt.verify(token, process.env.JWT_SECRET)
-            req.user = await User.findById(decoded.id).select('-password')
-            next()
+            const decoded = jwt.verify(token, config.JWT_KEY)
+            const user = await authRepository.findUser(decoded.login)
+            if (user) {
+                req.auth = {
+                    isAuthenticated: true,
+                    data: decoded
+                }
+                next()
+            }
         } catch (error) {
-            console.error(error)
-            res.status(401)
-            throw new Error('Not authorized, token failed')
+            throwError(event.message.failed.missing, 401)
         }
     }
 
     if (!token) {
-        res.status(401)
-        throw new Error('Not authorized, no token')
+        throwError(event.message.failed.missing, 401)
     }
 })
 
-const manager = (req, res, next) => {
-    if (req.user.role != roleTypes.GENERUS) {
-        next()
-    } else {
-        res.status(401)
-        throw new Error('Not authorized')
+authMiddleware.admin = asyncHandler(async (req, res, next) => {
+    if (req.auth.data.position.type !== positionTypesConstant.ADMIN) {
+        throwError(event.message.failed.unauthenticated, 401)
     }
-}
+    next()
+})
 
-const admin = (req, res, next) => {
-    if (req.user.role == roleTypes.ADMIN) {
-        next()
-    } else {
-        res.status(401)
-        throw new Error('Not authorized')
-    }
-}
-
-export { protect, manager, admin }
+module.exports = authMiddleware

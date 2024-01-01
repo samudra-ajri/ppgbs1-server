@@ -1,13 +1,15 @@
-import loggerStatus from '../consts/loggerStatus.js'
-import loggerUtils from '../utils/logger.js'
+const { logger } = require('../utils/loggerUtils')
+const loggerStatusConstant = require('../constants/loggerStatusConstant')
 
-const notFound = (req, res, next) => {
+const errorMiddleware = {}
+
+errorMiddleware.notFound = (req, res, next) => {
     const error = new Error(`Not Found - ${req.originalUrl}`)
     res.status(404)
     next(error)
 }
 
-const errorHandler = (err, req, res, next) => {
+errorMiddleware.errorHandler = (err, req, res, next) => {
     let statusCode = err.statusCode ? err.statusCode : 500
     
     if (err.message === 'Request failed with status code 400') {
@@ -22,7 +24,7 @@ const errorHandler = (err, req, res, next) => {
         stack: process.env.NODE_ENV === 'production' ? null : err.stack
     })
 
-    loggerUtils({ req, status: loggerStatus.FAILED, message, statusCode })
+    logger({ req, status: loggerStatusConstant.FAILED, message, statusCode })
 }
 
-export { notFound, errorHandler }
+module.exports = errorMiddleware

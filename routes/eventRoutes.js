@@ -1,15 +1,24 @@
-import express from 'express'
-import { createEvent, deleteEvent, getAllEvents, getEvent, getEvents, updateEvent } from '../controllers/eventController.js'
-import { manager, protect } from '../middlewares/authMiddleware.js'
+const express = require('express')
+const config = require('../config')
+const { protect, admin } = require('../middlewares/authMiddleware')
+const eventController = require(`../modules/${config.APP_VERSION}/event/eventController`)
+const presenceController = require(`../modules/${config.APP_VERSION}/presence/presenceController`)
 
 const router = express.Router()
+// events
 router.route('/')
-    .get(protect, getEvents)
-    .post(protect, manager, createEvent)
-router.route('/admin').get(protect, manager, getAllEvents)
+    .post(protect, admin, eventController.create)
+    .get(protect, eventController.list)
 router.route('/:id')
-    .get(protect, getEvent)
-    .put(protect, manager, updateEvent)
-    .delete(protect, manager, deleteEvent)
+    .get(protect, eventController.detail)
+    .delete(protect, admin, eventController.delete)
+// presences
+router.route('/:eventId/presences')
+    .post(protect, presenceController.create)
+    .get(protect, presenceController.list)
+router.route('/:eventId/presences/:userId')
+    .get(protect, presenceController.detail)
+    .post(protect, presenceController.createByAdmin)
+    .delete(protect, presenceController.delete)
 
-export default router
+module.exports = router

@@ -1,45 +1,52 @@
-import cors from 'cors'
-import dotenv from 'dotenv'
-import express from 'express'
-import morgan from 'morgan'
+const cors = require('cors')
+const express = require('express')
+const morgan = require('morgan')
+const config = require('./config')
+const db = require('./database/config/postgresql')
+const errorMiddleware = require('./middlewares/errorMiddleware')
+const redis = require('./pkg/redis')
+const homeRoutes = require('./routes/homeRoutes')
+const authRoutes = require('./routes/authRoutes')
+const userRoutes = require('./routes/userRoutes')
+const eventRoutes = require('./routes/eventRoutes')
+const materialRoutes = require('./routes/materialRoutes')
+const completionRoutes = require('./routes/completionRoutes')
+const positionRoutes = require('./routes/positionRoutes')
+const organizationRoutes = require('./routes/organizationRoutes')
 
-import connectDB from './config/db.js'
-import homeRoutes from './routes/homeRoutes.js'
-import userRoutes from './routes/userRoutes.js'
-import completionRoutes from './routes/completionRoutes.js'
-import subjectRoutes from './routes/subjectRoutes.js'
-import locationRoutes from './routes/locationRoutes.js'
-import dashboardRoutes from './routes/dashboardRoutes.js'
-import eventRoutes from './routes/eventRoutes.js'
-import presenceRoutes from './routes/presenceRoutes.js'
-import attendanceRoutes from './routes/attendanceRoutes.js'
+// Connecting db
+db.authenticate()
+  .then(() => console.log('Database connected 🚀'))
+  .catch(err => console.log('Error: ' + err))
 
-import { notFound, errorHandler } from './middlewares/errorMiddleware.js'
+// Connecting redis
+redis.client.connect()
+  .then(() => console.log('Redis connected 🚀'))
+  .catch(err => console.log('Error: ' + err))
 
-dotenv.config()
-connectDB()
-const app  = express()
-const PORT = process.env.PORT
-const ENV  = process.env.APP_ENV
-
-if (ENV === 'staging' || ENV === 'local') {
-    app.use(morgan('dev'))
-}
-
+// Connecting express
+const app = express()
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
+// Logging
+if (config.NODE_ENV !== 'production') app.use(morgan('dev'))
+
+// Routes
+const version = `api/${config.APP_VERSION}`
+app.use(`/${version}/auths`, authRoutes)
+app.use(`/${version}/users`, userRoutes)
+app.use(`/${version}/events`, eventRoutes)
+app.use(`/${version}/materials`, materialRoutes)
+app.use(`/${version}/completions`, completionRoutes)
+app.use(`/${version}/positions`, positionRoutes)
+app.use(`/${version}/organizations`, organizationRoutes)
 app.use('/api', homeRoutes)
-app.use('/api/users', userRoutes)
-app.use('/api/completions', completionRoutes)
-app.use('/api/subjects', subjectRoutes)
-app.use('/api/locations', locationRoutes)
-app.use('/api/dashboard', dashboardRoutes)
-app.use('/api/events', eventRoutes)
-app.use('/api/presences', presenceRoutes)
-app.use('/api/attendances', attendanceRoutes)
 
-app.use(notFound)
-app.use(errorHandler)
+// Error handler
+app.use(errorMiddleware.notFound)
+app.use(errorMiddleware.errorHandler)
 
-app.listen(PORT, console.log(`Server running in ${ENV} mode on port ${PORT}`))
+// Listening port
+app.listen(config.PORT, console.log('API server running on port:', `${config.APP_URL}:${config.PORT} 🚀`))

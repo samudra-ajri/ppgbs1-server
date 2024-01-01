@@ -1,53 +1,14 @@
-import express from 'express'
-import { 
-    createCompletion, 
-    deleteCompletion, 
-    getAllCompletionsScores, 
-    getAllCompletionsSubjectDetailsScores, 
-    getCompletion, 
-    getCompletionByAdmin, 
-    getCompletionBySubjectId, 
-    getCompletions, 
-    getCompletionsByAdmin,
-    getCompletionsByCategory,
-    getCompletionsScores,
-    getCompletionsScoresByUserId,
-    getUserCompletionByAdmin,
-    getUserCompletionBySubjectId,
-    getUserCompletionsByCategory,
-    updateCompletion
-} from '../controllers/completionController.js'
-import { manager, protect } from '../middlewares/authMiddleware.js'
+const express = require('express')
+const config = require('../config')
+const { protect, admin } = require('../middlewares/authMiddleware')
+const completionController = require(`../modules/${config.APP_VERSION}/completion/completionController`)
 
 const router = express.Router()
 router.route('/')
-    .get(protect, getCompletions)
-    .post(protect, createCompletion)
-router.route('/admin')
-    .get(protect, manager, getCompletionsByAdmin)
-router.route('/scores')
-    .get(protect, getCompletionsScores) 
-router.route('/:id/admin')
-    .get(protect, manager, getCompletionByAdmin)
-router.route('/scores/all')
-    .get(protect, manager, getAllCompletionsScores)
-router.route('/scores/details/subjects/:subjectId')
-    .get(protect, manager, getAllCompletionsSubjectDetailsScores)
-router.route('/user/:userId/scores')
-    .get(protect, manager, getCompletionsScoresByUserId)
-router.route('/:id')
-    .get(protect, getCompletion)
-    .put(protect, updateCompletion)
-    .delete(protect, deleteCompletion)
-router.route('/user/:userId')
-    .get(protect, manager, getUserCompletionByAdmin)
-router.route('/categories/:category/users/:userId')
-    .get(protect, getUserCompletionsByCategory)
-router.route('/categories/:category')
-    .get(protect, getCompletionsByCategory)
-router.route('/subjects/:subjectId/users/:userId')
-    .get(protect, getUserCompletionBySubjectId)
-router.route('/subjects/:subjectId')
-    .get(protect, getCompletionBySubjectId)
-
-export default router
+    .get(protect, completionController.list)
+    .post(protect, completionController.create)
+    .delete(protect, completionController.delete)
+router.route('/me').get(protect, completionController.me)
+router.route('/sum/:structure/users/:userId').get(protect, completionController.sumUser)
+router.route('/sum/:structure/users').get(protect, completionController.sumUsers)
+module.exports = router

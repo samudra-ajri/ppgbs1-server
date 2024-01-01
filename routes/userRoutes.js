@@ -1,37 +1,22 @@
-import express from 'express'
-import { manager, protect } from '../middlewares/authMiddleware.js'
-import { 
-    deleteUser,
-    forgotPassword,
-    getMe,
-    getRolesCount,
-    getUserById,
-    getUsers,
-    loginUser,
-    registerUser,
-    resetPassword,
-    updateMe,
-    updateUserByManager, 
-} from '../controllers/userController.js'
+const express = require('express')
+const config = require('../config')
+const { protect, admin } = require('../middlewares/authMiddleware')
+const userController = require(`../modules/${config.APP_VERSION}/user/userController`)
+const userPositionController = require(`../modules/${config.APP_VERSION}/userPosition/userPositionController`)
 
 const router = express.Router()
-router.route('/')
-    .get(protect, manager, getUsers)
-    .post(registerUser)
-router.route('/roles')
-    .get(protect, manager, getRolesCount)
-router.route('/login')
-    .post(loginUser)
-router.route('/me')
-    .get(protect, getMe)
-    .put(protect, updateMe)
-router.route('/forgot-password')
-    .put(forgotPassword)
-router.route('/reset-password/:token')
-    .put(protect, manager, resetPassword)
-router.route('/:id')
-    .get(protect, manager, getUserById)
-    .put(protect, manager, updateUserByManager)
-    .delete(protect, manager, deleteUser)
+// user
+router.route('/forgot-password').get(protect, admin, userController.forgotPasswordList)
+router.route('/me').put(protect, userController.updateMyProfile)
+router.route('/me/student').put(protect, userController.updateMyStudentProfile)
+router.route('/me/teacher').put(protect, userController.updateMyTeacherProfile)
+router.route('/').get(protect, userController.list)
+router.route('/:id').get(protect, userController.detail)
+// user position
+router.route('/:userId/positions/:positionId').delete(protect, admin, userPositionController.delete)
+router.route('/positions')
+    .post(protect, userPositionController.create)
+    .put(protect, userPositionController.change)
 
-export default router
+
+module.exports = router

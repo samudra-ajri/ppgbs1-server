@@ -1,43 +1,48 @@
 {
   "name": "ppgbs1-server",
   "version": "1.0.0",
-  "description": "Islamic student information system api server",
+  "description": "pigaru server",
   "main": "server.js",
-  "type": "module",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server"
+    "migration:create": "npx sequelize-cli migration:create --name=$npm_config_name",
+    "migration:up": "npx sequelize-cli db:migrate --name=$npm_config_name",
+    "migration:down": "npx sequelize-cli db:migrate:undo --name=$npm_config_name",
+    "seed:create": "npx sequelize-cli seed:generate --name=$npm_config_name",
+    "seed:all": "npx sequelize-cli db:seed:all",
+    "seed:run": "npx sequelize-cli db:seed --seed=$npm_config_seed",
+    "start:dev": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/samudra-ajri/ppgbs1-server.git"
   },
+  "keywords": [
+    "pigaru"
+  ],
   "author": "Samudra Ajri Kifli",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/samudra-ajri/ppgbs1-server/issues"
-  },
-  "homepage": "https://github.com/samudra-ajri/ppgbs1-server#readme",
-  "devDependencies": {
-    "nodemon": "^2.0.19"
-  },
+  "license": "ISC",
   "dependencies": {
-    "@elastic/elasticsearch": "^8.8.1",
-    "bcryptjs": "^2.4.3",
-    "capitalize": "^2.0.4",
+    "@elastic/elasticsearch": "^8.9.0",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
+    "csv-parser": "^3.0.0",
+    "dotenv": "^16.3.1",
     "elasticsearch": "^16.7.3",
-    "express": "^4.18.1",
+    "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
-    "i": "^0.3.7",
-    "jsonwebtoken": "^8.5.1",
-    "moment": "^2.29.4",
-    "mongoose": "^6.3.3",
+    "jsonwebtoken": "^9.0.1",
     "morgan": "^1.10.0",
-    "npm": "^9.3.1",
-    "randomstring": "^1.2.3",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "randomstring": "^1.3.0",
+    "redis": "^4.6.8",
+    "sequelize": "^6.32.1",
+    "sequelize-cli": "^6.6.1",
     "winston": "^3.10.0",
     "winston-elasticsearch": "^0.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

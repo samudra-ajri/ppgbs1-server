@@ -1,6 +1,5 @@
 const fs = require('fs')
 const csv = require('csv-parser')
-const positionTypes = require('../../constants/positionTypesConstant')
 
 module.exports = {
   async up(queryInterface, Sequelize) {

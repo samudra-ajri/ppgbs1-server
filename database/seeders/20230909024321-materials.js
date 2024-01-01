@@ -30,6 +30,9 @@ module.exports = {
       try {
         const rows = await parseCSV(`files/Subject-Alim-${i}.csv`)
         await queryInterface.bulkInsert('materials', rows)
+        await queryInterface.sequelize.query(
+          "SELECT setval('materials_id_seq', (SELECT MAX(id) FROM materials) + 1, false);"
+        )
       } catch (error) {
         console.error(`Error processing file Subject-Alim-${i}.csv:`, error)
       }

@@ -89,7 +89,7 @@ module.exports = {
 
     const parseCsv = (line) => {
       return {
-        userId: line.id,
+        userId: line.userId,
         materialId: line.materialId,
         createdAt: now,
       }

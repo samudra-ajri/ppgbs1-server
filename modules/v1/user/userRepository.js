@@ -226,7 +226,11 @@ const filtersQuery = (filters) => {
 }
 
 const filterByDefault = (filters) => {
-    const { userId, positionId } = filters
+    const { userId, positionId, forgotPassword } = filters
+    if (forgotPassword) return `
+        WHERE positions.id IS NOT NULL
+        AND NOT ("usersPositions"."userId" = ${userId} AND "usersPositions"."positionId" = ${Number(positionId)})
+    `
     return `
         WHERE "usersPositions"."deletedAt" IS NULL
         AND positions.id IS NOT NULL

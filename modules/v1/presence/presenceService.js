@@ -1,3 +1,4 @@
+const ExcelJS = require('exceljs');
 const eventConstant = require('../../../constants/eventConstant')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const { throwError } = require('../../../utils/errorUtils')
@@ -48,6 +49,32 @@ presenceService.delete = async (session, eventId, userId) => {
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
     await presenceRepository.deletePresence(eventId, userId)
+}
+
+presenceService.exportDataAsExcel = async (res, filters) => {
+    const event = eventConstant.presence.download
+    try {
+        const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
+            stream: res,
+        })
+        const worksheet = workbook.addWorksheet('presensi')
+        worksheet.columns = [
+            { header: 'Timestamp', key: 'createdAt' },
+            { header: 'Nama', key: 'userName' },
+            { header: 'L/P', key: 'userSex' },
+            { header: 'PPD', key: 'ancestorOrgName' },
+            { header: 'PPK', key: 'organizationName' },
+        ]
+    
+        const dataStream = await presenceRepository.queryStream(filters)
+        for await (const row of dataStream) {
+            worksheet.addRow(row).commit()
+        }
+    
+        await workbook.commit()
+    } catch (error) {
+        throwError(event.message.failed.errorGenerating, 500)
+    }
 }
 
 module.exports = presenceService

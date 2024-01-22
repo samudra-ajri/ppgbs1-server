@@ -445,12 +445,22 @@ const eventConstant = {
 			},
 		},
 		delete: {
-			event: 'delete',
+			event: 'delete-presence',
 			message: {
 				success: 'berhasil.',
 				failed: {
 					notFound: 'kehadiran (presence) tidak ditemukan.',
 					unauthorized: 'Unauthorized.',
+				},
+			},
+		},
+		download: {
+			event: 'download-presence',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undownloaded: 'gagal download.',
+					errorGenerating: 'file gagal dibuat.',
 				},
 			},
 		},

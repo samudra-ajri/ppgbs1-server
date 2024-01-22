@@ -1,3 +1,5 @@
+const { Readable } = require('stream')
+const QueryStream = require('pg-query-stream')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const db = require('../../../database/config/postgresql')
 
@@ -154,6 +156,40 @@ presenceRepository.deletePresence = async (eventId, userId) => {
             type: QueryTypes.DELETE
         }
     )
+}
+
+const selectQueryStream = () => {
+    return `
+        SELECT 
+            presences."createdAt",
+            users.name as "userName",
+            CASE users.sex
+                WHEN 0 THEN 'laki-laki'
+                WHEN 1 THEN 'perempuan'
+            END as "userSex",
+            organizations.name as "organizationName", 
+            ancestors.name as "ancestorOrgName"
+        FROM presences
+            LEFT JOIN users on users.id = presences."userId"
+            LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
+            LEFT JOIN positions on positions.id = "usersPositions"."positionId"
+            LEFT JOIN organizations on organizations.id = "positions"."organizationId"
+            LEFT JOIN organizations ancestors on ancestors.id = "positions"."ancestorOrgId"
+    `
+}
+
+presenceRepository.queryStream = async (filters) => {
+    const client = await db.connectionManager.getConnection()
+    try {
+        const query = selectQueryStream() + filtersQuery(filters) + orderBy()
+        const queryStream = new QueryStream(query)
+        const stream = client.query(queryStream)
+        return Readable.from(stream)
+    } catch (error) {
+        throw error
+    } finally {
+        db.connectionManager.releaseConnection(client)
+    }
 }
 
 module.exports = presenceRepository

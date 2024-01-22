@@ -13,6 +13,8 @@ router.route('/:id')
     .get(protect, eventController.detail)
     .delete(protect, admin, eventController.delete)
 // presences
+router.route('/:eventId/presences/download')
+    .get(protect, presenceController.download)
 router.route('/:eventId/presences')
     .post(protect, presenceController.create)
     .get(protect, presenceController.list)

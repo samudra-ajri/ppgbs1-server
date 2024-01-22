@@ -12,6 +12,7 @@ module.exports = {
           name: `${positionTypes[key]} ${line.name}`,
           type: key,
           organizationId: line.id,
+          ancestorOrgId: line.ppdId,
           createdAt: now,
           updatedAt: now,
           deletedAt: null,

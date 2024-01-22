@@ -13,6 +13,7 @@ module.exports = {
             name: `${positionTypes[key]} ${line.name}`,
             type: key,
             organizationId: line.id,
+            ancestorOrgId: 1,
             createdAt: now,
             updatedAt: now,
             deletedAt: null,

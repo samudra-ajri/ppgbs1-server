@@ -170,4 +170,8 @@ authService.updatePassword = async ({ userId, currentPassword, newPassword, conf
     await authRepository.updateUserPassword(data)
 }
 
+authService.hashString = async (string) => {
+    return authUtils.generatePassword(string)
+}
+
 module.exports = authService

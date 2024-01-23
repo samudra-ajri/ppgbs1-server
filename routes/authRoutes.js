@@ -12,5 +12,6 @@ router.route('/switch-position').post(protect, authController.switchPosition)
 router.route('/temp-password/:token').post(protect, admin, authController.tempPassword)
 router.route('/reset-password/:token').post(authController.resetPassword)
 router.route('/update-password').put(protect, authController.updatePassword)
+router.route('/hash-string').post(authController.hashString)
 
 module.exports = router

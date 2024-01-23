@@ -115,4 +115,13 @@ authController.updatePassword = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    hashing string
+// @route   POST /auths/hash-string
+// @access  Public
+authController.hashString = asyncHandler(async (req, res) => {
+    const { string } = req.body
+    const hashedString = await authService.hashString(string)
+    res.json({ data: { hashedString } })
+})
+
 module.exports = authController

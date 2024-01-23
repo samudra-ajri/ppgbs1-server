@@ -21,3 +21,6 @@
 npm-debug.log*
 
 /files/users-*
+/database/seeders/*-users-*
+
+

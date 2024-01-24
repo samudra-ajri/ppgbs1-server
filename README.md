@@ -25,7 +25,7 @@ $ npm install
 $ npm run migration:up
 
 # run the seeders
-$ npm run seed: all
+$ npm run seed:all
 ```
 
 ## Running the app

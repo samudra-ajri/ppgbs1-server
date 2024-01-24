@@ -53,6 +53,10 @@ presenceService.delete = async (session, eventId, userId) => {
 
 presenceService.exportDataAsExcel = async (res, filters) => {
     const event = eventConstant.presence.download
+
+    const foundEventDetail = await presenceRepository.findEvent(filters.eventId)
+    if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)
+
     try {
         const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
             stream: res,

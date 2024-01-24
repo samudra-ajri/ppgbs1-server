@@ -461,6 +461,7 @@ const eventConstant = {
 				failed: {
 					undownloaded: 'gagal download.',
 					errorGenerating: 'file gagal dibuat.',
+					eventNotFound: 'kegiatan (event) tidak tersedia.',
 				},
 			},
 		},

@@ -38,3 +38,6 @@ $ npm run start
 $ npm run start:dev
 ```
 
+## Entity Relationship Diagram
+- https://dbdiagram.io/d/Pigaru-64f040d202bd1c4a5eba07ee
+

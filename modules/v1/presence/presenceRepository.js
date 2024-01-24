@@ -164,8 +164,8 @@ const selectQueryStream = () => {
             presences."createdAt",
             users.name as "userName",
             CASE users.sex
-                WHEN 0 THEN 'laki-laki'
-                WHEN 1 THEN 'perempuan'
+                WHEN 1 THEN 'laki-laki'
+                WHEN 0 THEN 'perempuan'
             END as "userSex",
             organizations.name as "organizationName", 
             ancestors.name as "ancestorOrgName"

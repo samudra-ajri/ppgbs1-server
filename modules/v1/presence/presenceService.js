@@ -51,11 +51,15 @@ presenceService.delete = async (session, eventId, userId) => {
     await presenceRepository.deletePresence(eventId, userId)
 }
 
+presenceService.findEvent = async (eventId) => {
+    const event = eventConstant.presence.download
+    const foundEventDetail = await presenceRepository.findEvent(eventId)
+    if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)
+    return foundEventDetail
+}
+
 presenceService.exportDataAsExcel = async (res, filters) => {
     const event = eventConstant.presence.download
-
-    const foundEventDetail = await presenceRepository.findEvent(filters.eventId)
-    if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)
 
     try {
         const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
@@ -63,11 +67,11 @@ presenceService.exportDataAsExcel = async (res, filters) => {
         })
         const worksheet = workbook.addWorksheet('presensi')
         worksheet.columns = [
-            { header: 'Timestamp (WIB)', key: 'createdAt' },
-            { header: 'Nama', key: 'userName' },
-            { header: 'L/P', key: 'userSex' },
-            { header: 'PPD', key: 'ancestorOrgName' },
-            { header: 'PPK', key: 'organizationName' },
+            { header: 'Timestamp (WIB)', key: 'createdAt', width: 20 },
+            { header: 'Nama', key: 'userName', width: 30 },
+            { header: 'L/P', key: 'userSex', width: 5 },
+            { header: 'PPD', key: 'ancestorOrgName', width: 25 },
+            { header: 'PPK', key: 'organizationName', width: 25 },
         ]
 
         const dataStream = await presenceRepository.queryStream(filters)

@@ -90,11 +90,13 @@ presenceController.delete = asyncHandler(async (req, res) => {
 presenceController.download = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.download.event
     const { eventId } = req.params
+    const event = await presenceService.findEvent(eventId)
+
     const { sex, ancestorOrganizationId, organizationId } = req.query
     const filters = { eventId, sex, ancestorOrganizationId, organizationId }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    res.setHeader('Content-Disposition', `attachment; filename="presensi-${eventId}.xlsx"`)
+    res.setHeader('Content-Disposition', `attachment; filename="Presensi ${event.name}.xlsx"`)
     await presenceService.exportDataAsExcel(res, filters)
 
     logger({ req, status: loggerStatusConstant.SUCCESS })

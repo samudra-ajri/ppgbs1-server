@@ -21,7 +21,7 @@ presenceRepository.insertPresence = async (data) => {
 
 presenceRepository.findEvent = async (eventId) => {
     const [data] = await db.query(`
-        SELECT id, passcode FROM events WHERE "id" = $1`, {
+        SELECT id, passcode, name FROM events WHERE "id" = $1`, {
             bind: [eventId],
             type: QueryTypes.SELECT,
         }
@@ -164,8 +164,8 @@ const selectQueryStream = () => {
             to_timestamp(presences."createdAt" / 1000) as "createdAt",
             users.name as "userName",
             CASE users.sex
-                WHEN 1 THEN 'laki-laki'
-                WHEN 0 THEN 'perempuan'
+                WHEN 1 THEN 'L'
+                WHEN 0 THEN 'P'
             END as "userSex",
             organizations.name as "organizationName", 
             ancestors.name as "ancestorOrgName"

@@ -63,7 +63,7 @@ presenceService.exportDataAsExcel = async (res, filters) => {
         })
         const worksheet = workbook.addWorksheet('presensi')
         worksheet.columns = [
-            { header: 'Timestamp', key: 'createdAt' },
+            { header: 'Timestamp (WIB)', key: 'createdAt' },
             { header: 'Nama', key: 'userName' },
             { header: 'L/P', key: 'userSex' },
             { header: 'PPD', key: 'ancestorOrgName' },
@@ -88,7 +88,8 @@ const excelDateTimeOptions = {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
+    timeZone: 'Asia/Jakarta',
 }
 
 module.exports = presenceService

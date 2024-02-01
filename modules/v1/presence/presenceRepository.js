@@ -161,7 +161,7 @@ presenceRepository.deletePresence = async (eventId, userId) => {
 const selectQueryStream = () => {
     return `
         SELECT 
-            presences."createdAt",
+            to_timestamp(presences."createdAt" / 1000) as "createdAt",
             users.name as "userName",
             CASE users.sex
                 WHEN 1 THEN 'laki-laki'

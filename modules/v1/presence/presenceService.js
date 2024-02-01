@@ -1,4 +1,4 @@
-const ExcelJS = require('exceljs');
+const ExcelJS = require('exceljs')
 const eventConstant = require('../../../constants/eventConstant')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const { throwError } = require('../../../utils/errorUtils')
@@ -69,16 +69,26 @@ presenceService.exportDataAsExcel = async (res, filters) => {
             { header: 'PPD', key: 'ancestorOrgName' },
             { header: 'PPK', key: 'organizationName' },
         ]
-    
+
         const dataStream = await presenceRepository.queryStream(filters)
         for await (const row of dataStream) {
+            row.createdAt = new Intl.DateTimeFormat('default', excelDateTimeOptions).format(row.createdAt)
             worksheet.addRow(row).commit()
         }
-    
+
         await workbook.commit()
     } catch (error) {
         throwError(event.message.failed.errorGenerating, 500)
     }
+}
+
+const excelDateTimeOptions = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
 }
 
 module.exports = presenceService

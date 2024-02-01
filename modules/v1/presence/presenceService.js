@@ -72,7 +72,7 @@ presenceService.exportDataAsExcel = async (res, filters) => {
 
         const dataStream = await presenceRepository.queryStream(filters)
         for await (const row of dataStream) {
-            row.createdAt = new Intl.DateTimeFormat('default', excelDateTimeOptions).format(row.createdAt)
+            row.createdAt = row.createdAt.toLocaleString()
             worksheet.addRow(row).commit()
         }
 

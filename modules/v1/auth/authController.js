@@ -35,7 +35,6 @@ authController.me = asyncHandler(async (req, res) => {
         userId: req.auth.data.id,
         positionId: req.auth.data.position.positionId
     }
-    console.log(req.auth);
     const data = await authService.getUserProfile(payload)
     data.exp = req.auth.data.exp
     res.json({ data })

@@ -97,6 +97,7 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
         sumData[structure] = material[structure]
         sumData.materialId = material.id
         sumData.grade = material.grade
+        sumData.createdAt = completion.createdAt
         return sumData
     })
 }

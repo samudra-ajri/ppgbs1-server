@@ -257,12 +257,12 @@ completionRepository.countUserCompletions = async (structure, userId, filters) =
 
 completionRepository.countUserCompletionsWithId = async (userId, filters) => {
     return db.query(`
-        SELECT materials.id, materials.material, COUNT("materialId") as count
+        SELECT materials.id, materials.material, "usersCompletions"."createdAt", COUNT("materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
         ${sumFiltersQuery(filters)}
         AND "usersCompletions"."userId" = $1
-        GROUP BY materials.material, materials.id
+        GROUP BY materials.material, materials.id, "usersCompletions"."createdAt"
         ORDER BY materials.id`, {
             bind: [userId],
             type: QueryTypes.SELECT,

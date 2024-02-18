@@ -35,6 +35,7 @@ completionService.deleteCompletions = async (session, materialIds) => {
     await completionRepository.delete(userId, materialIds)
 }
 
+// sum completion for single user
 completionService.sumCompletion = async (structure, userId, filters) => {
     validateStructure(structure)
     const materialsMultiplier = 1
@@ -43,6 +44,7 @@ completionService.sumCompletion = async (structure, userId, filters) => {
     return calculateSumCompletion(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 
+// sum completion for group users
 completionService.sumCompletions = async (structure, filters) => {
     validateStructure(structure)
     const materialsMultiplier = await getUsersCount(positionTypesConstant.GENERUS, filters)

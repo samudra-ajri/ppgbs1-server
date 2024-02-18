@@ -223,8 +223,9 @@ const filterByOrganization = (filters) => {
 const filterByUsersGrade = (filters) => {
     const { usersGrade } = filters
     if (usersGrade) {
+        const grades = usersGrade.split(",").map(Number)
         return `
-            AND "students"."grade" = ${Number(usersGrade)}
+            AND students.grade IN (` + grades + `)
         `
     }
     return ''
@@ -368,11 +369,12 @@ completionRepository.countUsers = async (positionType, organizationId, usersGrad
     }
 
     if (usersGrade) {
+        const grades = usersGrade.split(",").map(Number)
         baseJoinQuery += `
             INNER JOIN students on "usersPositions"."userId" = students."userId"
         `
         filtersQuery += `
-            AND students.grade = ${Number(usersGrade)}
+            AND students.grade IN (` + grades + `)
         `
     }
     

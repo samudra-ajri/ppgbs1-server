@@ -19,6 +19,7 @@ completionService.createCompletions = async (session, materialIds) => {
 
     try {
         await completionRepository.insert(session.id, materialIds)
+        await completionRepository.updateLastCompletionStudent(session.id)
     } catch (error) {
         throwError(error.message, 500)
     }

@@ -391,4 +391,17 @@ completionRepository.countUsers = async (positionType, organizationId, usersGrad
     return data[0]
 }
 
+completionRepository.updateLastCompletionStudent = async (userId) => {
+    console.log(11233);
+    const now = Date.now()
+    await db.query(`
+        UPDATE students
+        SET "lastCompletionUpdate" = $2
+        WHERE "userId" = $1`, {
+            bind: [userId, now],
+            type: QueryTypes.UPDATE,
+        }
+    )
+}
+
 module.exports = completionRepository

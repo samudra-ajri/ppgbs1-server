@@ -295,9 +295,11 @@ const filterByPositionType = (filters) => {
 
 const filterByGrade = (filters) => {
     let { grade } = filters
-    if (grade) return `
-        AND students.grade = ${Number(grade)}
-    `
+    if (grade) {
+        const grades = grade.split(",").map(Number)
+        return `
+            AND students.grade IN (` + grades + `)
+        `}
     return ''
 }
 

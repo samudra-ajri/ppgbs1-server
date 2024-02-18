@@ -139,6 +139,7 @@ const selectQuery = () => {
             users.birthdate,
             users."needUpdatePassword",
             students.grade,
+            students."lastCompletionUpdate",
             teachers."isMarried",
             teachers.pondok,
             teachers."kertosonoYear",
@@ -181,6 +182,7 @@ const groupByQuery = () => {
         GROUP BY
             users.id, 
             students.grade,
+            students."lastCompletionUpdate",
             teachers."isMarried",
             teachers.pondok,
             teachers."kertosonoYear",

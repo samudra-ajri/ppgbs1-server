@@ -1,3 +1,5 @@
+const { Readable } = require('stream')
+const QueryStream = require('pg-query-stream')
 const { QueryTypes } = require('sequelize')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const db = require('../../../database/config/postgresql')
@@ -124,6 +126,49 @@ userRepository.findAll = async (filters, search, page, pageSize) => {
     return { data, total }
 }
 
+userRepository.queryStream = async (filters) => {
+    const client = await db.connectionManager.getConnection()
+    try {
+        const query = selectQueryStream() + filtersQuery(filters) + groupByQuery() + orderByQuery()
+        const queryStream = new QueryStream(query)
+        const stream = client.query(queryStream)
+        return Readable.from(stream)
+    } catch (error) {
+        throw error
+    } finally {
+        db.connectionManager.releaseConnection(client)
+    }
+}
+
+const selectQueryStream = () => {
+    return `
+        SELECT 
+            users.name, 
+            users.email,
+            users.phone,
+            CASE users.sex
+                WHEN 1 THEN 'L'
+                WHEN 0 THEN 'P'
+            END as "sex",
+            users."isMuballigh",
+            users.birthdate,
+            students.grade,
+            JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'organizationName', organizations.name,
+                    'ancestorOrgName', ancestors.name
+                )
+            ) as positions
+        FROM users
+            LEFT JOIN teachers on users.id = teachers."userId"
+            LEFT JOIN students on users.id = students."userId"
+            LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
+            LEFT JOIN positions on positions.id = "usersPositions"."positionId"
+            LEFT JOIN organizations on organizations.id = "positions"."organizationId"
+            LEFT JOIN organizations ancestors on ancestors.id = "positions"."ancestorOrgId"
+    `
+}
+
 const selectQuery = () => {
     return `
         SELECT 
@@ -154,7 +199,9 @@ const selectQuery = () => {
                     'positionId', positions.id, 
                     'positionName', positions.name,
                     'organizationId', organizations.id,
-                    'organizationName', organizations.name
+                    'organizationName', organizations.name,
+                    'ancestorOrgId', ancestors.id,
+                    'ancestorOrgName', ancestors.name
                 )
             ) as positions
     `
@@ -174,6 +221,7 @@ const baseJoinQuery = () => {
         LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
         LEFT JOIN positions on positions.id = "usersPositions"."positionId"
         LEFT JOIN organizations on organizations.id = "positions"."organizationId"
+        LEFT JOIN organizations ancestors on ancestors.id = "positions"."ancestorOrgId"
     `
 }
 

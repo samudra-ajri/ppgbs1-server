@@ -5,6 +5,7 @@ const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { paginate } = require('../../../utils/paginationUtils')
 const { calculateAncestorIdScope } = require('../../../utils/userUtils')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const userController = {}
 
@@ -105,6 +106,32 @@ userController.updateMyTeacherProfile = asyncHandler(async (req, res) => {
     }
     await userService.updateMyTeacherProfile(data)
     res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    users list download as excel
+// @route   GET /users/download
+// @access  Private
+userController.download = asyncHandler(async (req, res) => {
+    req.event = eventConstant.user.download.event
+    const { ancestorId, organizationId, sex, positionType, grade } = req.query
+    
+    const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)   
+    const filters = { 
+        userId: req.auth.data.id,
+        positionId: req.auth.data.position.positionId,
+        ancestorId: ancestorIdScope,
+        isActive: true,
+        organizationId,
+        sex,
+        positionType: positionType ?? positionTypesConstant.GENERUS,
+        grade,
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', `attachment; filename="${Date.now()}.xlsx"`)
+    await userService.exportDataAsExcel(res, filters)
+
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 

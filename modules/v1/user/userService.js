@@ -1,3 +1,4 @@
+const ExcelJS = require('exceljs')
 const userRepository = require('./userRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
@@ -103,6 +104,44 @@ userService.updateMyTeacherProfile = async (data) => {
     }
 
     await userRepository.updateUserTeacher(updatedDdata)
+}
+
+userService.exportDataAsExcel = async (res, filters) => {
+    const event = eventConstant.user.download
+
+    try {
+        const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
+            stream: res,
+        })
+        const worksheet = workbook.addWorksheet('users')
+        worksheet.columns = [
+            { header: 'No.', key: 'number', width: 5 },
+            { header: 'Nama', key: 'name', width: 30 },
+            { header: 'Email', key: 'email', width: 20 },
+            { header: 'No. HP', key: 'phone', width: 20 },
+            { header: 'L/P', key: 'sex', width: 5 },
+            { header: 'Tgl. Lahir', key: 'birthdate', width: 20 },
+            { header: 'Kelas', key: 'grade', width: 10 },
+            { header: 'Muballigh', key: 'isMuballigh', width: 10 },
+            { header: 'PPD', key: 'ancestorOrgName', width: 20 },
+            { header: 'PPK', key: 'organizationName', width: 20 },
+        ]
+
+        const dataStream = await userRepository.queryStream(filters);
+        let counter = 1
+        for await (const row of dataStream) {
+            const organizationName = row.positions[0]?.organizationName ?? ''
+            const ancestorOrgName = row.positions[0]?.ancestorOrgName ?? ''
+            row.organizationName = organizationName
+            row.ancestorOrgName = ancestorOrgName
+            row.number = counter++
+            worksheet.addRow(row).commit()
+        }
+
+        await workbook.commit()
+    } catch (error) {
+        throwError(event.message.failed.errorGenerating, 500)
+    }
 }
 
 module.exports = userService

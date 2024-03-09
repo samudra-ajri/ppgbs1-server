@@ -11,6 +11,7 @@ router.route('/me').put(protect, userController.updateMyProfile)
 router.route('/me/student').put(protect, userController.updateMyStudentProfile)
 router.route('/me/teacher').put(protect, userController.updateMyTeacherProfile)
 router.route('/').get(protect, userController.list)
+router.route('/download').get(protect, userController.download)
 router.route('/:id').get(protect, userController.detail)
 // user position
 router.route('/:userId/positions/:positionId').delete(protect, admin, userPositionController.delete)

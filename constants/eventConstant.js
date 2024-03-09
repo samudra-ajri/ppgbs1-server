@@ -160,6 +160,16 @@ const eventConstant = {
 				failed: 'detail gagal dimuat.',
 			},
 		},
+		download: {
+			event: 'download-users',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undownloaded: 'gagal download.',
+					errorGenerating: 'file gagal dibuat.',
+				},
+			},
+		},
 	},
 	userPosition: {
 		deleteUserPosition: {

@@ -139,7 +139,7 @@ completionService.exportDataAsExcel = async (res, filters) => {
         })
         const worksheet = workbook.addWorksheet('capaian materi')
         worksheet.columns = [
-            { header: 'Timestamp (WIB)', key: 'createdAt', width: 20 },
+            { header: 'Tercapai Pada', key: 'createdAt', width: 20 },
             { header: 'Materi/Halaman', key: 'material', width: 30 },
             { header: 'Kelas', key: 'grade', width: 5 },
             { header: 'Subjek', key: 'subject', width: 30 },
@@ -149,7 +149,7 @@ completionService.exportDataAsExcel = async (res, filters) => {
 
         const dataStream = await completionRepository.queryStream(filters)
         for await (const row of dataStream) {
-            row.createdAt = row.createdAt.toLocaleString('id-ID', excelDateTimeOptions)
+            row.createdAt = row.createdAt ? row.createdAt.toLocaleString('id-ID', excelDateTimeOptions) : 'belum'
             worksheet.addRow(row).commit()
         }
 

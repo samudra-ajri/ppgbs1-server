@@ -419,7 +419,7 @@ completionRepository.findUser = async (userId) => {
     return data
 }
 
-const selectQueryStream = () => {
+const selectQueryStream = (filters) => {
     return `
         SELECT 
             to_timestamp("usersCompletions"."createdAt" / 1000) as "createdAt",
@@ -430,14 +430,14 @@ const selectQueryStream = () => {
             materials.subcategory
         FROM "usersCompletions"
             LEFT JOIN users on users.id = "usersCompletions"."userId"
-            LEFT JOIN materials on materials.id = "usersCompletions"."materialId"
+            RIGHT JOIN materials on materials.id = "usersCompletions"."materialId" AND users.id = ${filters.userId}
     `
 }
 
 completionRepository.queryStream = async (filters) => {
     const client = await db.connectionManager.getConnection()
     try {
-        const query = selectQueryStream() + filtersQuery(filters) + orderBy()
+        const query = selectQueryStream(filters) + orderBy()
         const queryStream = new QueryStream(query)
         const stream = client.query(queryStream)
         return Readable.from(stream)

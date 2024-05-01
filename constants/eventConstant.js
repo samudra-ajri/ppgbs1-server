@@ -282,6 +282,25 @@ const eventConstant = {
 				},
 			},
 		},
+		download: {
+			event: 'download-completions',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					undownloaded: 'gagal download.',
+					errorGenerating: 'file gagal dibuat.',
+				},
+			},
+		},
+		getUser: {
+			event: 'get-completions-user',
+			message: {
+				success: 'detail berhasil dimuat.',
+				failed: {
+					notFound: 'data tidak ditemukan.',
+				}
+			},
+		},
 	},
 	dashboard: {
 		detail: {

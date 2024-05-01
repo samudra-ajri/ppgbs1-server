@@ -1,3 +1,4 @@
+const ExcelJS = require('exceljs')
 const completionRepository = require('./completionRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
@@ -92,7 +93,7 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
         const completion = completionsCount.find(c => c[findCompletionIndex] === material[findCompletionIndex])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
-        const percentage = materialsMultiplier 
+        const percentage = materialsMultiplier
             ? (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
             : 0
 
@@ -110,7 +111,7 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
         const completion = completionsCount.find(c => c[structure] === material[structure])
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
-        const percentage = materialsMultiplier 
+        const percentage = materialsMultiplier
             ? (+(completionCount / (materialCount * materialsMultiplier) * 100).toFixed(2))
             : 0
 
@@ -120,6 +121,52 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
         sumData.grade = material.grade
         return sumData
     })
+}
+
+completionService.getUser = async (userId) => {
+    const event = eventConstant.completion.getUser
+    const user = await completionRepository.findUser(userId)
+    if (!user) throwError(event.message.failed.notFound, 404)
+    return user
+}
+
+completionService.exportDataAsExcel = async (res, filters) => {
+    const event = eventConstant.completion.download
+
+    try {
+        const workbook = new ExcelJS.stream.xlsx.WorkbookWriter({
+            stream: res,
+        })
+        const worksheet = workbook.addWorksheet('capaian materi')
+        worksheet.columns = [
+            { header: 'Timestamp (WIB)', key: 'createdAt', width: 20 },
+            { header: 'Materi/Halaman', key: 'material', width: 30 },
+            { header: 'Kelas', key: 'grade', width: 5 },
+            { header: 'Subjek', key: 'subject', width: 30 },
+            { header: 'Kategori', key: 'category', width: 30 },
+            { header: 'Subkategori', key: 'subcategory', width: 30 },
+        ]
+
+        const dataStream = await completionRepository.queryStream(filters)
+        for await (const row of dataStream) {
+            row.createdAt = row.createdAt.toLocaleString('id-ID', excelDateTimeOptions)
+            worksheet.addRow(row).commit()
+        }
+
+        await workbook.commit()
+    } catch (error) {
+        throwError(event.message.failed.errorGenerating, 500)
+    }
+}
+
+const excelDateTimeOptions = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Jakarta',
 }
 
 module.exports = completionService

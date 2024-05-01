@@ -9,6 +9,7 @@ router.route('/')
     .post(protect, completionController.create)
     .delete(protect, completionController.delete)
 router.route('/me').get(protect, completionController.me)
+router.route('/users/:userId/download').get(protect, completionController.download)
 router.route('/sum/:structure/users/:userId').get(protect, completionController.sumUser)
 router.route('/sum/:structure/users').get(protect, completionController.sumUsers)
 module.exports = router

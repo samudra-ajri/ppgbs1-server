@@ -1,3 +1,5 @@
+const QueryStream = require('pg-query-stream')
+const { Readable } = require('stream')
 const { QueryTypes } = require('sequelize')
 const db = require('../../../database/config/postgresql')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
@@ -394,7 +396,6 @@ completionRepository.countUsers = async (positionType, organizationId, usersGrad
 }
 
 completionRepository.updateLastCompletionStudent = async (userId) => {
-    console.log(11233);
     const now = Date.now()
     await db.query(`
         UPDATE students
@@ -404,6 +405,47 @@ completionRepository.updateLastCompletionStudent = async (userId) => {
             type: QueryTypes.UPDATE,
         }
     )
+}
+
+completionRepository.findUser = async (userId) => {
+    const [data] = await db.query(`
+        SELECT "name"
+        FROM "users"
+        WHERE "id" = $1`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+    return data
+}
+
+const selectQueryStream = () => {
+    return `
+        SELECT 
+            to_timestamp("usersCompletions"."createdAt" / 1000) as "createdAt",
+            materials.material,
+            materials.grade,
+            materials.subject,
+            materials.category,
+            materials.subcategory
+        FROM "usersCompletions"
+            LEFT JOIN users on users.id = "usersCompletions"."userId"
+            LEFT JOIN materials on materials.id = "usersCompletions"."materialId"
+    `
+}
+
+completionRepository.queryStream = async (filters) => {
+    const client = await db.connectionManager.getConnection()
+    try {
+        const query = selectQueryStream() + filtersQuery(filters) + orderBy()
+        const queryStream = new QueryStream(query)
+        const stream = client.query(queryStream)
+        return Readable.from(stream)
+    } catch (error) {
+        throw error
+    } finally {
+        db.connectionManager.releaseConnection(client)
+    }
 }
 
 module.exports = completionRepository

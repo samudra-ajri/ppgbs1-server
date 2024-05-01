@@ -104,4 +104,21 @@ completionController.sumUsers = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    completion download as excel
+// @route   GET /completions/users/:userId/download
+// @access  Protect, Admin
+completionController.download = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.download.event
+    const { userId } = req.params
+    const user = await completionService.getUser(userId)
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    res.setHeader('Content-Disposition', `attachment; filename="Capaian Materi ${user.name}.xlsx"`)
+
+    const filters = { userId }
+    await completionService.exportDataAsExcel(res, filters)
+
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = completionController

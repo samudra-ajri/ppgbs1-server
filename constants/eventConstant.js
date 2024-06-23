@@ -577,6 +577,26 @@ const eventConstant = {
 			},
 		},
 	},
+	directory: {
+		create: {
+			event: 'create-directory',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					alreadyExists: 'File dengan nama yang sama sudah pernah dibuat.',
+				},
+			},
+		},
+		delete: {
+			event: 'delete-directory',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'data tidak ditemukan',
+				},
+			},
+		},
+	},
 }
 
 module.exports = eventConstant

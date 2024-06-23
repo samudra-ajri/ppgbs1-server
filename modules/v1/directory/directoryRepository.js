@@ -14,12 +14,12 @@ directoryRepository.findByName = async (name) => {
 }
 
 directoryRepository.insert = async (data) => {
-    const { name, url } = data
+    const { name, url, description } = data
     const now = Date.now()
     await db.query(`
-        INSERT INTO "directories" ("name", "url", "createdAt", "updatedAt")
-        VALUES (:name, :url, :now, :now)`, {
-            replacements: { name, url, now },
+        INSERT INTO "directories" ("name", "url", "description", "createdAt", "updatedAt")
+        VALUES (:name, :url, :description, :now, :now)`, {
+            replacements: { name, url, description, now },
             type: QueryTypes.INSERT,
         }
     )

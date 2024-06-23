@@ -12,11 +12,11 @@ directoryService.getDirectories = async (search, page, pageSize) => {
 directoryService.createDirectory = async ({ payload }) => {
     const event = eventConstant.directory.create
 
-    const { name, url } = payload
+    const { name, url, description } = payload
     const exists = await directoryRepository.findByName(name)
     if (exists.length) throwError(event.message.failed.alreadyExists, 400)
 
-    const data = { name, url }
+    const data = { name, url, description }
     await directoryRepository.insert(data)
 }
 

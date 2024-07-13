@@ -5,7 +5,7 @@ const directoryController = require(`../modules/${config.APP_VERSION}/directory/
 
 const router = express.Router()
 router.route('/')
-    .get(protect, admin, directoryController.list)
+    .get(protect, directoryController.list)
     .post(protect, admin, directoryController.create)
 router.route('/:id')
     .delete(protect, admin, directoryController.delete)

@@ -3,6 +3,7 @@ const authService = require('./authService')
 const eventConstant = require('../../../constants/eventConstant')
 const { logger } = require('../../../utils/loggerUtils')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
+const { generateRandomString } = require('../../../utils/stringUtils')
 
 const authController = {}
 
@@ -11,6 +12,20 @@ const authController = {}
 // @access  Public
 authController.register = asyncHandler(async (req, res) => {
     req.event = eventConstant.auth.register.event
+    await authService.createUser(req.body)
+    res.status(201).json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
+})
+
+// @desc    register by admin
+// @route   POST /auths/register-by-admin
+// @access  Protect, Admin
+authController.registerByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.auth.register.event
+    const tempPassword = generateRandomString(10)
+    req.body.createdBy = req.auth.data.id
+    req.body.password = tempPassword
+    req.body.password2 = tempPassword
     await authService.createUser(req.body)
     res.status(201).json({ message: 'SUCCESS' })
     logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })

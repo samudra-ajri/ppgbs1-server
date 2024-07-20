@@ -275,13 +275,13 @@ authRepository.restoreResetPasswordToken = async (userId) => {
 }
 
 const insertUser = async (trx, data) => {
-    const { name, phone, password, username, email, sex, isMuballigh, birthdate } = data
+    const { name, phone, password, username, email, sex, isMuballigh, birthdate, createdBy } = data
     const now = Date.now()
     const results = await db.query(`
-        INSERT INTO "users" ("name", "phone", "password", "username", "email", "sex", "isMuballigh", "birthdate", "createdAt", "updatedAt", "isActive")
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10)
+        INSERT INTO "users" ("name", "phone", "password", "username", "email", "sex", "isMuballigh", "birthdate", "createdAt", "updatedAt", "isActive", "createdBy")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $11)
         RETURNING id`, {
-            bind: [name, phone, password, username, email, sex, isMuballigh, birthdate, now, true],
+            bind: [name, phone, password, username, email, sex, isMuballigh, birthdate, now, true, createdBy],
             type: QueryTypes.INSERT,
             transaction: trx,
         }
@@ -306,15 +306,15 @@ const insertUserPositions = async (trx, data) => {
 }
 
 const insertUserRoles = async (trx, data) => {
-    const { userId, positions } = data
+    const { userId, positions, createdBy } = data
     const now = Date.now()
 
     for (let position of positions) {
         const positionType = positionTypesTableMap[position.type]
-        const values = [userId, now, now]
+        const values = [userId, now, now, createdBy]
         const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
         await db.query(`
-            INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt")
+            INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy")
             VALUES (${placeholders})`, {
                 bind: values,
                 type: QueryTypes.INSERT,

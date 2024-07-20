@@ -40,4 +40,13 @@ authMiddleware.admin = asyncHandler(async (req, res, next) => {
     next()
 })
 
+authMiddleware.teacher = asyncHandler(async (req, res, next) => {
+    const type = req.auth.data.position.type
+    if (type === positionTypesConstant.ADMIN || type === positionTypesConstant.PENGAJAR) {
+        next()
+    } else {
+        throwError(event.message.failed.unauthenticated, 401)
+    }
+})
+
 module.exports = authMiddleware

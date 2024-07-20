@@ -71,7 +71,7 @@ authService.getUserProfile = async ({ userId, positionId }) => {
     return user
 }
 
-authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds }) => {
+authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds, createdBy }) => {
     const event = eventConstant.auth.register
 
     // validate birthdate format
@@ -100,6 +100,7 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         password: await authUtils.generatePassword(password),
         positionIds,
         positions: foundPositions,
+        createdBy: createdBy || null,
     }
     await authRepository.createUser(data)
 }

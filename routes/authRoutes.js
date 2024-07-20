@@ -1,10 +1,11 @@
 const express = require('express')
 const config = require('../config')
-const { protect, admin } = require('../middlewares/authMiddleware')
+const { protect, admin, teacher } = require('../middlewares/authMiddleware')
 const authController = require(`../modules/${config.APP_VERSION}/auth/authController`)
 
 const router = express.Router()
 router.route('/register').post(authController.register)
+router.route('/register-by-admin').post(protect, teacher, authController.registerByAdmin)
 router.route('/login').post(authController.login)
 router.route('/me').get(protect, authController.me)
 router.route('/forgot-password').post(authController.forgotPassword)

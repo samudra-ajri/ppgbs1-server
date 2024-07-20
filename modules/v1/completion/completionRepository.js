@@ -409,7 +409,7 @@ completionRepository.updateLastCompletionStudent = async (userId) => {
 
 completionRepository.findUser = async (userId) => {
     const [data] = await db.query(`
-        SELECT "name"
+        SELECT "id", "name"
         FROM "users"
         WHERE "id" = $1`, {
             bind: [userId],

@@ -56,6 +56,19 @@ completionController.create = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS, message: '', statusCode: 201 })
 })
 
+// @desc    create completions by admin
+// @route   POST /completions/users/:userId/create-by-admin
+// @access  Protect, Admin
+completionController.createByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.create.event
+    const { userId } = req.params
+    const user = await completionService.getUser(userId)
+    const { materialIds } = req.body
+    await completionService.createCompletions(user, materialIds)
+    res.status(201).json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: '', statusCode: 201 })
+})
+
 // @desc    delete completions
 // @route   DELETE /completions?materialIds=
 // @access  Protect

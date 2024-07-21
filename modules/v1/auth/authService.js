@@ -95,7 +95,7 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         username: username || '',
         email: email || '',
         sex,
-        isMuballigh,
+        isMuballigh: isMuballigh || false,
         birthdate,
         password: await authUtils.generatePassword(password),
         positionIds,

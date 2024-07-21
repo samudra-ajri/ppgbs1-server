@@ -98,7 +98,8 @@ const eventConstant = {
 					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid.',
 					incorrectPasswordCombination: 'konfirmasi password tidak sama.',
 					undefinedPosition: 'Posisi tidak ditemukan.',
-					differentPositionType: 'Posisi saat ini dan posisi updated berbeda tipe.'
+					differentPositionType: 'Posisi saat ini dan posisi updated berbeda tipe.',
+					registeredPhone: 'Nomor HP sudah terdaftar, gunakan nomor lain.',
 				}
 			},
 		},

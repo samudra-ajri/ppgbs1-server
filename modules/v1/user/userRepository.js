@@ -15,6 +15,15 @@ userRepository.findById = async (id) => {
     return data
 }
 
+userRepository.findByPhone = async (phone) => {
+    const query = selectQuery() + baseJoinQuery() + filterByPhone() + groupByQuery()
+    const [data] = await db.query(query, {
+        bind: [phone],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 userRepository.updateUser = async (data) => {
     const { newPositionId } = data
     await db.transaction(async (t) => {
@@ -354,6 +363,12 @@ const filterByGrade = (filters) => {
 const filterById = () => {
     return `
         WHERE users.id = $1
+    `
+}
+
+const filterByPhone = () => {
+    return `
+        WHERE users.phone = $1
     `
 }
 

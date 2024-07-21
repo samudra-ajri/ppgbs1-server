@@ -50,6 +50,11 @@ userService.updateMyProfile = async (data) => {
         updatedPassword = password
     }
 
+    if (payload.phone && (payload.phone !== userData.phone)) {
+        const foundPhone = await userRepository.findByPhone(payload.phone)
+        if (foundPhone) throwError(event.message.failed.registeredPhone, 400)
+    }
+
     const updatedDdata = {
         id: userData.id,
         name: payload.name || userData.name,

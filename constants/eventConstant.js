@@ -31,6 +31,7 @@ const eventConstant = {
 					incorrectPasswordCombination: 'konfirmasi password tidak sama.',
 					undefinedPosition: 'Posisi tidak ditemukan.',
 					invalidBirthdate: 'tanggal lahir (birthdate) tidak valid.',
+					invalidGrade: 'kelas (grade) tidak valid.',
 				},
 			},
 		},

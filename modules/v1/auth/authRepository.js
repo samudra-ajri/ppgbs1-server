@@ -312,15 +312,29 @@ const insertUserRoles = async (trx, data) => {
     for (let position of positions) {
         const positionType = positionTypesTableMap[position.type]
         const values = [userId, now, now, createdBy]
-        const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
-        await db.query(`
-            INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy")
-            VALUES (${placeholders})`, {
-                bind: values,
-                type: QueryTypes.INSERT,
-                transaction: trx,
-            }
-        )
+
+        if (positionType === positionTypesTableMap.GENERUS && data.grade) {
+            values.push(data.grade)
+            const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
+            await db.query(`
+                INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy", "grade")
+                VALUES (${placeholders})`, {
+                    bind: values,
+                    type: QueryTypes.INSERT,
+                    transaction: trx,
+                }
+            )
+        } else {
+            const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
+            await db.query(`
+                INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy")
+                VALUES (${placeholders})`, {
+                    bind: values,
+                    type: QueryTypes.INSERT,
+                    transaction: trx,
+                }
+            )
+        }
     }
 }
 

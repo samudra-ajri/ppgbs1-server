@@ -4,6 +4,7 @@ const authRepository = require('./authRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
 const { isValidDate } = require('../../../utils/stringUtils')
+const gradeConstant = require('../../../constants/gradeConstant')
 
 const authService = {}
 
@@ -71,7 +72,7 @@ authService.getUserProfile = async ({ userId, positionId }) => {
     return user
 }
 
-authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds, createdBy }) => {
+authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds, createdBy, grade }) => {
     const event = eventConstant.auth.register
 
     // validate birthdate format
@@ -87,6 +88,7 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
     if (!positionIds.length || foundPositions.length < positionIds.length) {
         throwError(event.message.failed.undefinedPosition, 400)
     }
+    if (grade > gradeConstant.PN4) throwError(event.message.failed.invalidGrade, 400)
 
     // create user
     const data = {
@@ -101,6 +103,7 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         positionIds,
         positions: foundPositions,
         createdBy: createdBy || null,
+        grade: grade || null,
     }
     await authRepository.createUser(data)
 }

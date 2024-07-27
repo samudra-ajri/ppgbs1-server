@@ -75,6 +75,13 @@ authService.getUserProfile = async ({ userId, positionId }) => {
 authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds, createdBy, grade }) => {
     const event = eventConstant.auth.register
 
+    // validate phone number
+    if (phone && !isPhoneNumber(phone)) throwError(event.message.failed.invalidPhoneNumber, 400)
+    // validate email
+    if (email && !isEmailAddress(email)) throwError(event.message.failed.invalidEmail, 400)
+    // validate username
+    if (username && !isUsername(username)) throwError(event.message.failed.invalidUsername, 400)
+
     // validate birthdate format
     if (birthdate && !isValidDate(birthdate)) throwError(event.message.failed.invalidBirthdate, 400)
     // password confirmation
@@ -176,6 +183,25 @@ authService.updatePassword = async ({ userId, currentPassword, newPassword, conf
 
 authService.hashString = async (string) => {
     return authUtils.generatePassword(string)
+}
+
+const isPhoneNumber = (input) => {
+    // Regular expression to match phone numbers in the format 082129379891
+    const phoneRegex = /^0\d{10,14}$/ // Starts with '0' followed by 10 to 14 digits
+    return phoneRegex.test(input)
+}
+
+const isEmailAddress = (input) => {
+    // Regular expression to match email addresses
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(input)
+}
+
+const isUsername = (input) => {
+    console.log(123);
+    // Regular expression to match usernames (alphanumeric and underscores, 3-255 characters)
+    const usernameRegex = /^[a-zA-Z0-9_]{3,255}$/
+    return usernameRegex.test(input)
 }
 
 module.exports = authService

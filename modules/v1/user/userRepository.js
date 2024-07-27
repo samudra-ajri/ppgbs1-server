@@ -184,6 +184,7 @@ const selectQuery = () => {
             users.id, 
             users.name, 
             users.email,
+            users.username,
             users.phone,
             users."isActive", 
             users."lastLogin",

@@ -82,6 +82,20 @@ completionController.delete = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    delete completions by admin
+// @route   DELETE /completions/users/:userId/delete-by-admin?materialIds=
+// @access  Protect
+completionController.deleteByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.completion.delete.event
+    const { userId } = req.params
+    const { materialIds } = req.query
+    const user = await completionService.getUser(userId)
+    const materialIdsArray = materialIds.split(',').map(Number)
+    await completionService.deleteCompletions(user, materialIdsArray)
+    res.json({ materialIds: materialIdsArray })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    sum materials based on the structures for specific user
 // @route   GET /completions/:structure/users/:userId
 // @access  Protect

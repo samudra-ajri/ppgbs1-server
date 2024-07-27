@@ -11,6 +11,7 @@ router.route('/')
 router.route('/me').get(protect, completionController.me)
 router.route('/users/:userId/download').get(protect, completionController.download)
 router.route('/users/:userId/create-by-admin').post(protect, teacher, completionController.createByAdmin)
+router.route('/users/:userId/delete-by-admin').delete(protect, teacher, completionController.deleteByAdmin)
 router.route('/sum/:structure/users/:userId').get(protect, completionController.sumUser)
 router.route('/sum/:structure/users').get(protect, completionController.sumUsers)
 module.exports = router

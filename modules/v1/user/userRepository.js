@@ -192,6 +192,7 @@ const selectQuery = () => {
             users."isMuballigh",
             users.birthdate,
             users."needUpdatePassword",
+            users."createdBy",
             students.grade,
             students."lastCompletionUpdate",
             teachers."isMarried",

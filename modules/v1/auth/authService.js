@@ -198,7 +198,6 @@ const isEmailAddress = (input) => {
 }
 
 const isUsername = (input) => {
-    console.log(123);
     // Regular expression to match usernames (alphanumeric and underscores, 3-255 characters)
     const usernameRegex = /^[a-zA-Z0-9_]{3,255}$/
     return usernameRegex.test(input)

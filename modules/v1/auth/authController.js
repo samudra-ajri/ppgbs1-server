@@ -53,7 +53,6 @@ authController.me = asyncHandler(async (req, res) => {
     const data = await authService.getUserProfile(payload)
     data.exp = req.auth.data.exp
     res.json({ data })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    switch position
@@ -67,7 +66,6 @@ authController.switchPosition = asyncHandler(async (req, res) => {
     }
     const data = await authService.switchUserPosition(payload)
     res.json({ data })
-    logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
 // @desc    forgot password

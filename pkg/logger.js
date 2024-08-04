@@ -5,13 +5,16 @@ const config = require('../config')
 
 // Create an Elasticsearch client
 const esClient = new Client({
-    node: `http://${config.ELASTICSEARCH_HOST}:${config.ELASTICSEARCH_PORT}`
+    node: `https://${config.ELASTICSEARCH_USERNAME}:${config.ELASTICSEARCH_PASSWORD}@${config.ELASTICSEARCH_HOST}`
 })
 
 // Configure Elasticsearch transport
+const now = new Date()
+const month = now.getMonth() + 1
+const year = now.getFullYear()
 const esTransport = new ElasticsearchTransport({
     level: 'info',
-    index: 'pigaru-logs',
+    index: `pigaru-logs.${month}.${year}`,
     client: esClient,
 })
 

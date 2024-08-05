@@ -23,7 +23,8 @@ generateReqLog = (req) => {
         headers: { 'userAgent': headers['user-agent']},
         params,
         query,
-        body: sanitize(body)
+        body: sanitize(body),
+        ip: req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'],
     }
 }
 

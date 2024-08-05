@@ -24,7 +24,7 @@ generateReqLog = (req) => {
         params,
         query,
         body: sanitize(body),
-        ip: req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for'],
+        ip: req.ip || req.headers['x-forwarded-for'],
     }
 }
 

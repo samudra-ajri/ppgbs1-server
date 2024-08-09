@@ -1,5 +1,6 @@
 const { QueryTypes } = require('sequelize')
 const db = require('../../../database/config/postgresql')
+const directoryType = require('../../../constants/directoryType')
 
 const directoryRepository = {}
 
@@ -14,12 +15,12 @@ directoryRepository.findByName = async (name) => {
 }
 
 directoryRepository.insert = async (data) => {
-    const { name, url, description } = data
+    const { name, url, description, type = directoryType.PUBLIC } = data;
     const now = Date.now()
     await db.query(`
-        INSERT INTO "directories" ("name", "url", "description", "createdAt", "updatedAt")
-        VALUES (:name, :url, :description, :now, :now)`, {
-            replacements: { name, url, description, now },
+        INSERT INTO "directories" ("name", "url", "description", "createdAt", "updatedAt", "type")
+        VALUES (:name, :url, :description, :now, :now, :type)`, {
+            replacements: { name, url, description, now, type },
             type: QueryTypes.INSERT,
         }
     )

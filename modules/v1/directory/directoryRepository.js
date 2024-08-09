@@ -36,9 +36,9 @@ directoryRepository.delete = async (id) => {
     )
 }
 
-directoryRepository.findAll = async (search, page, pageSize) => {
-    const query = selectQuery() + filtersQuery() + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
-    const queryTotal = totalQuery() + filtersQuery() + searchQuery(search)
+directoryRepository.findAll = async (filters, search, page, pageSize) => {
+    const query = selectQuery() + filtersQuery(filters) + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
+    const queryTotal = totalQuery() + filtersQuery(filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
     return { data, total }
@@ -80,8 +80,9 @@ const orderBy = () => {
     `
 }
 
-const filtersQuery = () => {
+const filtersQuery = (filters) => {
     let filter = filterByDefault()
+    filter += filterByType(filters)
     return filter
 }
 
@@ -89,6 +90,16 @@ const filterByDefault = () => {
     return `
         WHERE 1=1
     `
+}
+
+const filterByType = (filters) => {
+    let { type } = filters
+    if (type) {
+        return `
+            AND "type" = '${type}'
+        `
+    }
+    return ''
 }
 
 module.exports = directoryRepository

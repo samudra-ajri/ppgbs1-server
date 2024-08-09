@@ -4,17 +4,24 @@ const { paginate } = require('../../../utils/paginationUtils')
 const eventConstant = require('../../../constants/eventConstant')
 const loggerStatusConstant = require('../../../constants/loggerStatusConstant')
 const { logger } = require('../../../utils/loggerUtils')
+const directoryType = require('../../../constants/directoryType')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const directoryController = {}
 
 // @desc    list directories
 // @route   GET /directories
-// @access  Public
+// @access  Protect
 directoryController.list = asyncHandler(async (req, res) => {
+    const session = req.auth.data
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const { data, total } = await directoryService.getDirectories(search, page, pageSize)
+
+    const type = session.position.type === positionTypesConstant.ADMIN ? '' : directoryType.PUBLIC
+    const filters = { type }
+
+    const { data, total } = await directoryService.getDirectories(filters, search, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
     res.json({ ...metadata, data })
 })

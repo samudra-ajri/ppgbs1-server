@@ -589,6 +589,7 @@ const eventConstant = {
 				success: 'berhasil.',
 				failed: {
 					alreadyExists: 'File dengan nama yang sama sudah pernah dibuat.',
+					invalidType: 'Tipe hanya boleh PUBLIC/PRIVATE.',
 				},
 			},
 		},

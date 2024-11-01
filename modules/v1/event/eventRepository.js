@@ -1,4 +1,6 @@
+const organizationLevelsConstant = require('../../../constants/organizationLevelsConstant')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
+const presenceStatusConstant = require('../../../constants/presenceStatusConstant')
 const db = require('../../../database/config/postgresql')
 
 const { QueryTypes } = require('sequelize')
@@ -6,16 +8,16 @@ const { QueryTypes } = require('sequelize')
 const eventRepository = {}
 
 eventRepository.insertEvent = async (data) => {
-    const { createdBy, organizationId, organizationName, roomId, name, passcode, startDate, endDate, location, description, grades } = data
-    const now = Date.now()
-    await db.query(`
-        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades")
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12)
-        RETURNING id`, {
-            bind: [organizationId, roomId, name, passcode, startDate, endDate, location, description, createdBy, now, organizationName, grades],
-            type: QueryTypes.INSERT,
-        }
-    )
+    const { session, grades } = data
+
+    await db.transaction(async (t) => {
+        const [event] = await createEvent(t, data)
+        const users = await getUsers(t, session, grades)
+        
+        const userIds = users.map(user => user.id)
+        const eventId = event[0].id
+        await createPresencesList(t, session, userIds, eventId)
+    })
 }
 
 eventRepository.findById = async (session, id) => {
@@ -164,6 +166,70 @@ eventRepository.deleteEvent = async (createdBy, eventId) => {
         WHERE "id" = $1 AND "createdBy" = $2`, {
             bind: [eventId, createdBy, now],
             type: QueryTypes.UPDATE
+        }
+    )
+}
+
+const createEvent = async (trx, data) => {
+    const { session, roomId, name, passcode, startDate, endDate, location, description, grades } = data
+    const now = Date.now()
+    
+    return db.query(`
+        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12)
+        RETURNING id`, {
+            bind: [session.position.orgId, roomId, name, passcode, startDate, endDate, location, description, session.id, now, session.position.orgName, grades],
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
+}
+
+const getUsers = async (trx, session, grades) => {
+    const selectQuery = `
+        SELECT users.id FROM users
+            RIGHT JOIN students ON users.id = students."userId"
+            RIGHT JOIN "usersPositions" ON users.id = "usersPositions"."userId"
+            LEFT JOIN positions ON positions.id = "usersPositions"."positionId"
+    `
+
+    let filterQuery = `
+        WHERE "usersPositions"."deletedAt" IS NULL
+            AND students.grade IN (:grades)
+            AND positions.type = :positionType
+    `
+
+    const filters = { grades, positionType: positionTypesConstant.GENERUS }
+
+    if (session.position.orgLevel !== organizationLevelsConstant.ppg) {
+        filterQuery += `
+            AND positions."organizationId"::text LIKE :organizationId
+        `
+        filters.organizationId = `${session.position.orgId}%`
+    }
+
+    const query = selectQuery + filterQuery + ';'
+    return db.query(query, {
+        replacements: filters,
+        type: QueryTypes.SELECT,
+        transaction: trx,
+    })
+}
+
+const createPresencesList = async (trx, session, userIds, eventId) => {
+    const now = Date.now()
+    const createdBy = session.id
+    const status = presenceStatusConstant.ALPHA
+
+    const values = userIds.map((userId) =>
+        `(${userId}, ${eventId}, '${status}', ${createdBy}, ${now})`
+    ).join(',')
+
+    await db.query(`
+        INSERT INTO "presences" ("userId", "eventId", "status", "createdBy", "createdAt")
+        VALUES ${values}`, {
+            type: QueryTypes.INSERT,
+            transaction: trx,
         }
     )
 }

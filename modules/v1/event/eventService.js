@@ -7,9 +7,7 @@ const eventService = {}
 eventService.createEvent = async ({ session, payload }) => {
     const { name, passcode, startDate, endDate, location, description, grades } = payload
     const data = {
-        createdBy: session.id,
-        organizationId: session.position.orgId,
-        organizationName: session.position.orgName,
+        session,
         roomId: generateRoomId(),
         name,
         passcode,

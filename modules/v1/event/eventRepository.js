@@ -219,7 +219,7 @@ const getUsers = async (trx, session, grades) => {
 const createPresencesList = async (trx, session, userIds, eventId) => {
     const now = Date.now()
     const createdBy = session.id
-    const status = presenceStatusConstant.ALPHA
+    const status = presenceStatusConstant.ALPA
 
     const values = userIds.map((userId) =>
         `(${userId}, ${eventId}, '${status}', ${createdBy}, ${now})`

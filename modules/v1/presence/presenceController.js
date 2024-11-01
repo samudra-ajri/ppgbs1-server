@@ -13,7 +13,7 @@ const presenceController = {}
 // @access  Protect
 presenceController.create = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.create.event
-    req.body.status = presenceStatusConstant.HADIR // TODO: IZIN, ALPHA
+    req.body.status = presenceStatusConstant.HADIR // TODO: IZIN, ALPA
 
     const session = req.auth.data
     const { eventId } = req.params
@@ -58,7 +58,7 @@ presenceController.detail = asyncHandler(async (req, res) => {
 // @access  Protect, Admin
 presenceController.createByAdmin = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.createByAdmin.event
-    req.body.status = presenceStatusConstant.HADIR // TODO: IZIN, ALPHA
+    req.body.status = presenceStatusConstant.HADIR // TODO: IZIN, ALPA
 
     const session = req.auth.data
     const { eventId, userId } = req.params

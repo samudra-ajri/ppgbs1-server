@@ -1,7 +1,7 @@
 const presenceStatusConstant = {
     HADIR: 'HADIR',
     IZIN: 'IZIN',
-    ALPHA: 'ALPHA',
+    ALPA: 'ALPA',
   }
   
   module.exports = presenceStatusConstant

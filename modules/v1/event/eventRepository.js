@@ -6,13 +6,13 @@ const { QueryTypes } = require('sequelize')
 const eventRepository = {}
 
 eventRepository.insertEvent = async (data) => {
-    const { createdBy, organizationId, organizationName, roomId, name, passcode, startDate, endDate, location, description } = data
+    const { createdBy, organizationId, organizationName, roomId, name, passcode, startDate, endDate, location, description, grades } = data
     const now = Date.now()
     await db.query(`
-        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName")
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11)
+        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12)
         RETURNING id`, {
-            bind: [organizationId, roomId, name, passcode, startDate, endDate, location, description, createdBy, now, organizationName],
+            bind: [organizationId, roomId, name, passcode, startDate, endDate, location, description, createdBy, now, organizationName, grades],
             type: QueryTypes.INSERT,
         }
     )

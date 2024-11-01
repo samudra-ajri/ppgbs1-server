@@ -59,7 +59,7 @@ presenceRepository.findAll = async (filters, page, pageSize) => {
 const selectQuery = () => {
     return `
         SELECT 
-            presences."userId", presences."eventId", presences.status, presences."createdAt", presences."createdBy",
+            presences."userId", presences."eventId", presences.status, presences."createdAt", presences."createdBy", students.grade,
             users.name as "userName", users.sex as "userSex", organizations.id as "organizationId", organizations.name as "organizationName"
     `
 }
@@ -74,6 +74,7 @@ const baseJoinQuery = () => {
     return`
         FROM presences
         LEFT JOIN users on users.id = presences."userId"
+        LEFT JOIN students on students."userId" = users.id
         LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
         LEFT JOIN positions on positions.id = "usersPositions"."positionId"
         LEFT JOIN organizations on organizations.id = "positions"."organizationId"

@@ -82,7 +82,7 @@ const baseJoinQuery = () => {
 
 const orderBy = () => {
     return `
-        ORDER BY presences."createdAt"
+        ORDER BY presences."createdAt", LOWER(users."name")
     `
 }
 

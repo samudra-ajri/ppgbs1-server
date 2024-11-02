@@ -12,7 +12,13 @@ presenceRepository.insertPresence = async (data) => {
     const now = Date.now()
     await db.query(`
         INSERT INTO "presences" ("userId", "eventId", status, "createdBy", "createdAt")
-        VALUES ($1, $2, $3, $4, $5)`, {
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT ("userId", "eventId") 
+        DO UPDATE SET 
+            status = EXCLUDED.status,
+            "createdBy" = EXCLUDED."createdBy",
+            "createdAt" = EXCLUDED."createdAt"`, 
+        {
             bind: [userId, eventId, status, createdBy, now],
             type: QueryTypes.INSERT,
         }

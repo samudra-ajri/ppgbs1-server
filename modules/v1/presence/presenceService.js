@@ -3,6 +3,7 @@ const eventConstant = require('../../../constants/eventConstant')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const { throwError } = require('../../../utils/errorUtils')
 const presenceRepository = require('./presenceRepository')
+const presenceStatusConstant = require('../../../constants/presenceStatusConstant')
 
 const presenceService = {}
 
@@ -21,7 +22,7 @@ presenceService.create = async (payload) => {
     if (!isCreatedByAdmin && foundEventDetail.passcode !== passcode) throwError(event.message.failed.wrongAccessCode, 403)
 
     const presence = await presenceRepository.findPresence(foundUserId, eventId)
-    if (presence) throwError(event.message.failed.alreadyExists, 403)
+    if (presence?.status === presenceStatusConstant.HADIR) throwError(event.message.failed.alreadyExists, 403)
 
     const data = {
         userId: foundUserId,

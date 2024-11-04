@@ -102,4 +102,21 @@ presenceController.download = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    update event presence
+// @route   PUT /events/:eventId/presences/:userId
+// @access  Protect, Admin
+presenceController.update = asyncHandler(async (req, res) => {
+    req.event = eventConstant.presence.update.event
+
+    const session = req.auth.data
+    const { userId, eventId } = req.params
+    const { status } = req.body
+
+    const data = { eventId, userId, status }
+
+    await presenceService.update(session, data)
+    res.json({ userId, eventId })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = presenceController

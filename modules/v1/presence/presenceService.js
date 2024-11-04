@@ -87,6 +87,14 @@ presenceService.exportDataAsExcel = async (res, filters) => {
     }
 }
 
+presenceService.update = async (session, data) => {
+    const event = eventConstant.presence.update
+    const { eventId, userId } = data
+    const presence = await presenceRepository.findPresence(userId, eventId)
+    if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
+    await presenceRepository.update(data)
+}
+
 const excelDateTimeOptions = {
     year: 'numeric',
     month: 'numeric',

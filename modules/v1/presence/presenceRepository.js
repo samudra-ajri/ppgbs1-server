@@ -165,6 +165,23 @@ presenceRepository.deletePresence = async (eventId, userId) => {
     )
 }
 
+presenceRepository.update = async (data) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "presences"
+        SET "status" = :status, "createdAt" = :createdAt
+        WHERE "userId" = :userId AND "eventId" = :eventId`, {
+            replacements: { 
+                status: data.status.toUpperCase(), 
+                userId: data.userId, 
+                eventId: data.eventId,
+                createdAt: now,
+            },
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 const selectQueryStream = () => {
     return `
         SELECT 

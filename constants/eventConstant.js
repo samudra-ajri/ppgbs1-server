@@ -488,6 +488,16 @@ const eventConstant = {
 				},
 			},
 		},
+		update: {
+			event: 'update-presence',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'kehadiran (presence) tidak ditemukan.',
+					unauthorized: 'Unauthorized.',
+				},
+			},
+		},
 		download: {
 			event: 'download-presence',
 			message: {

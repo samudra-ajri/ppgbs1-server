@@ -21,6 +21,7 @@ router.route('/:eventId/presences')
 router.route('/:eventId/presences/:userId')
     .get(protect, presenceController.detail)
     .post(protect, presenceController.createByAdmin)
+    .put(protect, admin, presenceController.update)
     .delete(protect, presenceController.delete)
 
 module.exports = router

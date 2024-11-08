@@ -72,7 +72,11 @@ const selectQuery = () => {
 
 const totalQuery = () => {
     return `
-        SELECT count(1)
+        SELECT 
+            COUNT(1)::INTEGER AS total,
+            COUNT(CASE WHEN presences.status = 'HADIR' THEN 1 END)::INTEGER AS hadir,
+            COUNT(CASE WHEN presences.status = 'IZIN' THEN 1 END)::INTEGER AS izin,
+            COUNT(CASE WHEN presences.status = 'ALPA' THEN 1 END)::INTEGER AS alpa
     `
 }
 
@@ -89,7 +93,7 @@ const baseJoinQuery = () => {
 
 const orderBy = () => {
     return `
-        ORDER BY presences."status" DESC, presences."createdAt", LOWER(users."name")
+        ORDER BY LOWER(users."name")
     `
 }
 
@@ -132,7 +136,7 @@ const filterByOrganizationId = (filters) => {
     const { organizationId } = filters
     if (organizationId) {
         return `
-            AND organizations.id = ${Number(organizationId)}
+            AND organizations.id::text LIKE '${Number(organizationId)}%'
         `
     }
     return ''

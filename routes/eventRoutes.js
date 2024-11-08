@@ -1,6 +1,6 @@
 const express = require('express')
 const config = require('../config')
-const { protect, admin } = require('../middlewares/authMiddleware')
+const { protect, admin, teacher } = require('../middlewares/authMiddleware')
 const eventController = require(`../modules/${config.APP_VERSION}/event/eventController`)
 const presenceController = require(`../modules/${config.APP_VERSION}/presence/presenceController`)
 
@@ -21,7 +21,7 @@ router.route('/:eventId/presences')
 router.route('/:eventId/presences/:userId')
     .get(protect, presenceController.detail)
     .post(protect, presenceController.createByAdmin)
-    .put(protect, admin, presenceController.update)
+    .put(protect, teacher, presenceController.update)
     .delete(protect, presenceController.delete)
 
 module.exports = router

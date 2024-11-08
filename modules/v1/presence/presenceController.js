@@ -30,14 +30,18 @@ presenceController.create = asyncHandler(async (req, res) => {
 // @access  Protect, Admin
 presenceController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.list.event
+    const session = req.auth.data
     const { eventId } = req.params
     const { sex, ancestorOrganizationId, organizationId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
+
     const filters = { eventId, sex, ancestorOrganizationId, organizationId }
+    if (!filters.organizationId) filters.organizationId = session.position.orgId
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
+    metadata.totalStatus = total[0]
     res.json({ ...metadata, data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
@@ -108,13 +112,12 @@ presenceController.download = asyncHandler(async (req, res) => {
 presenceController.update = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.update.event
 
-    const session = req.auth.data
     const { userId, eventId } = req.params
     const { status } = req.body
 
     const data = { eventId, userId, status }
 
-    await presenceService.update(session, data)
+    await presenceService.update(data)
     res.json({ userId, eventId })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

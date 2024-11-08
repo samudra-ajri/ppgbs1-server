@@ -87,11 +87,11 @@ presenceService.exportDataAsExcel = async (res, filters) => {
     }
 }
 
-presenceService.update = async (session, data) => {
+presenceService.update = async (data) => {
     const event = eventConstant.presence.update
     const { eventId, userId } = data
     const presence = await presenceRepository.findPresence(userId, eventId)
-    if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
+    if (!presence) throwError(event.message.failed.notFound, 404)
     await presenceRepository.update(data)
 }
 

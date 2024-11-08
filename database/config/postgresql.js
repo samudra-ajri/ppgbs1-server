@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const config = require('../../config')
 
 module.exports = new Sequelize(config.DB_URL, {
-    logging: false,
+    logging: true,
     pool: {
         max: config.POOL_SIZE,
         min: 0,

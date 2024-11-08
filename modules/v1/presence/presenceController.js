@@ -40,7 +40,7 @@ presenceController.list = asyncHandler(async (req, res) => {
     if (!filters.organizationId) filters.organizationId = session.position.orgId
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
-    const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })
+    const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].total })
     metadata.totalStatus = total[0]
     res.json({ ...metadata, data })
     logger({ req, status: loggerStatusConstant.SUCCESS })

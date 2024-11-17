@@ -71,6 +71,7 @@ presenceService.exportDataAsExcel = async (res, filters) => {
         const worksheet = workbook.addWorksheet('presensi')
         worksheet.columns = [
             { header: 'Timestamp (WIB)', key: 'createdAt', width: 20 },
+            { header: 'Status', key: 'status', width: 20 },
             { header: 'Nama', key: 'userName', width: 30 },
             { header: 'L/P', key: 'userSex', width: 5 },
             { header: 'PPD', key: 'ancestorOrgName', width: 25 },

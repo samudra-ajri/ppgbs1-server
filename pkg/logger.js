@@ -1,12 +1,7 @@
 const { createLogger, format, transports } = require('winston')
-const { Client } = require('@elastic/elasticsearch')
 const ElasticsearchTransport = require('winston-elasticsearch').ElasticsearchTransport
 const config = require('../config')
-
-// Create an Elasticsearch client
-const esClient = new Client({
-    node: `https://${config.ELASTICSEARCH_USERNAME}:${config.ELASTICSEARCH_PASSWORD}@${config.ELASTICSEARCH_HOST}`
-})
+const esClient = require('./esClient')
 
 // Configure Elasticsearch transport
 const now = new Date()

@@ -4,6 +4,7 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 const { throwError } = require('../../../utils/errorUtils')
 const presenceRepository = require('./presenceRepository')
 const presenceStatusConstant = require('../../../constants/presenceStatusConstant')
+const presenceElasticsearchRepository = require('./presenceElasticsearchRepository')
 
 const presenceService = {}
 
@@ -31,6 +32,7 @@ presenceService.create = async (payload) => {
         createdBy: session.id
     }
     await presenceRepository.insertPresence(data)
+    presenceElasticsearchRepository.insert(data)
 }
 
 presenceService.getPresences = async (filters, page, pageSize) => {

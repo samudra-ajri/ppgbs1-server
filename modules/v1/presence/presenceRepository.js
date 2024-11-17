@@ -190,6 +190,7 @@ const selectQueryStream = () => {
     return `
         SELECT 
             to_timestamp(presences."createdAt" / 1000) as "createdAt",
+            presences.status,
             users.name as "userName",
             CASE users.sex
                 WHEN 1 THEN 'L'

@@ -1,5 +1,6 @@
 const eventConstant = require('../../../constants/eventConstant')
 const { throwError } = require('../../../utils/errorUtils')
+const eventElasticsearchRepository = require('./eventElasticsearchRepository')
 const eventRepository = require('./eventRepository')
 
 const eventService = {}
@@ -17,7 +18,10 @@ eventService.createEvent = async ({ session, payload }) => {
         description,
         grades,
     }
-    await eventRepository.insertEvent(data)
+    
+    const eventId = await eventRepository.insertEvent(data)
+    const eventPresences = await eventRepository.getEventPresences(eventId)
+    eventElasticsearchRepository.bulk(eventPresences)
 }
 
 eventService.deleteEvent = async (session, id) => {

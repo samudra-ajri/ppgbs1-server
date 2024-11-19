@@ -32,7 +32,8 @@ presenceService.create = async (payload) => {
         createdBy: session.id
     }
     await presenceRepository.insertPresence(data)
-    presenceElasticsearchRepository.insert(data)
+    const [eventPresence] = await presenceRepository.getEventPresence(eventId, userId)
+    presenceElasticsearchRepository.insert(eventPresence)
 }
 
 presenceService.getPresences = async (filters, page, pageSize) => {
@@ -52,6 +53,7 @@ presenceService.delete = async (session, eventId, userId) => {
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
     await presenceRepository.deletePresence(eventId, userId)
+    presenceElasticsearchRepository.deletePresence(eventId, userId)
 }
 
 presenceService.findEvent = async (eventId) => {
@@ -96,6 +98,7 @@ presenceService.update = async (data) => {
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (!presence) throwError(event.message.failed.notFound, 404)
     await presenceRepository.update(data)
+    presenceElasticsearchRepository.updatePresenceStatus(data)
 }
 
 const excelDateTimeOptions = {

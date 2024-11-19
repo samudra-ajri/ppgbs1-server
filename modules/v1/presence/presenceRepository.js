@@ -221,4 +221,62 @@ presenceRepository.queryStream = async (filters) => {
     }
 }
 
+presenceRepository.getEventPresence = async (eventId, userId) => {
+    return db.query(`
+        SELECT 
+            p."userId",
+            p."eventId",
+            p."status" "presenceStatus",
+            p."createdAt" "presenceCreatedAt",
+
+            e."name" "eventName",
+            e."startDate" "eventStartDate",
+            e."endDate" "eventEndDate",
+            e."organizationName" "eventOrganizationName",
+            e."grades" "eventGrades",
+
+            u."name" "userName",
+            CASE u.sex
+                WHEN 1 THEN 'L'
+                WHEN 0 THEN 'P'
+            END as "userGander",
+            u."isMuballigh" "userisMuballigh",
+            
+            CASE s."grade"
+                WHEN 0 THEN 'Paud/TK'
+                WHEN 1 THEN 'CR1'
+                WHEN 2 THEN 'CR2'
+                WHEN 3 THEN 'CR3'
+                WHEN 4 THEN 'CR4'
+                WHEN 5 THEN 'CR5'
+                WHEN 6 THEN 'CR6'
+                WHEN 7 THEN 'PR1'
+                WHEN 8 THEN 'PR2'
+                WHEN 9 THEN 'PR3'
+                WHEN 10 THEN 'RM1'
+                WHEN 11 THEN 'PM2'
+                WHEN 12 THEN 'RM3'
+                WHEN 13 THEN 'PN1'
+                WHEN 14 THEN 'PN2'
+                WHEN 15 THEN 'PN3'
+                WHEN 16 THEN 'PN4'
+            END as "userGrade",
+            
+            o."name" "PPK",
+            oa."name" "PPD"
+        FROM presences p
+        LEFT JOIN events e ON p."eventId" = e.id
+        LEFT JOIN users u ON p."userId" = u.id
+        LEFT JOIN students s ON u.id = s."userId"
+        LEFT JOIN "usersPositions" up ON u.id = up."userId"
+        LEFT JOIN positions pos ON up."positionId" = pos.id
+        LEFT JOIN organizations o ON pos."organizationId" = o.id
+        LEFT JOIN organizations oa ON pos."ancestorOrgId" = oa.id
+        WHERE p."eventId" = :eventId AND p."userId" = :userId AND pos."type" = 'GENERUS';
+    `, {
+        replacements: { eventId, userId },
+        type: QueryTypes.SELECT
+    })
+}
+
 module.exports = presenceRepository

@@ -6,7 +6,7 @@ const now = new Date()
 const month = now.getMonth() + 1
 const year = now.getFullYear()
 
-eventElasticsearchRepository.bulk = (data) => {
+eventElasticsearchRepository.bulkEventPresence = (data) => {
     const index = `pigaru-olap-presences.${month}.${year}`
     const timestamp = new Date().toISOString()
     const transformedData = data.map((item) => {
@@ -21,6 +21,23 @@ eventElasticsearchRepository.bulk = (data) => {
 
     const body = transformedData.flatMap(item => [{ index: { _index: index } }, item])
     esClient.bulk({ body })
+}
+
+eventElasticsearchRepository.deleteEventPresence = (eventId) => {
+    const index = `pigaru-olap-presences.${month}.${year}`
+
+    esClient.deleteByQuery({
+        index,
+        body: {
+            query: {
+                bool: {
+                    must: [
+                        { term: { 'eventId.keyword': eventId } },
+                    ],
+                },
+            },
+        },
+    })
 }
 
 module.exports = eventElasticsearchRepository

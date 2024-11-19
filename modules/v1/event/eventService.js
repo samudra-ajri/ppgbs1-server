@@ -21,7 +21,7 @@ eventService.createEvent = async ({ session, payload }) => {
     
     const eventId = await eventRepository.insertEvent(data)
     const eventPresences = await eventRepository.getEventPresences(eventId)
-    eventElasticsearchRepository.bulk(eventPresences)
+    eventElasticsearchRepository.bulkEventPresence(eventPresences)
 }
 
 eventService.deleteEvent = async (session, id) => {
@@ -29,6 +29,7 @@ eventService.deleteEvent = async (session, id) => {
     const foundEvent = await eventRepository.findById(session, id)
     if (!foundEvent || Number(foundEvent.createdBy) !== session.id) throwError(event.message.failed.notFound, 404)
     await eventRepository.deleteEvent(session.id, id)
+    eventElasticsearchRepository.deleteEventPresence(id)
 }
 
 eventService.getEvents = async (session, filters, search, page, pageSize) => {

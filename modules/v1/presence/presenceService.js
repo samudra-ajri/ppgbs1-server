@@ -35,7 +35,7 @@ presenceService.create = async (payload) => {
     const [eventPresence] = await presenceRepository.getEventPresence(eventId, foundUserId)
 
     if (presence) {
-        presenceElasticsearchRepository.updatePresenceStatus(eventPresence)
+        presenceElasticsearchRepository.updatePresenceStatus(data)
     } else {
         presenceElasticsearchRepository.insert(eventPresence)
     }

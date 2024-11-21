@@ -16,7 +16,7 @@ presenceElasticsearchRepository.insert = (data) => {
         timestamp: new Date().toISOString(),
     }
 
-    esClient.index({
+    esClient?.index({
         index,
         body: transformedData,
     })
@@ -35,7 +35,7 @@ presenceElasticsearchRepository.updatePresenceStatus = (data) => {
         presenceCreatedAt: new Date().toISOString(),
     }
 
-    esClient.updateByQuery({
+    esClient?.updateByQuery({
         index,
         body: {
             script: {
@@ -56,7 +56,7 @@ presenceElasticsearchRepository.updatePresenceStatus = (data) => {
 }
 
 presenceElasticsearchRepository.deletePresence = (eventId, userId) => {
-    esClient.deleteByQuery({
+    esClient?.deleteByQuery({
         index,
         body: {
             query: {

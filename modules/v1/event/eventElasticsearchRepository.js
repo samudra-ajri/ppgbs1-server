@@ -20,13 +20,13 @@ eventElasticsearchRepository.bulkEventPresence = (data) => {
     })
 
     const body = transformedData.flatMap(item => [{ index: { _index: index } }, item])
-    esClient.bulk({ body })
+    esClient?.bulk({ body })
 }
 
 eventElasticsearchRepository.deleteEventPresence = (eventId) => {
     const index = `pigaru-olap-presences.${month}.${year}`
 
-    esClient.deleteByQuery({
+    esClient?.deleteByQuery({
         index,
         body: {
             query: {

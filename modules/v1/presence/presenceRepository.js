@@ -254,7 +254,7 @@ presenceRepository.getEventPresence = async (eventId, userId) => {
                 WHEN 8 THEN 'PR2'
                 WHEN 9 THEN 'PR3'
                 WHEN 10 THEN 'RM1'
-                WHEN 11 THEN 'PM2'
+                WHEN 11 THEN 'RM2'
                 WHEN 12 THEN 'RM3'
                 WHEN 13 THEN 'PN1'
                 WHEN 14 THEN 'PN2'

@@ -7,7 +7,7 @@ const month = now.getMonth() + 1
 const year = now.getFullYear()
 
 eventElasticsearchRepository.bulkEventPresence = (data) => {
-    const index = `pigaru-olap-presences.${month}.${year}`
+    const index = `pigaru-olap-presences-${year}.${month}`
     const timestamp = new Date().toISOString()
     const transformedData = data.map((item) => {
         return {
@@ -24,7 +24,7 @@ eventElasticsearchRepository.bulkEventPresence = (data) => {
 }
 
 eventElasticsearchRepository.deleteEventPresence = (eventId) => {
-    const index = `pigaru-olap-presences.${month}.${year}`
+    const index = `pigaru-olap-presences-${year}.${month}`
 
     esClient?.deleteByQuery({
         index,

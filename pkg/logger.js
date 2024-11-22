@@ -7,12 +7,10 @@ const esClient = require('./esClient')
 const transportPipes = [new transports.Console()]
 
 if (config.LOGGING_ENABLED && esClient) {
-    const now = new Date()
-    const month = now.getMonth() + 1
-    const year = now.getFullYear()
     const esTransport = new ElasticsearchTransport({
         level: 'info',
-        indexPrefix: `pigaru-logs.${month}.${year}`,
+        indexPrefix: 'pigaru-logs',
+        indexSuffixPattern: 'YYYY.MM',
         client: esClient,
     })
     transportPipes.push(esTransport)

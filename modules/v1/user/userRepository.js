@@ -86,6 +86,19 @@ userRepository.updateUserStudent = async (data) => {
     )
 }
 
+userRepository.updateUserStudentByAdmin = async (data) => {
+    const { userId, grade, updatedBy } = data
+    const now = Date.now()
+    await db.query(`
+        UPDATE students
+        SET "grade" = :grade, "updatedAt" = :updatedAt, "updatedBy" = :updatedBy
+        WHERE "userId" = :userId`, {
+            replacements: { userId, grade, updatedAt: now, updatedBy },
+            type: QueryTypes.UPDATE
+        }
+    )
+}
+
 userRepository.findUserTeacher = async (userId) => {
     return db.query(`
         SELECT "userId"

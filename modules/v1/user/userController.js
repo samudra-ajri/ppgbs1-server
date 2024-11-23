@@ -135,4 +135,19 @@ userController.download = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    update user student data by admin
+// @route   PUT /users/:id/student-by-admin
+// @access  Protect, Teacher
+userController.updateStudentByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.user.updateProfileStudentByAdmin.event
+    const data = {
+        userData: await userService.getUser(req.params.id),
+        payload: req.body,
+        updatedBy: req.auth.data.id
+    }
+    await userService.updateStudentByAdmin(data)
+    res.json({ message: 'SUCCESS' })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = userController

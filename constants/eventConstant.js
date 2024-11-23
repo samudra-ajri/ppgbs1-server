@@ -126,6 +126,16 @@ const eventConstant = {
 				}
 			},
 		},
+		updateProfileStudentByAdmin: {
+			event: 'update-profile-student-by-admin',
+			message: {
+				success: 'berhasil',
+				failed: {
+					invalidGrade: 'kelas (grade) tidak valid.',
+					notFound: 'profil generus (student) tidak ditemukan.',
+				}
+			},
+		},
 		deleteUser: {
 			event: 'delete-user',
 			message: {

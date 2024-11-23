@@ -10,6 +10,7 @@ router.route('/forgot-password').get(protect, teacher, userController.forgotPass
 router.route('/me').put(protect, userController.updateMyProfile)
 router.route('/me/student').put(protect, userController.updateMyStudentProfile)
 router.route('/me/teacher').put(protect, userController.updateMyTeacherProfile)
+router.route('/:id/student-by-admin').put(protect, teacher, userController.updateStudentByAdmin)
 router.route('/').get(protect, userController.list)
 router.route('/download').get(protect, userController.download)
 router.route('/:id').get(protect, userController.detail)

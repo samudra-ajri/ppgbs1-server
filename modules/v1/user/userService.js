@@ -79,7 +79,7 @@ userService.updateMyStudentProfile = async (data) => {
     if (payload.grade > gradeConstant.PN4) throwError(event.message.failed.invalidGrade, 400)
     // find student profile
     const existStudent = await userRepository.findUserStudent(userData.id)
-    if (!existStudent.length) throwError(event.message.failed.notFound, 400)
+    if (!existStudent.length) throwError(event.message.failed.notFound, 404)
 
     const updatedDdata = {
         userId: userData.id,
@@ -87,6 +87,25 @@ userService.updateMyStudentProfile = async (data) => {
     }
 
     await userRepository.updateUserStudent(updatedDdata)
+}
+
+userService.updateStudentByAdmin = async (data) => {
+    const event = eventConstant.user.updateProfileStudentByAdmin
+    const { userData, payload, updatedBy } = data
+
+    // validate grade
+    if (payload.grade > gradeConstant.PN4) throwError(event.message.failed.invalidGrade, 400)
+    // find student profile
+    const existStudent = await userRepository.findUserStudent(userData.id)
+    if (!existStudent.length) throwError(event.message.failed.notFound, 404)
+
+    const updatedDdata = {
+        userId: userData.id,
+        grade: payload.grade?.toString() || userData.grade?.toString() || ageUtils.getGrade(userData.birthdate),
+        updatedBy,
+    }
+
+    await userRepository.updateUserStudentByAdmin(updatedDdata)
 }
 
 userService.updateMyTeacherProfile = async (data) => {

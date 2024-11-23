@@ -335,6 +335,15 @@ const eventConstant = {
 				},
 			},
 		},
+		toplist: {
+			event: 'event-list-top',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid',
+				},
+			},
+		},
 		listAdmin: {
 			event: 'event-list-admin',
 			message: {

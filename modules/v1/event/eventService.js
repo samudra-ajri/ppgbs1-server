@@ -37,6 +37,11 @@ eventService.getEvents = async (session, filters, search, page, pageSize) => {
     return { data, total }
 }
 
+eventService.getTopEvents = async (session) => {
+    const data = await eventRepository.findTop(session)
+    return data
+}
+
 eventService.getEvent = async (session, id) => {
     const event = eventConstant.event.detail
     const foundEvent = await eventRepository.findById(session, id)

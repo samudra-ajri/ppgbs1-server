@@ -42,6 +42,17 @@ eventController.list = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    list top events (top 20)
+// @route   GET /events/top
+// @access  Protect
+eventController.topList = asyncHandler(async (req, res) => {
+    req.event = eventConstant.event.toplist.event
+    const session = req.auth.data
+    const data = await eventService.getTopEvents(session)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    event detail
 // @route   GET /events/:id
 // @access  Protect

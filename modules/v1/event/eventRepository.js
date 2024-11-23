@@ -53,7 +53,7 @@ const selectQuery = (session) => {
             events."endDate",
             events.location,
             events.description,
-            ${session.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
+            ${session?.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
             events."createdBy"
         FROM events
         LEFT JOIN organizations on organizations.id = "events"."organizationId"
@@ -291,6 +291,42 @@ eventRepository.getEventPresences = async (eventId) => {
         WHERE p."eventId" = :eventId AND pos."type" = 'GENERUS';
     `, {
         replacements: { eventId },
+        type: QueryTypes.SELECT
+    })
+}
+
+eventRepository.findTop = async (session) => {
+    return db.query(`
+        WITH ranked_events AS (
+            SELECT 
+                id, 
+                "organizationId", 
+                name, 
+                "roomId", 
+                passcode, 
+                "startDate", 
+                "endDate", 
+                location, 
+                description, 
+                "createdAt", 
+                "createdBy", 
+                "updatedAt", 
+                "updatedBy", 
+                "deletedAt", 
+                "deletedBy", 
+                "organizationName", 
+                grades,
+                ROW_NUMBER() OVER (PARTITION BY name ORDER BY id DESC) AS rn
+            FROM events
+            WHERE "organizationId" = :organizationId AND "deletedAt" IS NULL
+        )
+        SELECT *
+        FROM ranked_events
+        WHERE rn = 1
+        ORDER BY id DESC
+        LIMIT 10;
+    `, {
+        replacements: { organizationId: session.position.orgId},
         type: QueryTypes.SELECT
     })
 }

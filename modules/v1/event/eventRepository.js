@@ -12,12 +12,11 @@ eventRepository.insertEvent = async (data) => {
 
     const eventId = await db.transaction(async (t) => {
         const [event] = await createEvent(t, data)
-        const users = await getUsers(t, session, grades)
+        const users = grades.length ? await getUsers(t, session, grades) : []
         
         const userIds = users.map(user => user.id)
         const eventId = event[0].id
-        await createPresencesList(t, session, userIds, eventId)
-
+        if (userIds.length) await createPresencesList(t, session, userIds, eventId)
         return eventId
     })
 

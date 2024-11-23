@@ -21,7 +21,7 @@ eventService.createEvent = async ({ session, payload }) => {
     
     const eventId = await eventRepository.insertEvent(data)
     const eventPresences = await eventRepository.getEventPresences(eventId)
-    eventElasticsearchRepository.bulkEventPresence(eventPresences)
+    if (eventPresences.length) eventElasticsearchRepository.bulkEventPresence(eventPresences)
 }
 
 eventService.deleteEvent = async (session, id) => {

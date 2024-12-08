@@ -306,36 +306,45 @@ const insertUserPositions = async (trx, data) => {
 }
 
 const insertUserRoles = async (trx, data) => {
-    const { userId, positions, createdBy } = data
-    const now = Date.now()
+    data.now = Date.now()
 
-    for (let position of positions) {
+    for (let position of data.positions) {
         const positionType = positionTypesTableMap[position.type]
-        const values = [userId, now, now, createdBy]
-
-        if (positionType === positionTypesTableMap.GENERUS && data.grade) {
-            values.push(data.grade)
-            const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
-            await db.query(`
-                INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy", "grade")
-                VALUES (${placeholders})`, {
-                    bind: values,
-                    type: QueryTypes.INSERT,
-                    transaction: trx,
-                }
-            )
-        } else {
-            const placeholders = values.map((_, index) => `$${index + 1}`).join(',')
-            await db.query(`
-                INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt", "createdBy")
-                VALUES (${placeholders})`, {
-                    bind: values,
-                    type: QueryTypes.INSERT,
-                    transaction: trx,
-                }
-            )
-        }
+        if (positionType === positionTypesTableMap.GENERUS && data.grade) await insertStudentRole(trx, data)
+        if (positionType === positionTypesTableMap.PENGAJAR) await insertTeacherRole(trx, data)
     }
+}
+
+const insertStudentRole = async (trx, data) => {
+    await db.query(`
+        INSERT INTO students ("userId", "createdAt", "updatedAt", "createdBy", "grade")
+        VALUES (:userId, :now, :now, :createdBy, :grade)`, {
+            replacements: data,
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
+}
+
+const insertTeacherRole = async (trx, data) => {
+    await db.query(`
+        INSERT INTO teachers (
+            "userId", "pondok", "kertosonoYear", "firstDutyYear", "timesDuties", 
+            "greatHadiths", "education", "createdAt", "createdBy", "updatedAt", 
+            "updatedBy", "maritalStatus", "muballighStatus", "children", 
+            "assignmentFinishDate", "assignmentStartDate", "scopes", "job", "hasBpjs"
+        )
+        VALUES (
+            :userId, :pondok, :kertosonoYear, :firstDutyYear, :timesDuties, 
+            :greatHadiths, :education, :now, :createdBy, :now, 
+            :createdBy, :maritalStatus, :muballighStatus, :children, 
+            :assignmentFinishDate, :assignmentStartDate, :scopes, :job, :hasBpjs
+        )
+    `, {
+        replacements: data,
+        type: QueryTypes.INSERT,
+        transaction: trx,
+    })
 }
 
 module.exports = authRepository

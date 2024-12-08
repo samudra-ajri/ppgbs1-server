@@ -72,7 +72,34 @@ authService.getUserProfile = async ({ userId, positionId }) => {
     return user
 }
 
-authService.createUser = async ({ name, username, email, phone, sex, isMuballigh, birthdate, password, password2, positionIds, createdBy, grade }) => {
+authService.createUser = async ({
+    name,
+    username,
+    email,
+    phone,
+    sex,
+    isMuballigh,
+    birthdate,
+    password,
+    password2,
+    positionIds,
+    createdBy,
+    grade,
+    education,
+    greatHadiths,
+    pondok,
+    kertosonoYear,
+    firstDutyYear,
+    timesDuties,
+    maritalStatus,
+    muballighStatus,
+    children,
+    assignmentStartDate,
+    assignmentFinishDate,
+    scopes,
+    job,
+    hasBpjs
+}) => {
     const event = eventConstant.auth.register
 
     // validate phone number
@@ -110,7 +137,22 @@ authService.createUser = async ({ name, username, email, phone, sex, isMuballigh
         positionIds,
         positions: foundPositions,
         createdBy: createdBy || null,
+        updatedBy: createdBy || null,
         grade: grade || null,
+        education: education || null,
+        pondok: pondok || null,
+        greatHadiths: greatHadiths || null,
+        kertosonoYear: kertosonoYear || null,
+        firstDutyYear: firstDutyYear || null,
+        timesDuties: timesDuties || null,
+        maritalStatus: maritalStatus || null,
+        muballighStatus: muballighStatus || null,
+        children: children || null,
+        assignmentStartDate: assignmentStartDate || null,
+        assignmentFinishDate: assignmentFinishDate || null,
+        scopes: scopes || null,
+        job: job || null,
+        hasBpjs: hasBpjs || false
     }
     await authRepository.createUser(data)
 }

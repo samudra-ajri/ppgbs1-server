@@ -336,9 +336,9 @@ const insertTeacherRole = async (trx, data) => {
         )
         VALUES (
             :userId, :pondok, :kertosonoYear, :firstDutyYear, :timesDuties, 
-            :greatHadiths, :education, :now, :createdBy, :now, 
+            ARRAY[:greatHadiths]::text[], :education, :now, :createdBy, :now, 
             :createdBy, :maritalStatus, :muballighStatus, :children, 
-            :assignmentFinishDate, :assignmentStartDate, :scopes, :job, :hasBpjs
+            :assignmentFinishDate, :assignmentStartDate, ARRAY[:scopes]::text[], :job, :hasBpjs
         )
     `, {
         replacements: data,

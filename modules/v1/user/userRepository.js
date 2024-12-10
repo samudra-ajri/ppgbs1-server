@@ -111,8 +111,6 @@ userRepository.findUserTeacher = async (userId) => {
 }
 
 userRepository.updateUserTeacher = async (data) => {
-    console.log(data);
-    
     data.now = Date.now()
     await db.query(`
         UPDATE teachers

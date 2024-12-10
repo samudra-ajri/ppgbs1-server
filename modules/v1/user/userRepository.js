@@ -111,13 +111,30 @@ userRepository.findUserTeacher = async (userId) => {
 }
 
 userRepository.updateUserTeacher = async (data) => {
-    const { userId, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education } = data
-    const now = Date.now()
+    console.log(data);
+    
+    data.now = Date.now()
     await db.query(`
         UPDATE teachers
-        SET "pondok" = $2, "kertosonoYear" = $3, "firstDutyYear" = $4, "timesDuties" = $5, "greatHadiths" = $6, "education" = $7, "updatedAt" = $8, "updatedBy" = $1
-        WHERE "userId" = $1`, {
-            bind: [userId, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education, now],
+        SET
+            "pondok" = :pondok,
+            "kertosonoYear" = :kertosonoYear,
+            "firstDutyYear" = :firstDutyYear,
+            "timesDuties" = :timesDuties,
+            "greatHadiths" = ARRAY[:greatHadiths]::text[],
+            "education" = :education,
+            "maritalStatus" = :maritalStatus,
+            "muballighStatus" = :muballighStatus,
+            "children" = :children,
+            "assignmentFinishDate" = :assignmentFinishDate,
+            "assignmentStartDate" = :assignmentStartDate,
+            "scopes" = ARRAY[:scopes]::text[],
+            "job" = :job,
+            "hasBpjs" = :hasBpjs,
+            "updatedAt" = :now,
+            "updatedBy" = :userId
+        WHERE "userId" = :userId`, {
+            replacements: data,
             type: QueryTypes.UPDATE
         }
     )

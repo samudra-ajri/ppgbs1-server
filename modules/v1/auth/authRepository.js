@@ -129,7 +129,15 @@ authRepository.findUserWithPosition = async (userId) => {
         teachers."firstDutyYear",
         teachers."timesDuties",
         teachers."greatHadiths",
-        teachers.education, 
+        teachers.education,
+        teachers."maritalStatus",
+        teachers."muballighStatus",
+        teachers."children",
+        teachers."assignmentFinishDate",
+        teachers."assignmentStartDate",
+        teachers."scopes",
+        teachers."job",
+        teachers."hasBpjs", 
             JSON_AGG(
                 JSON_BUILD_OBJECT(
                     'isMain', "usersPositions"."isMain",
@@ -156,7 +164,15 @@ authRepository.findUserWithPosition = async (userId) => {
             teachers."firstDutyYear",
             teachers."timesDuties",
             teachers."greatHadiths",
-            teachers.education`, {
+            teachers.education,
+            teachers."maritalStatus",
+            teachers."muballighStatus",
+            teachers."children",
+            teachers."assignmentFinishDate",
+            teachers."assignmentStartDate",
+            teachers."scopes",
+            teachers."job",
+            teachers."hasBpjs"`, {
             bind: [userId],
             type: QueryTypes.SELECT,
         }

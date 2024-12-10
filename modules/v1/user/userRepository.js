@@ -111,13 +111,13 @@ userRepository.findUserTeacher = async (userId) => {
 }
 
 userRepository.updateUserTeacher = async (data) => {
-    const { userId, isMarried, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education } = data
+    const { userId, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education } = data
     const now = Date.now()
     await db.query(`
         UPDATE teachers
-        SET "isMarried" = $2, "pondok" = $3, "kertosonoYear" = $4, "firstDutyYear" = $5, "timesDuties" = $6, "greatHadiths" = $7, "education" = $8, "updatedAt" = $9, "updatedBy" = $1
+        SET "pondok" = $2, "kertosonoYear" = $3, "firstDutyYear" = $4, "timesDuties" = $5, "greatHadiths" = $6, "education" = $7, "updatedAt" = $8, "updatedBy" = $1
         WHERE "userId" = $1`, {
-            bind: [userId, isMarried, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education, now],
+            bind: [userId, pondok, kertosonoYear, firstDutyYear, timesDuties, greatHadiths, education, now],
             type: QueryTypes.UPDATE
         }
     )
@@ -209,7 +209,6 @@ const selectQuery = () => {
             users."createdBy",
             students.grade,
             students."lastCompletionUpdate",
-            teachers."isMarried",
             teachers.pondok,
             teachers."kertosonoYear",
             teachers."firstDutyYear",
@@ -255,7 +254,6 @@ const groupByQuery = () => {
             users.id, 
             students.grade,
             students."lastCompletionUpdate",
-            teachers."isMarried",
             teachers.pondok,
             teachers."kertosonoYear",
             teachers."firstDutyYear",

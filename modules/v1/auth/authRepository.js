@@ -124,7 +124,6 @@ authRepository.findUserWithPosition = async (userId) => {
         users.birthdate,
         users."needUpdatePassword",
         students.grade,
-        teachers."isMarried",
         teachers.pondok,
         teachers."kertosonoYear",
         teachers."firstDutyYear",
@@ -152,7 +151,6 @@ authRepository.findUserWithPosition = async (userId) => {
         GROUP BY
             users.id, 
             students.grade,
-            teachers."isMarried",
             teachers.pondok,
             teachers."kertosonoYear",
             teachers."firstDutyYear",

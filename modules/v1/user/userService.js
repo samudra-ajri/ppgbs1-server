@@ -112,13 +112,12 @@ userService.updateMyTeacherProfile = async (data) => {
     const event = eventConstant.user.updateProfileTeacher
     const { userData, payload } = data
 
-    // find student profile
+    // find teacher profile
     const existTeacher = await userRepository.findUserTeacher(userData.id)
     if (!existTeacher.length) throwError(event.message.failed.notFound, 400)
 
     const updatedDdata = {
         userId: userData.id,
-        isMarried: payload.isMarried?.toString() || userData.isMarried,
         pondok: payload.pondok || userData.pondok,
         kertosonoYear: payload.kertosonoYear || userData.kertosonoYear,
         firstDutyYear: payload.firstDutyYear || userData.firstDutyYear,

@@ -6,6 +6,7 @@ const authUtils = require('../../../utils/authUtils')
 const { isValidDate } = require('../../../utils/stringUtils')
 const gradeConstant = require('../../../constants/gradeConstant')
 const ageUtils = require('../../../utils/ageUtils')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 
 const userService = {}
 
@@ -120,7 +121,7 @@ userService.updateMyTeacherProfile = async (data) => {
     await userRepository.updateUserTeacher(updatedDdata)
 }
 
-userService.exportDataAsExcel = async (res, filters) => {
+userService.exportDataAsExcel = async (res, session, filters) => {
     const event = eventConstant.user.download
 
     try {
@@ -128,27 +129,20 @@ userService.exportDataAsExcel = async (res, filters) => {
             stream: res,
         })
         const worksheet = workbook.addWorksheet('users')
-        worksheet.columns = [
-            { header: 'No.', key: 'number', width: 5 },
-            { header: 'Nama', key: 'name', width: 30 },
-            { header: 'Email', key: 'email', width: 20 },
-            { header: 'No. HP', key: 'phone', width: 20 },
-            { header: 'L/P', key: 'sex', width: 5 },
-            { header: 'Tgl. Lahir', key: 'birthdate', width: 20 },
-            { header: 'Kelas', key: 'grade', width: 10 },
-            { header: 'Muballigh', key: 'isMuballigh', width: 10 },
-            { header: 'PPD', key: 'ancestorOrgName', width: 20 },
-            { header: 'PPK', key: 'organizationName', width: 20 },
-        ]
+        worksheet.columns = defineExtractedColumns(session, filters)
 
         const dataStream = await userRepository.queryStream(filters);
         let counter = 1
         for await (const row of dataStream) {
             const organizationName = row.positions[0]?.organizationName ?? ''
             const ancestorOrgName = row.positions[0]?.ancestorOrgName ?? ''
+            row.number = counter++
             row.organizationName = organizationName
             row.ancestorOrgName = ancestorOrgName
-            row.number = counter++
+            row.greatHadiths = row.greatHadiths ? row.greatHadiths.join(', ') : ''
+            row.scopes = row.scopes ? row.scopes.join(', ') : ''
+            row.assignmentStartDate = row.assignmentStartDate ? toDate(row.assignmentStartDate) : ''
+            row.assignmentFinishDate = row.assignmentFinishDate ? toDate(row.assignmentFinishDate) : ''
             worksheet.addRow(row).commit()
         }
 
@@ -156,6 +150,64 @@ userService.exportDataAsExcel = async (res, filters) => {
     } catch (error) {
         throwError(event.message.failed.errorGenerating, 500)
     }
+}
+
+const toDate = (timestampInSeconds) => {
+    const dateWithMilliseconds = new Date(Number(timestampInSeconds) * 1000)
+    return dateWithMilliseconds.toLocaleString('id-ID', excelDateTimeOptions)
+}
+
+const defaultExtractedColumns = [
+    { header: 'No.', key: 'number', width: 5 },
+    { header: 'Nama', key: 'name', width: 30 },
+    { header: 'Email', key: 'email', width: 20 },
+    { header: 'No. HP', key: 'phone', width: 20 },
+    { header: 'L/P', key: 'sex', width: 5 },
+    { header: 'Tgl. Lahir', key: 'birthdate', width: 20 },
+    { header: 'Muballigh', key: 'isMuballigh', width: 10 },
+    { header: 'PPD', key: 'ancestorOrgName', width: 20 },
+    { header: 'PPK', key: 'organizationName', width: 20 },
+]
+
+const userExtractedColumns = [
+    { header: 'Kelas', key: 'grade', width: 10 },
+]
+
+const teacherExtractedColumns = [
+    { header: 'Status Kemuballighan', key: 'muballighStatus', width: 20 },
+    { header: 'Hadits Besar', key: 'greatHadiths', width: 30 },
+    { header: 'Pondok', key: 'pondok', width: 30 },
+    { header: 'Tahun Lulus Tes Muballigh', key: 'kertosonoYear', width: 20 },
+    { header: 'Tahun Pertama Kali Tugasan', key: 'firstDutyYear', width: 20 },
+    { header: 'Jumlah Pengalaman Tugasan', key: 'timesDuties', width: 20 },
+    { header: 'Tahun Mulai Tugasan Saat Ini', key: 'assignmentStartDate', width: 25 },
+    { header: 'Tahun Selesai Tugasan Saat Ini', key: 'assignmentFinishDate', width: 20 },
+    { header: 'Cakupan Mengajar', key: 'scopes', width: 20 },
+    { header: 'Pendidikan', key: 'education', width: 10 },
+    { header: 'Status Pernikahan', key: 'maritalStatus', width: 20 },
+    { header: 'Jumlah Anak', key: 'children', width: 15 },
+    { header: 'Maisyah', key: 'job', width: 30 },
+    { header: 'Memiliki BPJS', key: 'hasBpjs', width: 15 },
+]
+
+const defineExtractedColumns = (session, filters) => {
+    const { positionType } = filters
+    if (positionType == positionTypesConstant.GENERUS) {
+        return [...defaultExtractedColumns, ...userExtractedColumns]
+    }
+
+    if (session.position.type === positionTypesConstant.ADMIN) {
+        return [...defaultExtractedColumns, ...teacherExtractedColumns]
+    }
+
+    return defaultExtractedColumns
+
+}
+
+const excelDateTimeOptions = {
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'Asia/Jakarta'
 }
 
 module.exports = userService

@@ -115,7 +115,7 @@ userController.updateMyTeacherProfile = asyncHandler(async (req, res) => {
 userController.download = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.download.event
     const { ancestorId, organizationId, sex, positionType, grade } = req.query
-    
+
     const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)   
     const filters = { 
         userId: req.auth.data.id,
@@ -130,7 +130,7 @@ userController.download = asyncHandler(async (req, res) => {
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     res.setHeader('Content-Disposition', `attachment; filename="${Date.now()}.xlsx"`)
-    await userService.exportDataAsExcel(res, filters)
+    await userService.exportDataAsExcel(res, req.auth.data, filters)
 
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

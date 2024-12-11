@@ -190,6 +190,28 @@ const selectQueryStream = () => {
             users."isMuballigh",
             users.birthdate,
             students.grade,
+            teachers.pondok,
+            teachers."kertosonoYear",
+            teachers."firstDutyYear",
+            teachers."timesDuties",
+            teachers."greatHadiths",
+            teachers.education,
+            CASE teachers."maritalStatus"
+                WHEN 'MARRIED' THEN 'Menikah'
+                WHEN 'SINGLE' THEN 'Lajang'
+                WHEN 'DIVORCED' THEN 'Cerai Hidup'
+                WHEN 'WIDOWED' THEN 'Cerai Duda'
+            END as "maritalStatus",
+            teachers."muballighStatus",
+            teachers."children",
+            teachers."assignmentFinishDate",
+            teachers."assignmentStartDate",
+            teachers."scopes",
+            teachers."job",
+            CASE teachers."hasBpjs"
+                WHEN TRUE THEN 'Ya'
+                WHEN FALSE THEN 'TIDAK'
+            END as "hasBpjs",
             JSON_AGG(
                 JSON_BUILD_OBJECT(
                     'organizationName', organizations.name,
@@ -274,7 +296,15 @@ const groupByQuery = () => {
             teachers."firstDutyYear",
             teachers."timesDuties",
             teachers."greatHadiths",
-            teachers.education
+            teachers.education,
+            teachers."maritalStatus",
+            teachers."muballighStatus",
+            teachers."children",
+            teachers."assignmentStartDate",
+            teachers."assignmentFinishDate",
+            teachers."scopes",
+            teachers."job",
+            teachers."hasBpjs"
     `
 }
 
@@ -321,7 +351,6 @@ const filterByDefault = (filters) => {
     return `
         WHERE "usersPositions"."deletedAt" IS NULL
         AND positions.id IS NOT NULL
-        AND NOT ("usersPositions"."userId" = ${userId} AND "usersPositions"."positionId" = ${Number(positionId)})
     `
 }
 

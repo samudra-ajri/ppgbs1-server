@@ -17,7 +17,7 @@ presenceRepository.insertPresence = async (data) => {
         DO UPDATE SET 
             status = EXCLUDED.status,
             "createdBy" = EXCLUDED."createdBy",
-            "createdAt" = EXCLUDED."createdAt"`, 
+            "createdAt" = EXCLUDED."createdAt"`,
         {
             bind: [userId, eventId, status, createdBy, now],
             type: QueryTypes.INSERT,
@@ -27,10 +27,20 @@ presenceRepository.insertPresence = async (data) => {
 
 presenceRepository.findEvent = async (eventId) => {
     const [data] = await db.query(`
-        SELECT id, passcode, name FROM events WHERE "id" = $1`, {
-            bind: [eventId],
-            type: QueryTypes.SELECT,
-        }
+        SELECT id, passcode, name, "groupId", "isGroupHead" FROM events WHERE "id" = $1`, {
+        bind: [eventId],
+        type: QueryTypes.SELECT,
+    }
+    )
+    return data
+}
+
+presenceRepository.findGroupEvents = async (groupEventId) => {
+    const data = await db.query(`
+        SELECT id FROM events WHERE "groupId" = $1`, {
+        bind: [groupEventId],
+        type: QueryTypes.SELECT,
+    }
     )
     return data
 }
@@ -38,9 +48,9 @@ presenceRepository.findEvent = async (eventId) => {
 presenceRepository.findPresence = async (userId, eventId) => {
     const [data] = await db.query(`
         SELECT * FROM presences WHERE "userId" = $1 AND "eventId" = $2`, {
-            bind: [userId, eventId],
-            type: QueryTypes.SELECT,
-        }
+        bind: [userId, eventId],
+        type: QueryTypes.SELECT,
+    }
     )
     return data
 }
@@ -81,7 +91,7 @@ const totalQuery = () => {
 }
 
 const baseJoinQuery = () => {
-    return`
+    return `
         FROM presences
         LEFT JOIN users on users.id = presences."userId"
         LEFT JOIN students on students."userId" = users.id
@@ -111,11 +121,21 @@ const filtersQuery = (filters) => {
     filter += filterByUserSex(filters)
     filter += filterByOrganizationId(filters)
     filter += filterByAncestorOrganizationId(filters)
+    filter += filterByAncestorOrganizationId(filters)
+    filter += filterByUserId(filters)
     return filter
 }
 
 const filterByDefault = (filters) => {
-    const { eventId } = filters
+    const { eventId, eventIds } = filters
+
+    if (eventIds) {
+        return `
+            WHERE presences."eventId" IN (${eventIds})
+            AND positions.type = '${positionTypesConstant.GENERUS}'
+        `
+    }
+
     return `
         WHERE presences."eventId" = ${Number(eventId)}
         AND positions.type = '${positionTypesConstant.GENERUS}'
@@ -127,6 +147,16 @@ const filterByUserSex = (filters) => {
     if (sex) {
         return `
             AND users.sex = ${Number(sex)}
+        `
+    }
+    return ''
+}
+
+const filterByUserId = (filters) => {
+    const { userId } = filters
+    if (userId) {
+        return `
+            AND users.id = ${Number(userId)}
         `
     }
     return ''
@@ -163,9 +193,9 @@ presenceRepository.deletePresence = async (eventId, userId) => {
     await db.query(`
         DELETE FROM "presences"
         WHERE "userId" = $1 AND "eventId" = $2`, {
-            bind: [userId, eventId],
-            type: QueryTypes.DELETE
-        }
+        bind: [userId, eventId],
+        type: QueryTypes.DELETE
+    }
     )
 }
 
@@ -175,14 +205,14 @@ presenceRepository.update = async (data) => {
         UPDATE "presences"
         SET "status" = :status, "createdAt" = :createdAt
         WHERE "userId" = :userId AND "eventId" = :eventId`, {
-            replacements: { 
-                status: data.status.toUpperCase(), 
-                userId: data.userId, 
-                eventId: data.eventId,
-                createdAt: now,
-            },
-            type: QueryTypes.UPDATE
-        }
+        replacements: {
+            status: data.status.toUpperCase(),
+            userId: data.userId,
+            eventId: data.eventId,
+            createdAt: now,
+        },
+        type: QueryTypes.UPDATE
+    }
     )
 }
 

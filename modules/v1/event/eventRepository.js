@@ -32,8 +32,8 @@ eventRepository.findById = async (session, id) => {
     return data
 }
 
-eventRepository.findAll = async (session, filters, search, page, pageSize) => {
-    const query = selectQuery(session) + filtersQuery(session, filters) + searchQuery(search) + orderBy() + paginateQuery(page, pageSize)
+eventRepository.findAll = async (session, filters, search, page, pageSize, order) => {
+    const query = selectQuery(session) + filtersQuery(session, filters) + searchQuery(search) + orderBy(order) + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
@@ -54,7 +54,9 @@ const selectQuery = (session) => {
             events.location,
             events.description,
             ${session?.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
-            events."createdBy"
+            events."createdBy",
+            events."groupId",
+            events."isGroupHead"
         FROM events
         LEFT JOIN organizations on organizations.id = "events"."organizationId"
     `
@@ -83,7 +85,13 @@ const paginateQuery = (page, pageSize) => {
     `
 }
 
-const orderBy = () => {
+const orderBy = (order) => {
+    if (order) {
+        return `
+            ORDER BY ${order}
+        `
+    }
+
     return `
         ORDER BY "startDate" DESC
     `
@@ -94,6 +102,8 @@ const filtersQuery = (session, filters) => {
     filter += filterByOrganizationIds(filters)
     filter += filterByRoomId(filters)
     filter += filterBySession(session)
+    filter += filterByGroupId(filters)
+    filter += filterByIsGroupHead(filters)
     return filter
 }
 
@@ -139,6 +149,28 @@ const filterById = () => {
     return `
         WHERE events.id = $1
     `
+}
+
+const filterByGroupId = (filters) => {
+    let { groupId } = filters
+    if (groupId === 'null') return `
+        AND events."groupId" IS NULL
+    `
+    if (groupId) return `
+        AND events."groupId" = '${Number(groupId)}'
+    `
+    return ''
+}
+
+const filterByIsGroupHead = (filters) => {
+    let { isGroupHead } = filters
+    if (isGroupHead === 'true') return `
+        AND events."isGroupHead" = TRUE
+    `
+    if (isGroupHead === 'false') return `
+        AND events."isGroupHead" = FALSE
+    `
+    return ''
 }
 
 // find ancestors and descendants ids based on session orgId

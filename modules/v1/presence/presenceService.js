@@ -20,7 +20,7 @@ presenceService.create = async (payload) => {
 
     const foundEventDetail = await presenceRepository.findEvent(eventId)
     if (!foundEventDetail) throwError(event.message.failed.eventNotFound, 404)
-    if (!isCreatedByAdmin && foundEventDetail.passcode !== passcode) throwError(event.message.failed.wrongAccessCode, 403)
+    if (!isCreatedByAdmin && (foundEventDetail.passcode) && foundEventDetail.passcode !== passcode) throwError(event.message.failed.wrongAccessCode, 403)
 
     const presence = await presenceRepository.findPresence(foundUserId, eventId)
     if (presence?.status === presenceStatusConstant.HADIR) throwError(event.message.failed.alreadyExists, 403)
@@ -42,8 +42,13 @@ presenceService.create = async (payload) => {
 }
 
 presenceService.getPresences = async (filters, page, pageSize) => {
-    const { data, total } = await presenceRepository.findAll(filters, page, pageSize)
-    return { data, total }
+    const event = await presenceRepository.findEvent(filters.eventId)
+    if (event.isGroupHead) {
+        const groupEevents = await presenceRepository.findGroupEvents(event.id)
+        filters.eventIds = groupEevents.map(item => Number(item.id))
+        return { data, total } = await presenceRepository.findAll(filters, page, pageSize)
+    }
+    return { data, total } = await presenceRepository.findAll(filters, page, pageSize)
 }
 
 presenceService.getPresence = async (userId, eventId) => {
@@ -54,11 +59,19 @@ presenceService.getPresence = async (userId, eventId) => {
 }
 
 presenceService.delete = async (session, eventId, userId) => {
-    const event = eventConstant.presence.delete
-    const presence = await presenceRepository.findPresence(userId, eventId)
-    if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
-    await presenceRepository.deletePresence(eventId, userId)
-    presenceElasticsearchRepository.deletePresence(eventId, userId)
+    if (userId) {
+        // delete by admin logic
+        const event = eventConstant.presence.delete
+        const presence = await presenceRepository.findPresence(userId, eventId)
+        if (session.position.type !== positionTypesConstant.ADMIN && session.id !== Number(presence.createdBy)) throwError(event.message.failed.unauthorized, 403)
+        await presenceRepository.deletePresence(eventId, userId)
+        presenceElasticsearchRepository.deletePresence(eventId, userId)
+    } else {
+        // delete by session logic
+        await presenceRepository.deletePresence(eventId, session.id)
+        presenceElasticsearchRepository.deletePresence(eventId, session.id)
+    }
+
 }
 
 presenceService.findEvent = async (eventId) => {

@@ -26,14 +26,16 @@ eventController.create = asyncHandler(async (req, res) => {
 // @access  Protect
 eventController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.event.list.event
-    const { organizationIds, roomId } = req.query
+    const { organizationIds, roomId, groupId, isGroupHead } = req.query
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
     const session = req.auth.data
-    const filters = { 
+    const filters = {
         organizationIds: organizationIds?.split(','),
         roomId,
+        groupId,
+        isGroupHead,
     }
 
     const { data, total } = await eventService.getEvents(session, filters, search, page, pageSize)
@@ -60,6 +62,12 @@ eventController.detail = asyncHandler(async (req, res) => {
     req.event = eventConstant.event.detail.event
     const session = req.auth.data
     const data = await eventService.getEvent(session, req.params.id)
+
+    if (data.isGroupHead) {
+        const { data: graoupedData } = await eventService.getEvents(session, { groupId: data.id }, null, 1, 100, `"startDate" ASC`)
+        data.groupEvents = graoupedData
+    }
+
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })

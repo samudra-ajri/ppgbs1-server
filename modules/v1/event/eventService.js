@@ -32,8 +32,8 @@ eventService.deleteEvent = async (session, id) => {
     eventElasticsearchRepository.deleteEventPresence(id)
 }
 
-eventService.getEvents = async (session, filters, search, page, pageSize) => {
-    const { data, total } = await eventRepository.findAll(session, filters, search, page, pageSize)
+eventService.getEvents = async (session, filters, search, page, pageSize, order) => {
+    const { data, total } = await eventRepository.findAll(session, filters, search, page, pageSize, order)
     return { data, total }
 }
 

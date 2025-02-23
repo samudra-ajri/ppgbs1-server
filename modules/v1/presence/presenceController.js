@@ -32,11 +32,11 @@ presenceController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.list.event
     const session = req.auth.data
     const { eventId } = req.params
-    const { sex, ancestorOrganizationId, organizationId } = req.query
+    const { sex, ancestorOrganizationId, organizationId, userId } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
 
-    const filters = { eventId, sex, ancestorOrganizationId, organizationId }
+    const filters = { eventId, sex, ancestorOrganizationId, organizationId, userId }
     if (!filters.organizationId) filters.organizationId = session.position.orgId
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
@@ -85,6 +85,20 @@ presenceController.delete = asyncHandler(async (req, res) => {
 
     await presenceService.delete(session, eventId, userId)
     res.json({ userId, eventId })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+// @desc    delete event presence by session
+// @route   DELETE /events/:eventId/presences
+// @access  Protect
+presenceController.deleteBySession = asyncHandler(async (req, res) => {
+    req.event = eventConstant.presence.delete.event
+
+    const session = req.auth.data
+    const { eventId } = req.params
+
+    await presenceService.delete(session, eventId)
+    res.json({ userId: session.id, eventId })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 

@@ -254,10 +254,6 @@ const getUsers = async (trx, session, grades) => {
 const createPresencesList = async (trx, session, userIds, eventId, defaultPresenceStatus) => {
     const now = Date.now()
     const createdBy = session.id
-    console.log(123)
-    console.log(defaultPresenceStatus)
-    console.log(123)
-    
     const status = (defaultPresenceStatus || defaultPresenceStatus === '') ? defaultPresenceStatus : presenceStatusConstant.ALPA
 
     const values = userIds.map((userId) =>

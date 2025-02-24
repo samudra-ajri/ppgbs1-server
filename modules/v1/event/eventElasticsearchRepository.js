@@ -3,11 +3,10 @@ const esClient = require('../../../pkg/esClient')
 const eventElasticsearchRepository = {}
 
 const now = new Date()
-const month = now.getMonth() + 1
 const year = now.getFullYear()
 
 eventElasticsearchRepository.bulkEventPresence = (data) => {
-    const index = `pigaru-olap-presences-${year}.${month}`
+    const index = `pigaru-olap-presences-${year}`
     const timestamp = new Date().toISOString()
     const transformedData = data.map((item) => {
         return {
@@ -24,7 +23,7 @@ eventElasticsearchRepository.bulkEventPresence = (data) => {
 }
 
 eventElasticsearchRepository.deleteEventPresence = (eventId) => {
-    const index = `pigaru-olap-presences-${year}.${month}`
+    const index = `pigaru-olap-presences-${year}`
 
     esClient?.deleteByQuery({
         index,

@@ -3,9 +3,8 @@ const esClient = require('../../../pkg/esClient')
 const presenceElasticsearchRepository = {}
 
 const now = new Date()
-const month = now.getMonth() + 1
 const year = now.getFullYear()
-const index = `pigaru-olap-presences-${year}.${month}`
+const index = `pigaru-olap-presences-${year}`
 
 presenceElasticsearchRepository.insert = (data) => {
     const transformedData = {

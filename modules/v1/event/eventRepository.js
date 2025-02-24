@@ -8,15 +8,15 @@ const { QueryTypes } = require('sequelize')
 const eventRepository = {}
 
 eventRepository.insertEvent = async (data) => {
-    const { session, grades } = data
+    const { session, grades, defaultPresenceStatus } = data
 
     const eventId = await db.transaction(async (t) => {
         const [event] = await createEvent(t, data)
         const users = grades.length ? await getUsers(t, session, grades) : []
-        
+
         const userIds = users.map(user => user.id)
         const eventId = event[0].id
-        if (userIds.length) await createPresencesList(t, session, userIds, eventId)
+        if (userIds.length) await createPresencesList(t, session, userIds, eventId, defaultPresenceStatus)
         return eventId
     })
 
@@ -199,24 +199,24 @@ eventRepository.deleteEvent = async (createdBy, eventId) => {
         UPDATE "events"
         SET "deletedAt" = $3, "deletedBy" = $2
         WHERE "id" = $1 AND "createdBy" = $2`, {
-            bind: [eventId, createdBy, now],
-            type: QueryTypes.UPDATE
-        }
+        bind: [eventId, createdBy, now],
+        type: QueryTypes.UPDATE
+    }
     )
 }
 
 const createEvent = async (trx, data) => {
     const { session, roomId, name, passcode, startDate, endDate, location, description, grades } = data
     const now = Date.now()
-    
+
     return db.query(`
         INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades")
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12)
         RETURNING id`, {
-            bind: [session.position.orgId, roomId, name, passcode, startDate, endDate, location, description, session.id, now, session.position.orgName, grades],
-            type: QueryTypes.INSERT,
-            transaction: trx,
-        }
+        bind: [session.position.orgId, roomId, name, passcode, startDate, endDate, location, description, session.id, now, session.position.orgName, grades],
+        type: QueryTypes.INSERT,
+        transaction: trx,
+    }
     )
 }
 
@@ -251,10 +251,14 @@ const getUsers = async (trx, session, grades) => {
     })
 }
 
-const createPresencesList = async (trx, session, userIds, eventId) => {
+const createPresencesList = async (trx, session, userIds, eventId, defaultPresenceStatus) => {
     const now = Date.now()
     const createdBy = session.id
-    const status = presenceStatusConstant.ALPA
+    console.log(123)
+    console.log(defaultPresenceStatus)
+    console.log(123)
+    
+    const status = (defaultPresenceStatus || defaultPresenceStatus === '') ? defaultPresenceStatus : presenceStatusConstant.ALPA
 
     const values = userIds.map((userId) =>
         `(${userId}, ${eventId}, '${status}', ${createdBy}, ${now})`
@@ -263,9 +267,9 @@ const createPresencesList = async (trx, session, userIds, eventId) => {
     await db.query(`
         INSERT INTO "presences" ("userId", "eventId", "status", "createdBy", "createdAt")
         VALUES ${values}`, {
-            type: QueryTypes.INSERT,
-            transaction: trx,
-        }
+        type: QueryTypes.INSERT,
+        transaction: trx,
+    }
     )
 }
 
@@ -358,7 +362,7 @@ eventRepository.findTop = async (session) => {
         ORDER BY id DESC
         LIMIT 10;
     `, {
-        replacements: { organizationId: session.position.orgId},
+        replacements: { organizationId: session.position.orgId },
         type: QueryTypes.SELECT
     })
 }

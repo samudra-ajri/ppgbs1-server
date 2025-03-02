@@ -29,16 +29,26 @@ presenceService.create = async (payload) => {
         userId: foundUserId,
         eventId,
         status,
-        createdBy: session.id
+        createdBy: session.id,
+        eventGroupId: foundEventDetail.groupId,
     }
     await presenceRepository.insertPresence(data)
     const [eventPresence] = await presenceRepository.getEventPresence(eventId, foundUserId)
+    const totalPresenceGroupEvent = await countPresenceGroupEvent(foundUserId, foundEventDetail)
 
     if (presence) {
+        data.totalPresenceGroupEvent = totalPresenceGroupEvent
         presenceElasticsearchRepository.updatePresenceStatus(data)
     } else {
+        eventPresence.totalPresenceGroupEvent = totalPresenceGroupEvent
         presenceElasticsearchRepository.insert(eventPresence)
     }
+}
+
+const countPresenceGroupEvent = async (userId, event) => {
+    if (!event.groupId) return 0
+    const presenceGroup = await presenceRepository.findPresenceGroup(userId, event.groupId)
+    return presenceGroup?.length ?? 0
 }
 
 presenceService.getPresences = async (filters, page, pageSize) => {

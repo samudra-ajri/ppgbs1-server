@@ -8,18 +8,18 @@ const { QueryTypes } = require('sequelize')
 const presenceRepository = {}
 
 presenceRepository.insertPresence = async (data) => {
-    const { userId, eventId, status, createdBy } = data
+    const { userId, eventId, status, createdBy, eventGroupId } = data
     const now = Date.now()
     await db.query(`
-        INSERT INTO "presences" ("userId", "eventId", status, "createdBy", "createdAt")
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO "presences" ("userId", "eventId", status, "createdBy", "createdAt", "groupId")
+        VALUES ($1, $2, $3, $4, $5, $6)
         ON CONFLICT ("userId", "eventId") 
         DO UPDATE SET 
             status = EXCLUDED.status,
             "createdBy" = EXCLUDED."createdBy",
             "createdAt" = EXCLUDED."createdAt"`,
         {
-            bind: [userId, eventId, status, createdBy, now],
+            bind: [userId, eventId, status, createdBy, now, eventGroupId],
             type: QueryTypes.INSERT,
         }
     )
@@ -52,6 +52,15 @@ presenceRepository.findPresence = async (userId, eventId) => {
         type: QueryTypes.SELECT,
     }
     )
+    return data
+}
+
+presenceRepository.findPresenceGroup = async (userId, groupId) => {
+    const data = await db.query(`
+        SELECT "groupId" FROM presences WHERE status = 'HADIR' AND "userId" = $1 AND "groupId" = $2`, {
+        bind: [userId, groupId],
+        type: QueryTypes.SELECT,
+    })
     return data
 }
 
@@ -264,6 +273,7 @@ presenceRepository.getEventPresence = async (eventId, userId) => {
             e."endDate" "eventEndDate",
             e."organizationName" "eventOrganizationName",
             e."grades" "eventGrades",
+            e."groupId" "eventGroupId",
 
             u."name" "userName",
             CASE u.sex

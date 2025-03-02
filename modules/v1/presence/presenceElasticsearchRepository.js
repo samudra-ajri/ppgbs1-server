@@ -22,16 +22,18 @@ presenceElasticsearchRepository.insert = (data) => {
 }
 
 presenceElasticsearchRepository.updatePresenceStatus = (data) => {
-    const { eventId, userId, status } = data
+    const { eventId, userId, status, totalPresenceGroupEvent } = data
 
     const scriptSource = `
       ctx._source['presenceStatus'] = params['presenceStatus'];
       ctx._source['presenceCreatedAt'] = params['presenceCreatedAt'];
+      ctx._source['totalPresenceGroupEvent'] = params['totalPresenceGroupEvent'];
     `
 
     const scriptParams = {
         presenceStatus: status.toUpperCase(),
         presenceCreatedAt: new Date().toISOString(),
+        totalPresenceGroupEvent,
     }
 
     esClient?.updateByQuery({

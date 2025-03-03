@@ -34,7 +34,7 @@ presenceService.create = async (payload) => {
     }
     await presenceRepository.insertPresence(data)
     const [eventPresence] = await presenceRepository.getEventPresence(eventId, foundUserId)
-    const totalPresenceGroupEvent = await countPresenceGroupEvent(foundUserId, foundEventDetail)
+    const totalPresenceGroupEvent = await countPresenceGroupEvent(foundUserId, foundEventDetail.groupId)
 
     if (presence) {
         data.totalPresenceGroupEvent = totalPresenceGroupEvent
@@ -45,9 +45,9 @@ presenceService.create = async (payload) => {
     }
 }
 
-const countPresenceGroupEvent = async (userId, event) => {
-    if (!event.groupId) return 0
-    const presenceGroup = await presenceRepository.findPresenceGroup(userId, event.groupId)
+const countPresenceGroupEvent = async (userId, eventGroupId) => {
+    if (!eventGroupId) return 0
+    const presenceGroup = await presenceRepository.findPresenceGroup(userId, eventGroupId)
     return presenceGroup?.length ?? 0
 }
 
@@ -126,6 +126,8 @@ presenceService.update = async (data) => {
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (!presence) throwError(event.message.failed.notFound, 404)
     await presenceRepository.update(data)
+    const totalPresenceGroupEvent = await countPresenceGroupEvent(userId, presence.groupId)
+    data.totalPresenceGroupEvent = totalPresenceGroupEvent
     presenceElasticsearchRepository.updatePresenceStatus(data)
 }
 

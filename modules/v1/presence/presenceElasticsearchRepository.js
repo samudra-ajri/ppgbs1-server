@@ -6,7 +6,7 @@ const now = new Date()
 const year = now.getFullYear()
 const index = `pigaru-olap-presences-${year}`
 
-presenceElasticsearchRepository.insert = (data) => {
+presenceElasticsearchRepository.insert = async (data) => {
     const transformedData = {
         ...data,
         eventEndDate: new Date(Number(data.eventEndDate)).toISOString(),
@@ -15,7 +15,7 @@ presenceElasticsearchRepository.insert = (data) => {
         timestamp: new Date().toISOString(),
     }
 
-    esClient?.index({
+    await esClient?.index({
         index,
         body: transformedData,
     })
@@ -29,7 +29,7 @@ presenceElasticsearchRepository.insert = (data) => {
             totalPresenceGroupEvent: data.totalPresenceGroupEvent,
         }
 
-        esClient?.updateByQuery({
+        await esClient?.updateByQuery({
             index,
             body: {
                 script: {
@@ -50,7 +50,7 @@ presenceElasticsearchRepository.insert = (data) => {
     }
 }
 
-presenceElasticsearchRepository.updatePresenceStatus = (data) => {
+presenceElasticsearchRepository.updatePresenceStatus = async (data) => {
     const { eventId, userId, eventGroupId, status, totalPresenceGroupEvent } = data
 
     const scriptSource = `
@@ -63,7 +63,7 @@ presenceElasticsearchRepository.updatePresenceStatus = (data) => {
         presenceCreatedAt: new Date().toISOString(),
     }
 
-    esClient?.updateByQuery({
+    await esClient?.updateByQuery({
         index,
         body: {
             script: {
@@ -91,7 +91,7 @@ presenceElasticsearchRepository.updatePresenceStatus = (data) => {
             totalPresenceGroupEvent,
         }
 
-        esClient?.updateByQuery({
+        await esClient?.updateByQuery({
             index,
             body: {
                 script: {

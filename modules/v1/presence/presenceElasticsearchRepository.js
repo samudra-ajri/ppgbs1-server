@@ -20,7 +20,7 @@ presenceElasticsearchRepository.insert = (data) => {
         body: transformedData,
     })
 
-    if (data.groupId) {
+    if (data.eventGroupId) {
         const scriptSourceTotalPresence = `
             ctx._source['totalPresenceGroupEvent'] = params['totalPresenceGroupEvent'];
         `

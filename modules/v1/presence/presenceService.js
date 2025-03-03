@@ -126,8 +126,10 @@ presenceService.update = async (data) => {
     const presence = await presenceRepository.findPresence(userId, eventId)
     if (!presence) throwError(event.message.failed.notFound, 404)
     await presenceRepository.update(data)
+
     const totalPresenceGroupEvent = await countPresenceGroupEvent(userId, presence.groupId)
     data.totalPresenceGroupEvent = totalPresenceGroupEvent
+    data.eventGroupId = presence.groupId
     presenceElasticsearchRepository.updatePresenceStatus(data)
 }
 

@@ -22,7 +22,7 @@ presenceElasticsearchRepository.insert = (data) => {
 }
 
 presenceElasticsearchRepository.updatePresenceStatus = (data) => {
-    const { eventId, userId, status, totalPresenceGroupEvent } = data
+    const { eventId, userId, eventGroupId, status, totalPresenceGroupEvent } = data
 
     const scriptSource = `
       ctx._source['presenceStatus'] = params['presenceStatus'];
@@ -54,6 +54,35 @@ presenceElasticsearchRepository.updatePresenceStatus = (data) => {
             },
         },
     })
+
+    if (eventGroupId) {
+        const scriptSourceTotalPresence = `
+            ctx._source['totalPresenceGroupEvent'] = params['totalPresenceGroupEvent'];
+        `
+
+        const scriptParamsTotalPresence = {
+            totalPresenceGroupEvent,
+        }
+
+        esClient?.updateByQuery({
+            index,
+            body: {
+                script: {
+                    source: scriptSourceTotalPresence,
+                    params: scriptParamsTotalPresence,
+                    lang: 'painless',
+                },
+                query: {
+                    bool: {
+                        must: [
+                            { term: { 'eventGroupId.keyword': eventGroupId } },
+                            { term: { 'userId.keyword': userId } },
+                        ],
+                    },
+                },
+            },
+        })
+    }
 }
 
 presenceElasticsearchRepository.deletePresence = (eventId, userId) => {

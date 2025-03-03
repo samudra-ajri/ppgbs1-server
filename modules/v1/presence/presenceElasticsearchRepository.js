@@ -6,7 +6,7 @@ const now = new Date()
 const year = now.getFullYear()
 const index = `pigaru-olap-presences-${year}`
 
-presenceElasticsearchRepository.insert = async (data) => {
+presenceElasticsearchRepository.insert = (data) => {
     const transformedData = {
         ...data,
         eventEndDate: new Date(Number(data.eventEndDate)).toISOString(),
@@ -15,7 +15,7 @@ presenceElasticsearchRepository.insert = async (data) => {
         timestamp: new Date().toISOString(),
     }
 
-    await esClient?.index({
+    esClient?.index({
         index,
         body: transformedData,
     })
@@ -29,7 +29,7 @@ presenceElasticsearchRepository.insert = async (data) => {
             totalPresenceGroupEvent: data.totalPresenceGroupEvent,
         }
 
-        await esClient?.updateByQuery({
+        esClient?.updateByQuery({
             index,
             body: {
                 script: {
@@ -50,20 +50,22 @@ presenceElasticsearchRepository.insert = async (data) => {
     }
 }
 
-presenceElasticsearchRepository.updatePresenceStatus = async (data) => {
+presenceElasticsearchRepository.updatePresenceStatus = (data) => {
     const { eventId, userId, eventGroupId, status, totalPresenceGroupEvent } = data
 
     const scriptSource = `
       ctx._source['presenceStatus'] = params['presenceStatus'];
       ctx._source['presenceCreatedAt'] = params['presenceCreatedAt'];
+      ctx._source['totalPresenceGroupEvent'] = params['totalPresenceGroupEvent'];
     `
 
     const scriptParams = {
         presenceStatus: status.toUpperCase(),
         presenceCreatedAt: new Date().toISOString(),
+        totalPresenceGroupEvent,
     }
 
-    await esClient?.updateByQuery({
+    esClient?.updateByQuery({
         index,
         body: {
             script: {
@@ -91,7 +93,7 @@ presenceElasticsearchRepository.updatePresenceStatus = async (data) => {
             totalPresenceGroupEvent,
         }
 
-        await esClient?.updateByQuery({
+        esClient?.updateByQuery({
             index,
             body: {
                 script: {

@@ -122,7 +122,7 @@ presenceController.download = asyncHandler(async (req, res) => {
 
 // @desc    update event presence
 // @route   PUT /events/:eventId/presences/:userId
-// @access  Protect, Admin
+// @access  Protect
 presenceController.update = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.update.event
 

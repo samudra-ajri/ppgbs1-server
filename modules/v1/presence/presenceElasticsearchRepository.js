@@ -19,6 +19,35 @@ presenceElasticsearchRepository.insert = (data) => {
         index,
         body: transformedData,
     })
+
+    if (data.groupId) {
+        const scriptSourceTotalPresence = `
+            ctx._source['totalPresenceGroupEvent'] = params['totalPresenceGroupEvent'];
+        `
+
+        const scriptParamsTotalPresence = {
+            totalPresenceGroupEvent: data.totalPresenceGroupEvent,
+        }
+
+        esClient?.updateByQuery({
+            index,
+            body: {
+                script: {
+                    source: scriptSourceTotalPresence,
+                    params: scriptParamsTotalPresence,
+                    lang: 'painless',
+                },
+                query: {
+                    bool: {
+                        must: [
+                            { term: { 'eventGroupId.keyword': data.groupId } },
+                            { term: { 'userId.keyword': data.userId } },
+                        ],
+                    },
+                },
+            },
+        })
+    }
 }
 
 presenceElasticsearchRepository.updatePresenceStatus = (data) => {

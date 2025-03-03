@@ -40,7 +40,7 @@ presenceElasticsearchRepository.insert = (data) => {
                 query: {
                     bool: {
                         must: [
-                            { term: { 'eventGroupId.keyword': data.groupId } },
+                            { term: { 'eventGroupId.keyword': data.eventGroupId } },
                             { term: { 'userId.keyword': data.userId } },
                         ],
                     },

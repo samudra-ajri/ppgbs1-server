@@ -10,7 +10,7 @@ if (config.LOGGING_ENABLED && esClient) {
     const esTransport = new ElasticsearchTransport({
         level: 'info',
         indexPrefix: 'pigaru-logs',
-        indexSuffixPattern: 'YYYY.MM',
+        indexSuffixPattern: 'YYYY',
         client: esClient,
     })
     transportPipes.push(esTransport)

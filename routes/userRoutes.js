@@ -14,6 +14,7 @@ router.route('/:id/student-by-admin').put(protect, teacher, userController.updat
 router.route('/').get(protect, userController.list)
 router.route('/download').get(protect, userController.download)
 router.route('/:id').get(protect, userController.detail)
+router.route('/:id').delete(protect, teacher, userController.delete)
 // user position
 router.route('/:userId/positions/:positionId').delete(protect, teacher, userPositionController.delete)
 router.route('/positions')

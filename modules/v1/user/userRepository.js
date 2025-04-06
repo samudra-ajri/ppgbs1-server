@@ -6,6 +6,18 @@ const db = require('../../../database/config/postgresql')
 
 const userRepository = {}
 
+userRepository.delete = async (id, deletedBy) => {
+    const now = Date.now()
+    await db.query(`
+        UPDATE "users"
+        SET "isActive" = $2, "deletedAt" = $3, "deletedBy" = $4
+        WHERE "id" = $1`, {
+            bind: [id, false, now, deletedBy],
+            type: QueryTypes.UPDATE,
+        }
+    )
+}
+
 userRepository.findById = async (id) => {
     const query = selectQuery() + baseJoinQuery() + filterById() + groupByQuery()
     const [data] = await db.query(query, {

@@ -9,6 +9,18 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 
 const userController = {}
 
+// @desc    delete user
+// @route   DELETE /users/:userId
+// @access  Private, Admin
+userController.delete = asyncHandler(async (req, res) => {
+    req.event = eventConstant.user.deleteUser.event
+    const { id } = req.params
+    const deletedBy = req.auth.data.id
+    await userService.delete(id, deletedBy)
+    res.json({ id })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    list users
 // @route   GET /users?isActive=&search=&page=&pageSize=
 // @access  Private

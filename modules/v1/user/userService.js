@@ -10,6 +10,10 @@ const positionTypesConstant = require('../../../constants/positionTypesConstant'
 
 const userService = {}
 
+userService.delete = async (id, deletedBy) => {
+    await userRepository.delete(id, deletedBy)
+}
+
 userService.getUsers = async (filters, search, page, pageSize) => {
     const { data, total } = await userRepository.findAll(filters, search, page, pageSize)
     return { data, total }

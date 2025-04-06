@@ -18,6 +18,18 @@ userPositionController.delete = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    hard delete user position
+// @route   DELETE /users/:userId/positions/:positionId/hard-delete
+// @access  Private, Admin
+userPositionController.hardDelete = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.hardDeleteUserPosition.event
+    const { userId, positionId } = req.params
+    const deletedBy = req.auth.data.id
+    await userPositionService.hardDelete(userId, positionId, deletedBy)
+    res.json({ userId, positionId })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    change user position
 // @route   PUT /users/positions
 // @access  Private

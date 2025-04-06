@@ -196,6 +196,15 @@ const eventConstant = {
 				}
 			},
 		},
+		hardDeleteUserPosition: {
+			event: 'hard-delete-user-position',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user dengan posisi tersebut tidak ditemukan.'
+				}
+			},
+		},
 		changeUserPosition: {
 			event: 'change-user-position',
 			message: {

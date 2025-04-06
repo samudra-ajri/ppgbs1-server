@@ -13,6 +13,10 @@ userPositionService.delete = async (userId, positionId, deletedBy) => {
     }
 }
 
+userPositionService.hardDelete = async (userId, positionId, deletedBy) => {
+    await userPositionRepository.hardDelete(userId, positionId, deletedBy)
+}
+
 userPositionService.change = async (userId, positionId, newPositionId) => {
     const event = eventConstant.userPosition.changeUserPosition
     const userPosition = await userPositionRepository.findUserPosition(userId, positionId)

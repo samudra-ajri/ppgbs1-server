@@ -37,6 +37,16 @@ userPositionRepository.undoDelete = async (userId, positionId) => {
     })
 }
 
+userPositionRepository.hardDelete = async (userId, positionId) => {
+    await db.query(`
+        DELETE FROM "usersPositions"
+        WHERE "userId" = $1 AND "positionId" = $2`, {
+            bind: [userId, positionId],
+            type: QueryTypes.DELETE,
+        }
+    )
+}
+
 const deleteUserPosition = async (trx, data) => {
     const { userId, positionId } = data
     const now = Date.now()

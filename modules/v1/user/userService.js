@@ -160,6 +160,7 @@ const toDate = (timestampInSeconds) => {
 const defaultExtractedColumns = [
     { header: 'No.', key: 'number', width: 5 },
     { header: 'Nama', key: 'name', width: 30 },
+    { header: 'Aktif', key: 'isActive', width: 10 },
     { header: 'Email', key: 'email', width: 20 },
     { header: 'No. HP', key: 'phone', width: 20 },
     { header: 'L/P', key: 'sex', width: 5 },

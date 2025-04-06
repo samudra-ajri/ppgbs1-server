@@ -181,6 +181,7 @@ const selectQueryStream = () => {
     return `
         SELECT 
             users.name, 
+            users."isActive", 
             users.email,
             users.phone,
             CASE users.sex
@@ -255,6 +256,7 @@ const selectQuery = () => {
             JSON_AGG(
                 JSON_BUILD_OBJECT(
                     'isMain', "usersPositions"."isMain",
+                    'positionDeletedAt', "usersPositions"."deletedAt",
                     'type', positions.type, 
                     'positionId', positions.id, 
                     'positionName', positions.name,
@@ -332,6 +334,7 @@ const paginateQuery = (page, pageSize) => {
 
 const filtersQuery = (filters) => {
     let filter = filterByDefault(filters)
+    filter += filterByHasExistPosition(filters)
     filter += filterByActiveStatus(filters)
     filter += filterByOrganizationId(filters)
     filter += filterByForgotPasswordStatus(filters)
@@ -349,8 +352,15 @@ const filterByDefault = (filters) => {
         AND NOT ("usersPositions"."userId" = ${userId} AND "usersPositions"."positionId" = ${Number(positionId)})
     `
     return `
-        WHERE "usersPositions"."deletedAt" IS NULL
-        AND positions.id IS NOT NULL
+        WHERE positions.id IS NOT NULL
+    `
+}
+
+const filterByHasExistPosition = (filters) => {
+    let { hasExistPosition } = filters
+    if (hasExistPosition === "false") return ''
+    return `
+        AND "usersPositions"."deletedAt" IS NULL
     `
 }
 

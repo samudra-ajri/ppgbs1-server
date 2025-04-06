@@ -14,7 +14,7 @@ const userController = {}
 // @access  Private
 userController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.list.event
-    const { isActive, ancestorId, organizationId, sex, positionType, grade } = req.query
+    const { isActive, ancestorId, organizationId, sex, positionType, grade, hasExistPosition } = req.query
     const { search } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
@@ -28,6 +28,7 @@ userController.list = asyncHandler(async (req, res) => {
         sex,
         positionType,
         grade,
+        hasExistPosition,
     }
 
     const { data, total } = await userService.getUsers(filters, search, page, pageSize)
@@ -114,18 +115,19 @@ userController.updateMyTeacherProfile = asyncHandler(async (req, res) => {
 // @access  Private
 userController.download = asyncHandler(async (req, res) => {
     req.event = eventConstant.user.download.event
-    const { ancestorId, organizationId, sex, positionType, grade } = req.query
+    const { ancestorId, organizationId, sex, positionType, grade, isActive, hasExistPosition } = req.query
 
     const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)   
     const filters = { 
         userId: req.auth.data.id,
         positionId: req.auth.data.position.positionId,
         ancestorId: ancestorIdScope,
-        isActive: true,
+        isActive,
         organizationId,
         sex,
         positionType: positionType ?? positionTypesConstant.GENERUS,
         grade,
+        hasExistPosition,
     }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')

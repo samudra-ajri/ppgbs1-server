@@ -4,12 +4,36 @@ const positionTypesTableMap = require('../../../constants/positionTypesTableMap'
 
 const userPositionRepository = {}
 
-userPositionRepository.delete = async (userId, positionId, deletedBy, type) => {
-    const data = { userId, positionId, deletedBy, type }
+userPositionRepository.delete = async (userId, positionId, deletedBy) => {
+    const data = { userId, positionId, deletedBy }
     await db.transaction(async (t) => {
         await deleteUserPosition(t, data)
         const userPositions = await findUserPositions(t, data)
         if (!userPositions.length) await deleteUser(t, data)
+    })
+}
+
+userPositionRepository.undoDelete = async (userId, positionId) => {
+    await db.transaction(async (trx) => {
+        await db.query(`
+            UPDATE "usersPositions"
+            SET "deletedAt" = NULL
+            WHERE "userId" = $1 AND "positionId" = $2`, {
+                bind: [userId, positionId],
+                type: QueryTypes.UPDATE,
+                transaction: trx
+            }
+        )
+
+        await db.query(`
+            UPDATE users
+            SET "deletedAt" = NULL, "deletedBy" = NULL, "isActive" = TRUE
+            WHERE "id" = $1`, {
+                bind: [userId],
+                type: QueryTypes.UPDATE,
+                transaction: trx
+            }
+        )
     })
 }
 
@@ -68,6 +92,23 @@ userPositionRepository.findUserPosition = async (userId, positionId) => {
             "usersPositions"."userId" = $1 
             AND "usersPositions"."positionId" = $2
             AND "usersPositions"."deletedAt" IS NULL`, {
+        bind: [userId, positionId],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
+userPositionRepository.findDeletedUserPosition = async (userId, positionId) => {
+    const [data] = await db.query(`
+        SELECT 
+            "usersPositions"."userId", 
+            "usersPositions"."positionId"
+        FROM 
+            "usersPositions"
+        WHERE 
+            "usersPositions"."userId" = $1 
+            AND "usersPositions"."positionId" = $2
+            AND "usersPositions"."deletedAt" IS NOT NULL`, {
         bind: [userId, positionId],
         type: QueryTypes.SELECT,
     })

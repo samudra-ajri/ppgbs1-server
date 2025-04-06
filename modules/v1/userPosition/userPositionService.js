@@ -5,12 +5,12 @@ const { throwError } = require('../../../utils/errorUtils')
 const userPositionService = {}
 
 userPositionService.delete = async (userId, positionId, deletedBy) => {
-    const event = eventConstant.userPosition.deleteUserPosition
-    const userPosition = await userPositionRepository.findUserPosition(userId, positionId)
-    if (!userPosition) throwError(event.message.failed.notFound, 404)
-
-    const { type } = userPosition
-    await userPositionRepository.delete(userId, positionId, deletedBy, type)
+    const deletedUserPosition = await userPositionRepository.findDeletedUserPosition(userId, positionId)
+    if (deletedUserPosition) {
+        await userPositionRepository.undoDelete(userId, positionId)
+    } else {
+        await userPositionRepository.delete(userId, positionId, deletedBy)
+    }
 }
 
 userPositionService.change = async (userId, positionId, newPositionId) => {

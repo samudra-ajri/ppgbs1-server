@@ -53,7 +53,7 @@ materialRepository.getStructure = async () => {
 
 materialRepository.find = async (id) => {
     const [data] = await db.query(`
-        SELECT id, material, grade, subject, category, subcategory
+        SELECT id, material, grade, subject, category, subcategory, "targetedMonth"
         FROM materials
         WHERE id = $1`, {
             bind: [id],
@@ -76,6 +76,7 @@ const paginateQuery = (page, pageSize) => {
     pageSize = parseInt(pageSize) || 20
     const offset = (pageSize * page) - pageSize
     return `
+        ORDER BY materials.id
         LIMIT ${pageSize} OFFSET ${offset}
     `
 }
@@ -83,7 +84,7 @@ const paginateQuery = (page, pageSize) => {
 const selectQuery = () => {
     return `
         SELECT 
-            materials.id, materials.material, materials.grade, materials.subject, materials.category, materials.subcategory
+            materials.id, materials.material, materials.grade, materials.subject, materials.category, materials.subcategory, materials."targetedMonth"
         FROM materials
     `
 }
@@ -150,5 +151,11 @@ const filterBySubcategory = (filters) => {
     return ''
 }
 
+materialRepository.updateTargetedMonth = async (id, month) => {
+    await db.query(`UPDATE "materials" SET "targetedMonth" = $2 WHERE "id" = $1`, {
+        bind: [id, month],
+        type: QueryTypes.UPDATE
+    })
+}
 
 module.exports = materialRepository

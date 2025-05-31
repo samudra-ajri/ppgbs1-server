@@ -619,6 +619,16 @@ const eventConstant = {
 				},
 			},
 		},
+		targetMonth: {
+			event: 'material-target-month',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'materi target tidak ditemukan.',
+					invalidMonth: 'bulan tidak valid.',
+				},
+			},
+		},
 	},
 	directory: {
 		create: {

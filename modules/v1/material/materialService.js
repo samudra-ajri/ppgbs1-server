@@ -28,4 +28,18 @@ materialService.getMaterialStructure = async () => {
     return structure
 }
 
+materialService.targetMonth = async (id, month) => {
+    const event = eventConstant.material.targetMonth
+    
+    if (month < 1 || month > 12) throwError(event.message.failed.invalidMonth, 400)
+    
+    const material = await materialRepository.find(id)
+    if (!material) throwError(event.message.failed.notFound, 404)
+
+    if (!month) month = material.targetedMonth
+
+    await materialRepository.updateTargetedMonth(id, month)
+    return {id, month}
+}
+
 module.exports = materialService

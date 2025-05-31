@@ -43,4 +43,17 @@ materialController.structure = asyncHandler(async (req, res) => {
     res.json({ data })
 })
 
+// @desc    defined the month of the target materials
+// @route   PATCH /materials/:id/target-month
+// @access  Protect
+materialController.targetMonth = asyncHandler(async (req, res) => {
+    req.event = eventConstant.material.targetMonth.event
+    const { id } = req.params
+    const { targetedMonth } = req.body
+    const { month } = await materialService.targetMonth(id, targetedMonth)
+    res.json({ data: { id, targetedMonth: month } })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
+
 module.exports = materialController

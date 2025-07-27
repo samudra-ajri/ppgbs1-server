@@ -28,6 +28,8 @@ authService.getUser = async ({ login, password, positionId }) => {
     const positionHierarchy = await authRepository.findPoisitionHierarchy(userPosition.orgId)
     userPosition.hierarchy = positionHierarchy
 
+    const userAccess = await authRepository.findUserAccess(user.id)
+
     await authRepository.updateLastLogin(user.id)
 
     return {
@@ -37,6 +39,7 @@ authService.getUser = async ({ login, password, positionId }) => {
             login,
             name: user.name,
             position: userPosition,
+            access: userAccess,
         }),
     }
 }

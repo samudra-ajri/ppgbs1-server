@@ -4,6 +4,7 @@ const config = require('../config.js')
 const positionTypesConstant = require('../constants/positionTypesConstant.js')
 const { throwError } = require('../utils/errorUtils.js')
 const eventConstant = require('../constants/eventConstant.js')
+const accessTypesConstant = require('../constants/accessTypesConstant.js')
 const authRepository = require(`../modules/${config.APP_VERSION}/auth/authRepository`)
 
 const authMiddleware = {}
@@ -34,19 +35,23 @@ authMiddleware.protect = asyncHandler(async (req, res, next) => {
 })
 
 authMiddleware.admin = asyncHandler(async (req, res, next) => {
-    if (req.auth.data.position.type !== positionTypesConstant.ADMIN) {
-        throwError(event.message.failed.unauthenticated, 401)
-    }
+    const { position, access } = req.auth.data
+    const isNotAdmin = position?.type !== positionTypesConstant.ADMIN
+    const isViewer = access?.type === accessTypesConstant.VIEWER
+    if (isNotAdmin || isViewer) throwError(event.message.failed.unauthenticated, 401)
     next()
 })
 
 authMiddleware.teacher = asyncHandler(async (req, res, next) => {
-    const type = req.auth.data.position.type
-    if (type === positionTypesConstant.ADMIN || type === positionTypesConstant.PENGAJAR) {
-        next()
-    } else {
-        throwError(event.message.failed.unauthenticated, 401)
-    }
+    const { position, access } = req.auth.data
+    
+    const isAdminOrPengajar = 
+        position?.type === positionTypesConstant.ADMIN || 
+        position?.type === positionTypesConstant.PENGAJAR
+
+    const isNotViewer = access?.type !== accessTypesConstant.VIEWER
+    if (isAdminOrPengajar && isNotViewer) return next()
+    throwError(event.message.failed.unauthenticated, 401)
 })
 
 module.exports = authMiddleware

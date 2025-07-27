@@ -288,6 +288,18 @@ authRepository.restoreResetPasswordToken = async (userId) => {
     )
 }
 
+authRepository.findUserAccess = async (userId) => {
+    const results = await db.query(`
+        SELECT r."role" as type
+        FROM "roles" r
+        WHERE r."userId" = $1`, {
+            bind: [userId],
+            type: QueryTypes.SELECT,
+        }
+    )
+    return results[0]
+}
+
 const insertUser = async (trx, data) => {
     const { name, phone, password, username, email, sex, isMuballigh, birthdate, createdBy } = data
     const now = Date.now()

@@ -55,6 +55,8 @@ authService.switchUserPosition = async ({ login, positionId }) => {
     const positionHierarchy = await authRepository.findPoisitionHierarchy(userPosition.orgId)
     userPosition.hierarchy = positionHierarchy
 
+    const userAccess = await authRepository.findUserAccess(user.id)
+
     return {
         login,
         token: authUtils.getToken({
@@ -62,6 +64,7 @@ authService.switchUserPosition = async ({ login, positionId }) => {
             login,
             name: user.name,
             position: userPosition,
+            access: userAccess,
         }),
     }
 }

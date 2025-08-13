@@ -4,8 +4,12 @@ const config = require('../config')
 let esClient = null
 
 if (config.ELASTICSEARCH_ENABLED) {
+  const hostUrl = new URL(config.ELASTICSEARCH_HOST)
+  hostUrl.username = config.ELASTICSEARCH_USERNAME
+  hostUrl.password = config.ELASTICSEARCH_PASSWORD
+
   esClient = new Client({
-    node: `https://${config.ELASTICSEARCH_USERNAME}:${config.ELASTICSEARCH_PASSWORD}@${config.ELASTICSEARCH_HOST}`,
+    node: hostUrl.toString(),
   })
 }
 

@@ -66,12 +66,13 @@ const totalQuery = () => {
     return `
         SELECT count(DISTINCT events.id)
         FROM events
+        LEFT JOIN organizations on organizations.id = "events"."organizationId"
     `
 }
 
 const searchQuery = (search) => {
     if (search) return `
-        AND events.name ILIKE '%${search}%'
+        AND (events.name ILIKE '%${search}%' OR organizations.name ILIKE '%${search}%')
     `
     return ''
 }

@@ -132,6 +132,7 @@ const filtersQuery = (filters) => {
     filter += filterByAncestorOrganizationId(filters)
     filter += filterByAncestorOrganizationId(filters)
     filter += filterByUserId(filters)
+    filter += filterByGrade(filters)
     return filter
 }
 
@@ -178,6 +179,16 @@ const filterByOrganizationId = (filters) => {
             AND organizations.id::text LIKE '${Number(organizationId)}%'
         `
     }
+    return ''
+}
+
+const filterByGrade = (filters) => {
+    let { grade } = filters
+    if (grade) {
+        const grades = grade.split(",").map(Number)
+        return `
+            AND students.grade IN (` + grades + `)
+        `}
     return ''
 }
 
@@ -231,6 +242,7 @@ const selectQueryStream = () => {
             to_timestamp(presences."createdAt" / 1000) as "createdAt",
             presences.status,
             users.name as "userName",
+            students.grade,
             CASE users.sex
                 WHEN 1 THEN 'L'
                 WHEN 0 THEN 'P'
@@ -239,6 +251,7 @@ const selectQueryStream = () => {
             ancestors.name as "ancestorOrgName"
         FROM presences
             LEFT JOIN users on users.id = presences."userId"
+            LEFT JOIN students on students."userId" = users.id
             LEFT JOIN "usersPositions" on users.id = "usersPositions"."userId"
             LEFT JOIN positions on positions.id = "usersPositions"."positionId"
             LEFT JOIN organizations on organizations.id = "positions"."organizationId"

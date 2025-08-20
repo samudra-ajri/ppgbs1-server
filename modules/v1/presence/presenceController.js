@@ -32,11 +32,11 @@ presenceController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.presence.list.event
     const session = req.auth.data
     const { eventId } = req.params
-    const { sex, ancestorOrganizationId, organizationId, userId } = req.query
+    const { sex, ancestorOrganizationId, organizationId, userId, grade } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
 
-    const filters = { eventId, sex, ancestorOrganizationId, organizationId, userId }
+    const filters = { eventId, sex, ancestorOrganizationId, organizationId, userId, grade }
     if (!filters.organizationId) filters.organizationId = session.position.orgId
 
     const { data, total } = await presenceService.getPresences(filters, page, pageSize)
@@ -110,8 +110,8 @@ presenceController.download = asyncHandler(async (req, res) => {
     const { eventId } = req.params
     const event = await presenceService.findEvent(eventId)
 
-    const { sex, ancestorOrganizationId, organizationId } = req.query
-    const filters = { eventId, sex, ancestorOrganizationId, organizationId }
+    const { sex, ancestorOrganizationId, organizationId, grade } = req.query
+    const filters = { eventId, sex, ancestorOrganizationId, organizationId, grade }
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     res.setHeader('Content-Disposition', `attachment; filename="Presensi ${event.name}.xlsx"`)

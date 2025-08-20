@@ -106,6 +106,7 @@ presenceService.exportDataAsExcel = async (res, filters) => {
             { header: 'L/P', key: 'userSex', width: 5 },
             { header: 'PPD', key: 'ancestorOrgName', width: 25 },
             { header: 'PPK', key: 'organizationName', width: 25 },
+            { header: 'Kelas', key: 'grade', width: 10 },
         ]
 
         const dataStream = await presenceRepository.queryStream(filters)

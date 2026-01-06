@@ -144,7 +144,7 @@ authService.createUser = async ({
         positions: foundPositions,
         createdBy: createdBy || null,
         updatedBy: createdBy || null,
-        grade: grade || null,
+        grade: grade ?? null,
         education: education || null,
         pondok: pondok || null,
         greatHadiths: greatHadiths || null,

@@ -14,6 +14,7 @@ const completionRoutes = require('./routes/completionRoutes')
 const positionRoutes = require('./routes/positionRoutes')
 const organizationRoutes = require('./routes/organizationRoutes')
 const directoryRoutes = require('./routes/directoryRoutes')
+const materialTargetRoutes = require('./routes/materialTargetRoutes')
 
 // Connecting db
 db.authenticate()
@@ -44,6 +45,7 @@ app.use(`/${version}/completions`, completionRoutes)
 app.use(`/${version}/positions`, positionRoutes)
 app.use(`/${version}/organizations`, organizationRoutes)
 app.use(`/${version}/directories`, directoryRoutes)
+app.use(`/${version}/material-targets`, materialTargetRoutes)
 app.use('/api', homeRoutes)
 
 // Error handler

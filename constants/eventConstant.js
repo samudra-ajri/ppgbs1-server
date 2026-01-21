@@ -651,6 +651,21 @@ const eventConstant = {
 			},
 		},
 	},
+	materialTarget: {
+		create: {
+			event: 'create-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid.',
+					invalidMaterialIds: 'Material IDs must be an array and not empty.',
+					invalidGrades: 'Grades must be an array and not empty.',
+					invalidMonth: 'Invalid month.',
+					invalidYear: 'Invalid year.',
+				},
+			},
+		},
+	},
 }
 
 module.exports = eventConstant

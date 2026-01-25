@@ -57,6 +57,26 @@ materialTargetRepository.findAll = async (filters, page, pageSize) => {
     return { data, total }
 }
 
+materialTargetRepository.findAllIds = async (filters) => {
+    const { month, year, materialId, grade } = filters
+    let whereClause = 'WHERE mt."deletedAt" IS NULL'
+
+    if (month) whereClause += ` AND "month" = ${month}`
+    if (year) whereClause += ` AND "year" = ${year}`
+    if (materialId) whereClause += ` AND "materialId" = ${materialId}`
+    if (grade) whereClause += ` AND ${grade} = ANY("grades")`
+
+    const dataQuery = `
+        SELECT mt.id
+        FROM "materialTargets" mt
+        ${whereClause}
+        ORDER BY mt."year" DESC, mt."month" DESC, mt."createdAt" DESC
+    `
+
+    const data = await db.query(dataQuery, { type: QueryTypes.SELECT })
+    return data.map(item => item.id)
+}
+
 materialTargetRepository.findById = async (id) => {
     const query = `
         SELECT * FROM "materialTargets"

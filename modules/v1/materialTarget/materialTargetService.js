@@ -43,6 +43,10 @@ materialTargetService.getMaterialTargets = async (filters, page, pageSize) => {
     return { data, total }
 }
 
+materialTargetService.getMaterialTargetIds = async (filters) => {
+    return await materialTargetRepository.findAllIds(filters)
+}
+
 materialTargetService.updateMaterialTarget = async (id, payload) => {
     const event = eventConstant.materialTarget.update
     const { grades, month, year } = payload

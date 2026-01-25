@@ -39,6 +39,21 @@ materialTargetController.list = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    list material target ids
+// @route   GET /material-targets/ids
+// @access  Protect
+materialTargetController.listIds = asyncHandler(async (req, res) => {
+    req.event = eventConstant.materialTarget.listIds.event
+
+    const { month, year, materialId, grade } = req.query
+    const filters = { month, year, materialId, grade }
+
+    const data = await materialTargetService.getMaterialTargetIds(filters)
+
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    update material target
 // @route   PUT /material-targets/:id
 // @access  Protect

@@ -674,6 +674,15 @@ const eventConstant = {
 				},
 			},
 		},
+		listIds: {
+			event: 'list-material-target-ids',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid.',
+				},
+			},
+		},
 		update: {
 			event: 'update-material-target',
 			message: {

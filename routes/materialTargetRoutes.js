@@ -4,6 +4,7 @@ const { admin, protect } = require('../middlewares/authMiddleware')
 
 router.post('/', protect, admin, materialTargetController.create)
 router.get('/', protect, materialTargetController.list)
+router.get('/ids', protect, materialTargetController.listIds)
 router.put('/:id', protect, admin, materialTargetController.update)
 router.delete('/:id', protect, admin, materialTargetController.delete)
 

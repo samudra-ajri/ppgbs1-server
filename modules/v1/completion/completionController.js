@@ -102,8 +102,8 @@ completionController.deleteByAdmin = asyncHandler(async (req, res) => {
 completionController.sumUser = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure, userId } = req.params
-    const { grade, subject, category, subcategory } = req.query
-    const filters = { grade, subject, category, subcategory }
+    const { grade, subject, category, subcategory, ids } = req.query
+    const filters = { grade, subject, category, subcategory, ids }
     const data = await completionService.sumCompletion(structure, userId, filters)
     res.json({ data })
     logger({ req, status: loggerStatusConstant.SUCCESS })

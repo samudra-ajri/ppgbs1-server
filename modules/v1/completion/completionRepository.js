@@ -16,10 +16,8 @@ completionRepository.insert = async (userId, materialIds) => {
         INSERT INTO "usersCompletions" ("userId", "materialId", "createdAt")
         VALUES ${values.join(', ')}
         ON CONFLICT ON CONSTRAINT "uniqueUserIdMaterialId" DO NOTHING`, {
-            type: QueryTypes.INSERT,
-        }
-        
-    )
+        type: QueryTypes.INSERT,
+    })
 }
 
 completionRepository.findUsersCompletions = async (userId, materialIds) => {
@@ -27,10 +25,9 @@ completionRepository.findUsersCompletions = async (userId, materialIds) => {
         SELECT "materialId"
         FROM "usersCompletions"
         WHERE "userId" = $1 AND "materialId" = ANY($2::int[])`, {
-            bind: [userId, materialIds],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [userId, materialIds],
+        type: QueryTypes.SELECT,
+    })
 }
 
 completionRepository.findOneByUserId = async (userId) => {
@@ -38,10 +35,9 @@ completionRepository.findOneByUserId = async (userId) => {
         SELECT "userId"
         FROM "usersCompletions"
         WHERE "userId" = $1`, {
-            bind: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
     return data
 }
 
@@ -49,10 +45,9 @@ completionRepository.delete = async (userId, materialIds) => {
     await db.query(`
         DELETE FROM "usersCompletions" 
         WHERE "userId" = $1 AND "materialId" = ANY($2::int[])`, {
-            bind: [userId, materialIds],
-            type: QueryTypes.DELETE,
-        }
-    )
+        bind: [userId, materialIds],
+        type: QueryTypes.DELETE,
+    })
 }
 
 completionRepository.findAll = async (filters, page, pageSize) => {
@@ -101,7 +96,7 @@ const totalQuery = () => {
 }
 
 const baseJoinQuery = () => {
-    return`
+    return `
         FROM "usersCompletions"
         INNER JOIN materials on "usersCompletions"."materialId" = materials.id
         INNER JOIN users on "usersCompletions"."userId" = users.id
@@ -133,6 +128,7 @@ const sumFiltersQuery = (filters) => {
     filter += filterBySubcategory(filters)
     filter += filterByOrganization(filters)
     filter += filterByUsersGrade(filters)
+    filter += filterByIds(filters)
     return filter
 }
 
@@ -233,13 +229,23 @@ const filterByUsersGrade = (filters) => {
     return ''
 }
 
+const filterByIds = (filters) => {
+    const { ids } = filters
+    if (ids) {
+        const idsArray = ids.split(',').map(Number)
+        return `
+            AND materials.id IN (${idsArray.join(',')})
+        `
+    }
+    return ''
+}
+
 completionRepository.findMaterials = async (materialIds) => {
     return db.query(
         'SELECT id FROM materials WHERE id = ANY($1::int[])', {
-            bind: [materialIds],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [materialIds],
+        type: QueryTypes.SELECT,
+    })
 }
 
 // completion of a specific user
@@ -252,10 +258,9 @@ completionRepository.countUserCompletions = async (structure, userId, filters) =
         AND "usersCompletions"."userId" = $1
         GROUP BY materials.${structure}
         ORDER BY materials.${structure}`, {
-            bind: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
 }
 
 completionRepository.countUserCompletionsWithId = async (userId, filters) => {
@@ -267,38 +272,35 @@ completionRepository.countUserCompletionsWithId = async (userId, filters) => {
         AND "usersCompletions"."userId" = $1
         GROUP BY materials.material, materials.id, "usersCompletions"."createdAt"
         ORDER BY materials.id`, {
-            bind: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
 }
 
 completionRepository.countUserCompletionsMaterials = async (structure, filtersInput) => {
-    const { grade, subject, category, subcategory } = filtersInput
-    const filters = { grade, subject, category, subcategory }
+    const { grade, subject, category, subcategory, ids } = filtersInput
+    const filters = { grade, subject, category, subcategory, ids }
     return db.query(`
         SELECT materials.${structure}, COUNT(id) as count
         FROM materials
         ${sumFiltersQuery(filters)}
         GROUP BY materials.${structure}
         ORDER BY materials.${structure}`, {
-            type: QueryTypes.SELECT,
-        }
-    )
+        type: QueryTypes.SELECT,
+    })
 }
 
 completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) => {
-    const { grade, subject, category, subcategory } = filtersInput
-    const filters = { grade, subject, category, subcategory }
+    const { grade, subject, category, subcategory, ids } = filtersInput
+    const filters = { grade, subject, category, subcategory, ids }
     return db.query(`
         SELECT materials.id, materials.material, materials.grade, COUNT(id) as count
         FROM materials
         ${sumFiltersQuery(filters)}
         GROUP BY materials.material, materials.grade, materials.id
         ORDER BY materials.id`, {
-            type: QueryTypes.SELECT,
-        }
-    )
+        type: QueryTypes.SELECT,
+    })
 }
 
 // completion of users
@@ -346,9 +348,8 @@ completionRepository.countUsersCompletions = async (structure, filters) => {
 
     const query = selectQuery + baseJoinQuery + filtersQuery + groupQuery + orderQuery
     return db.query(query, {
-            type: QueryTypes.SELECT,
-        }
-    )
+        type: QueryTypes.SELECT,
+    })
 }
 
 completionRepository.countUsers = async (positionType, organizationId, usersGrade, ancestorId) => {
@@ -379,7 +380,7 @@ completionRepository.countUsers = async (positionType, organizationId, usersGrad
             AND students.grade IN (` + grades + `)
         `
     }
-    
+
     if (ancestorId) {
         baseJoinQuery += `
             INNER JOIN organizations on positions."organizationId" = organizations.id
@@ -401,10 +402,9 @@ completionRepository.updateLastCompletionStudent = async (userId) => {
         UPDATE students
         SET "lastCompletionUpdate" = $2
         WHERE "userId" = $1`, {
-            bind: [userId, now],
-            type: QueryTypes.UPDATE,
-        }
-    )
+        bind: [userId, now],
+        type: QueryTypes.UPDATE,
+    })
 }
 
 completionRepository.findUser = async (userId) => {
@@ -412,10 +412,9 @@ completionRepository.findUser = async (userId) => {
         SELECT "id", "name"
         FROM "users"
         WHERE "id" = $1`, {
-            bind: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
     return data
 }
 

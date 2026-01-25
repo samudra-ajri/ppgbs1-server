@@ -665,6 +665,34 @@ const eventConstant = {
 				},
 			},
 		},
+		list: {
+			event: 'list-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid.',
+				},
+			},
+		},
+		update: {
+			event: 'update-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'data tidak ditemukan.',
+					invalidData: 'data tidak valid.',
+				},
+			},
+		},
+		delete: {
+			event: 'delete-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					notFound: 'data tidak ditemukan.',
+				},
+			},
+		},
 	},
 }
 

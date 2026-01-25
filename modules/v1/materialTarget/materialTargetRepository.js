@@ -26,4 +26,71 @@ materialTargetRepository.bulkCreate = async (records) => {
     })
 }
 
+materialTargetRepository.findAll = async (filters, page, pageSize) => {
+    const { month, year, materialId, grade } = filters
+    const offset = (page - 1) * pageSize
+    let whereClause = 'WHERE mt."deletedAt" IS NULL'
+
+    if (month) whereClause += ` AND "month" = ${month}`
+    if (year) whereClause += ` AND "year" = ${year}`
+    if (materialId) whereClause += ` AND "materialId" = ${materialId}`
+    if (grade) whereClause += ` AND ${grade} = ANY("grades")`
+
+    const countQuery = `SELECT COUNT(*) FROM "materialTargets" mt ${whereClause}`
+    const dataQuery = `
+        SELECT 
+            mt.*,
+            m.material,
+            m.subject,
+            m.category,
+            m.subcategory
+        FROM "materialTargets" mt
+        LEFT JOIN materials m ON mt."materialId" = m.id
+        ${whereClause}
+        ORDER BY mt."year" DESC, mt."month" DESC, mt."createdAt" DESC
+        LIMIT ${pageSize} OFFSET ${offset}
+    `
+
+    const total = await db.query(countQuery, { type: QueryTypes.SELECT })
+    const data = await db.query(dataQuery, { type: QueryTypes.SELECT })
+
+    return { data, total }
+}
+
+materialTargetRepository.findById = async (id) => {
+    const query = `
+        SELECT * FROM "materialTargets"
+        WHERE id = ${id} AND "deletedAt" IS NULL
+    `
+    const result = await db.query(query, { type: QueryTypes.SELECT })
+    return result[0]
+}
+
+materialTargetRepository.update = async (id, data) => {
+    const { grades, month, year } = data
+    const now = Date.now()
+    let setClause = `"updatedAt" = ${now}`
+
+    if (grades) setClause += `, "grades" = ARRAY[${grades.join(',')}]`
+    if (month) setClause += `, "month" = ${month}`
+    if (year) setClause += `, "year" = ${year}`
+
+    const query = `
+        UPDATE "materialTargets"
+        SET ${setClause}
+        WHERE id = ${id}
+    `
+    await db.query(query, { type: QueryTypes.UPDATE })
+}
+
+materialTargetRepository.delete = async (id) => {
+    const now = Date.now()
+    const query = `
+        UPDATE "materialTargets"
+        SET "deletedAt" = ${now}
+        WHERE id = ${id}
+    `
+    await db.query(query, { type: QueryTypes.UPDATE })
+}
+
 module.exports = materialTargetRepository

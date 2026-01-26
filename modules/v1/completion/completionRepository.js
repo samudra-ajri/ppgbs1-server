@@ -128,7 +128,7 @@ const sumFiltersQuery = (filters) => {
     filter += filterBySubcategory(filters)
     filter += filterByOrganization(filters)
     filter += filterByUsersGrade(filters)
-    filter += filterByIds(filters)
+    filter += filterByMaterialIds(filters)
     return filter
 }
 
@@ -229,10 +229,10 @@ const filterByUsersGrade = (filters) => {
     return ''
 }
 
-const filterByIds = (filters) => {
-    const { ids } = filters
-    if (ids) {
-        const idsArray = ids.split(',').map(Number)
+const filterByMaterialIds = (filters) => {
+    const { materialIds } = filters
+    if (materialIds) {
+        const idsArray = materialIds.split(',').map(Number)
         return `
             AND materials.id IN (${idsArray.join(',')})
         `
@@ -278,8 +278,8 @@ completionRepository.countUserCompletionsWithId = async (userId, filters) => {
 }
 
 completionRepository.countUserCompletionsMaterials = async (structure, filtersInput) => {
-    const { grade, subject, category, subcategory, ids } = filtersInput
-    const filters = { grade, subject, category, subcategory, ids }
+    const { grade, subject, category, subcategory, materialIds } = filtersInput
+    const filters = { grade, subject, category, subcategory, materialIds }
     return db.query(`
         SELECT materials.${structure}, COUNT(id) as count
         FROM materials
@@ -291,8 +291,8 @@ completionRepository.countUserCompletionsMaterials = async (structure, filtersIn
 }
 
 completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) => {
-    const { grade, subject, category, subcategory, ids } = filtersInput
-    const filters = { grade, subject, category, subcategory, ids }
+    const { grade, subject, category, subcategory, materialIds } = filtersInput
+    const filters = { grade, subject, category, subcategory, materialIds }
     return db.query(`
         SELECT materials.id, materials.material, materials.grade, COUNT(id) as count
         FROM materials

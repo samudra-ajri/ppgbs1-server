@@ -105,12 +105,14 @@ userService.updateStudentByAdmin = async (data) => {
     if (!existStudent.length) throwError(event.message.failed.notFound, 404)
 
     const updatedDdata = {
-        userId: userData.id,
+        id: userData.id,
         grade: payload.grade?.toString() || userData.grade?.toString() || ageUtils.getGrade(userData.birthdate),
+        currentPositionId: payload.currentPositionId,
+        newPositionId: payload.newPositionId,
         updatedBy,
     }
 
-    await userRepository.updateUserStudentByAdmin(updatedDdata)
+    await userRepository.updateUserByAdmin(updatedDdata)
 }
 
 userService.updateMyTeacherProfile = async (data) => {

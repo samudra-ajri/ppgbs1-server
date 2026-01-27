@@ -115,7 +115,7 @@ completionController.sumUser = asyncHandler(async (req, res) => {
 completionController.sumUsers = asyncHandler(async (req, res) => {
     req.event = eventConstant.completion.sum.event
     const { structure } = req.params
-    const { grade, subject, category, subcategory, usersGrade, organizationId, ancestorId } = req.query
+    const { grade, subject, category, subcategory, usersGrade, organizationId, ancestorId, materialIds } = req.query
     const ancestorIdScope = calculateAncestorIdScope(req.auth.data, ancestorId)
     const filters = {
         grade,
@@ -124,7 +124,8 @@ completionController.sumUsers = asyncHandler(async (req, res) => {
         subcategory,
         usersGrade,
         organizationId,
-        ancestorId: ancestorIdScope
+        ancestorId: ancestorIdScope,
+        materialIds
     }
     const data = await completionService.sumCompletions(structure, filters)
     res.json({ data })

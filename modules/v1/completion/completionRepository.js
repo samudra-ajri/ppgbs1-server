@@ -153,7 +153,8 @@ const filterByTargetMaterial = (filters) => {
         query += ` AND "materialTargets"."year" = ${Number(targetMaterialYear)}`
     }
     if (targetGrade) {
-        query += ` AND ${Number(targetGrade)} = ANY("materialTargets"."grades")`
+        const grades = targetGrade.toString().split(',').map(Number)
+        query += ` AND "materialTargets"."grades" && ARRAY[${grades.join(',')}]`
     }
     if (targetMaterialMonth || targetMaterialYear || targetGrade) {
         query += ` AND "materialTargets"."deletedAt" IS NULL`

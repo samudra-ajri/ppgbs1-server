@@ -119,6 +119,16 @@ const filtersQuery = (filters) => {
     return filter
 }
 
+const joinMaterialTargets = (filters) => {
+    const { targetMaterialMonth, targetMaterialYear, targetGrade } = filters
+    if (targetMaterialMonth || targetMaterialYear || targetGrade) {
+        return `
+            INNER JOIN "materialTargets" ON materials.id = "materialTargets"."materialId"
+        `
+    }
+    return ''
+}
+
 const sumFiltersQuery = (filters) => {
     let filter = filterByDefault()
     filter += filterByPosition(filters)
@@ -129,7 +139,26 @@ const sumFiltersQuery = (filters) => {
     filter += filterByOrganization(filters)
     filter += filterByUsersGrade(filters)
     filter += filterByMaterialIds(filters)
+    filter += filterByTargetMaterial(filters)
     return filter
+}
+
+const filterByTargetMaterial = (filters) => {
+    const { targetMaterialMonth, targetMaterialYear, targetGrade } = filters
+    let query = ''
+    if (targetMaterialMonth) {
+        query += ` AND "materialTargets"."month" = ${Number(targetMaterialMonth)}`
+    }
+    if (targetMaterialYear) {
+        query += ` AND "materialTargets"."year" = ${Number(targetMaterialYear)}`
+    }
+    if (targetGrade) {
+        query += ` AND ${Number(targetGrade)} = ANY("materialTargets"."grades")`
+    }
+    if (targetMaterialMonth || targetMaterialYear || targetGrade) {
+        query += ` AND "materialTargets"."deletedAt" IS NULL`
+    }
+    return query
 }
 
 const filterByDefault = () => {
@@ -251,9 +280,10 @@ completionRepository.findMaterials = async (materialIds) => {
 // completion of a specific user
 completionRepository.countUserCompletions = async (structure, userId, filters) => {
     return db.query(`
-        SELECT materials.${structure}, COUNT("materialId") as count
+        SELECT materials.${structure}, COUNT("usersCompletions"."materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
+        ${joinMaterialTargets(filters)}
         ${sumFiltersQuery(filters)}
         AND "usersCompletions"."userId" = $1
         GROUP BY materials.${structure}
@@ -265,9 +295,10 @@ completionRepository.countUserCompletions = async (structure, userId, filters) =
 
 completionRepository.countUserCompletionsWithId = async (userId, filters) => {
     return db.query(`
-        SELECT materials.id, materials.material, "usersCompletions"."createdAt", COUNT("materialId") as count
+        SELECT materials.id, materials.material, "usersCompletions"."createdAt", COUNT("usersCompletions"."materialId") as count
         FROM "usersCompletions"
         INNER JOIN materials ON "usersCompletions"."materialId" = materials.id
+        ${joinMaterialTargets(filters)}
         ${sumFiltersQuery(filters)}
         AND "usersCompletions"."userId" = $1
         GROUP BY materials.material, materials.id, "usersCompletions"."createdAt"
@@ -278,11 +309,12 @@ completionRepository.countUserCompletionsWithId = async (userId, filters) => {
 }
 
 completionRepository.countUserCompletionsMaterials = async (structure, filtersInput) => {
-    const { grade, subject, category, subcategory, materialIds } = filtersInput
-    const filters = { grade, subject, category, subcategory, materialIds }
+    const { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade } = filtersInput
+    const filters = { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade }
     return db.query(`
-        SELECT materials.${structure}, COUNT(id) as count
+        SELECT materials.${structure}, COUNT(materials.id) as count
         FROM materials
+        ${joinMaterialTargets(filters)}
         ${sumFiltersQuery(filters)}
         GROUP BY materials.${structure}
         ORDER BY materials.${structure}`, {
@@ -291,11 +323,12 @@ completionRepository.countUserCompletionsMaterials = async (structure, filtersIn
 }
 
 completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) => {
-    const { grade, subject, category, subcategory, materialIds } = filtersInput
-    const filters = { grade, subject, category, subcategory, materialIds }
+    const { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade } = filtersInput
+    const filters = { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade }
     return db.query(`
-        SELECT materials.id, materials.material, materials.grade, COUNT(id) as count
+        SELECT materials.id, materials.material, materials.grade, COUNT(materials.id) as count
         FROM materials
+        ${joinMaterialTargets(filters)}
         ${sumFiltersQuery(filters)}
         GROUP BY materials.material, materials.grade, materials.id
         ORDER BY materials.id`, {
@@ -306,7 +339,7 @@ completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) 
 // completion of users
 completionRepository.countUsersCompletions = async (structure, filters) => {
     let selectQuery = `
-        SELECT materials.${structure}, COUNT("materialId") as count
+        SELECT materials.${structure}, COUNT("usersCompletions"."materialId") as count
     `
     let baseJoinQuery = `
         FROM "usersCompletions"
@@ -314,6 +347,7 @@ completionRepository.countUsersCompletions = async (structure, filters) => {
         INNER JOIN users ON "usersCompletions"."userId" = users.id
         INNER JOIN "usersPositions" ON users.id = "usersPositions"."userId"
         INNER JOIN positions ON "usersPositions"."positionId" = positions.id
+        ${joinMaterialTargets(filters)}
     `
     let filtersQuery = `
         ${sumFiltersQuery(filters)}

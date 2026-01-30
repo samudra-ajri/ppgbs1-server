@@ -113,4 +113,20 @@ materialTargetRepository.delete = async (id) => {
     await db.query(query, { type: QueryTypes.UPDATE })
 }
 
+materialTargetRepository.group = async (filters) => {
+    const { month, year } = filters || {}
+    let whereClause = 'WHERE "deletedAt" IS NULL'
+
+    if (month) whereClause += ` AND "month" = ${month}`
+    if (year) whereClause += ` AND "year" = ${year}`
+
+    const query = `
+        SELECT grades, month, year 
+        FROM "materialTargets" 
+        ${whereClause}
+        GROUP BY grades, month, year
+    `
+    return await db.query(query, { type: QueryTypes.SELECT })
+}
+
 module.exports = materialTargetRepository

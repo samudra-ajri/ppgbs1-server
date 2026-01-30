@@ -47,6 +47,10 @@ materialTargetService.getMaterialTargetIds = async (filters) => {
     return await materialTargetRepository.findAllIds(filters)
 }
 
+materialTargetService.getGroupedMaterialTargets = async (filters) => {
+    return await materialTargetRepository.group(filters)
+}
+
 materialTargetService.updateMaterialTarget = async (id, payload) => {
     const event = eventConstant.materialTarget.update
     const { grades, month, year } = payload

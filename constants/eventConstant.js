@@ -683,6 +683,15 @@ const eventConstant = {
 				},
 			},
 		},
+		group: {
+			event: 'group-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid.',
+				},
+			},
+		},
 		update: {
 			event: 'update-material-target',
 			message: {

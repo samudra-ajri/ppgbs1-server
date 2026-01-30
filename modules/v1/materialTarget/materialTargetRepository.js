@@ -121,7 +121,7 @@ materialTargetRepository.group = async (filters) => {
     if (year) whereClause += ` AND "year" = ${year}`
 
     const query = `
-        SELECT grades, month, year 
+        SELECT grades, month, year, COUNT(1)::int AS "total" 
         FROM "materialTargets" 
         ${whereClause}
         GROUP BY grades, month, year

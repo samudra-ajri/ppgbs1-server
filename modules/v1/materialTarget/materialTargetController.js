@@ -69,6 +69,21 @@ materialTargetController.group = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    summary material targets
+// @route   GET /material-targets/summary/:structure
+// @access  Protect
+materialTargetController.summary = asyncHandler(async (req, res) => {
+    req.event = eventConstant.materialTarget.summary.event
+    const { structure } = req.params
+    const { month, year } = req.query
+    const filters = { month, year }
+
+    const data = await materialTargetService.getSummary(structure, filters)
+
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    update material target
 // @route   PUT /material-targets/:id
 // @access  Protect

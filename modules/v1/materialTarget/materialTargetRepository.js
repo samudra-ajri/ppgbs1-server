@@ -129,4 +129,56 @@ materialTargetRepository.group = async (filters) => {
     return await db.query(query, { type: QueryTypes.SELECT })
 }
 
+materialTargetRepository.countTargeted = async (structure, filters) => {
+    let whereClause = 'WHERE mt."deletedAt" IS NULL AND materials."deletedAt" IS NULL'
+    const { month, year } = filters || {}
+
+    if (month) whereClause += ` AND mt."month" = ${month}`
+    if (year) whereClause += ` AND mt."year" = ${year}`
+
+    if (structure === 'material') {
+        return db.query(`
+            SELECT materials.id, materials.material, COUNT(mt."materialId") as count
+            FROM "materialTargets" mt
+            INNER JOIN materials ON mt."materialId" = materials.id
+            ${whereClause}
+            GROUP BY materials.material, materials.id
+            ORDER BY materials.id`, {
+            type: QueryTypes.SELECT,
+        })
+    } else {
+        return db.query(`
+            SELECT materials.${structure}, COUNT(mt."materialId") as count
+            FROM "materialTargets" mt
+            INNER JOIN materials ON mt."materialId" = materials.id
+            ${whereClause}
+            GROUP BY materials.${structure}
+            ORDER BY materials.${structure}`, {
+            type: QueryTypes.SELECT,
+        })
+    }
+}
+
+materialTargetRepository.countMaterials = async (structure) => {
+    if (structure === 'material') {
+        return db.query(`
+            SELECT materials.id, materials.material, materials.grade, COUNT(materials.id) as count
+            FROM materials
+            WHERE materials."deletedAt" IS NULL
+            GROUP BY materials.material, materials.grade, materials.id
+            ORDER BY materials.id`, {
+            type: QueryTypes.SELECT,
+        })
+    } else {
+        return db.query(`
+            SELECT materials.${structure}, COUNT(materials.id) as count
+            FROM materials
+            WHERE materials."deletedAt" IS NULL
+            GROUP BY materials.${structure}
+            ORDER BY materials.${structure}`, {
+            type: QueryTypes.SELECT,
+        })
+    }
+}
+
 module.exports = materialTargetRepository

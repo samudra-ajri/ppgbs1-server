@@ -711,6 +711,15 @@ const eventConstant = {
 				},
 			},
 		},
+		summary: {
+			event: 'summary-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					structureNotFound: 'struktur materi tidak ditemukan.',
+				},
+			},
+		},
 	},
 }
 

@@ -131,10 +131,14 @@ materialTargetRepository.group = async (filters) => {
 
 materialTargetRepository.countTargeted = async (structure, filters) => {
     let whereClause = 'WHERE mt."deletedAt" IS NULL AND materials."deletedAt" IS NULL'
-    const { month, year } = filters || {}
+    const { month, year, grades } = filters || {}
 
     if (month) whereClause += ` AND mt."month" = ${month}`
     if (year) whereClause += ` AND mt."year" = ${year}`
+    if (grades) {
+        const gradesList = grades.split(',').map(n => Number(n)).filter(n => !isNaN(n)).join(',')
+        if (gradesList) whereClause += ` AND mt."grades" && ARRAY[${gradesList}]`
+    }
 
     if (structure === 'material') {
         return db.query(`
@@ -160,11 +164,13 @@ materialTargetRepository.countTargeted = async (structure, filters) => {
 }
 
 materialTargetRepository.countMaterials = async (structure) => {
+    let whereClause = 'WHERE materials."deletedAt" IS NULL'
+
     if (structure === 'material') {
         return db.query(`
             SELECT materials.id, materials.material, materials.grade, COUNT(materials.id) as count
             FROM materials
-            WHERE materials."deletedAt" IS NULL
+            ${whereClause}
             GROUP BY materials.material, materials.grade, materials.id
             ORDER BY materials.id`, {
             type: QueryTypes.SELECT,
@@ -173,7 +179,7 @@ materialTargetRepository.countMaterials = async (structure) => {
         return db.query(`
             SELECT materials.${structure}, COUNT(materials.id) as count
             FROM materials
-            WHERE materials."deletedAt" IS NULL
+            ${whereClause}
             GROUP BY materials.${structure}
             ORDER BY materials.${structure}`, {
             type: QueryTypes.SELECT,

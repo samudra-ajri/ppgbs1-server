@@ -133,6 +133,7 @@ materialTargetRepository.group = async (filters) => {
         FROM "materialTargets" 
         ${whereClause}
         GROUP BY grades, month, year
+        ORDER BY grades ASC
     `
     return await db.query(query, { type: QueryTypes.SELECT })
 }

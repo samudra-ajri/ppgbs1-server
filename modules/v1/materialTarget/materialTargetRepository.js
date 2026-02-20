@@ -137,6 +137,22 @@ materialTargetRepository.group = async (filters) => {
     return await db.query(query, { type: QueryTypes.SELECT })
 }
 
+materialTargetRepository.findByGroup = async (filters) => {
+    const { grades, month, year } = filters || {}
+    let whereClause = 'WHERE "deletedAt" IS NULL'
+
+    if (month) whereClause += ` AND "month" = ${month}`
+    if (year) whereClause += ` AND "year" = ${year}`
+    if (grades) whereClause += ` AND "grades" = ARRAY[${grades.join(',')}]`
+
+    const query = `
+        SELECT *
+        FROM "materialTargets" 
+        ${whereClause}
+    `
+    return await db.query(query, { type: QueryTypes.SELECT })
+}
+
 materialTargetRepository.countTargeted = async (structure, filters) => {
     let whereClause = 'WHERE mt."deletedAt" IS NULL AND materials."deletedAt" IS NULL'
     const { month, year, grades, subject, category, subcategory } = filters || {}

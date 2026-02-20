@@ -21,6 +21,20 @@ materialTargetController.create = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    duplicate material targets
+// @route   POST /material-targets/duplicate
+// @access  Protect, Admin
+materialTargetController.duplicate = asyncHandler(async (req, res) => {
+    req.event = eventConstant.materialTarget.duplicate.event
+
+    const { grades, fromMonth, fromYear, toMonth, toYear } = req.body
+
+    const result = await materialTargetService.duplicate({ grades, fromMonth, fromYear, toMonth, toYear })
+
+    res.status(201).json({ message: 'SUCCESS', count: result.count })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    list material targets
 // @route   GET /material-targets
 // @access  Protect

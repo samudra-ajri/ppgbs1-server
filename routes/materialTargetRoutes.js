@@ -3,6 +3,7 @@ const materialTargetController = require('../modules/v1/materialTarget/materialT
 const { admin, protect } = require('../middlewares/authMiddleware')
 
 router.post('/', protect, admin, materialTargetController.create)
+router.post('/duplicate', protect, admin, materialTargetController.duplicate)
 router.get('/', protect, materialTargetController.list)
 router.get('/group', protect, materialTargetController.group)
 router.get('/ids', protect, materialTargetController.listIds)

@@ -99,6 +99,45 @@ materialTargetService.deleteMaterialTargets = async (payload) => {
     return filters
 }
 
+materialTargetService.duplicate = async (payload) => {
+    const { grades, fromMonth, fromYear, toMonth, toYear } = payload
+    const event = eventConstant.materialTarget.duplicate
+
+    // Basic validation
+    if (!grades || !Array.isArray(grades) || grades.length === 0) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+    if (!fromMonth || fromMonth < 1 || fromMonth > 12) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+    if (!fromYear || fromYear < 2000) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+    if (!toMonth || toMonth < 1 || toMonth > 12) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+    if (!toYear || toYear < 2000) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+
+    const targets = await materialTargetRepository.findByGroup({ grades, month: fromMonth, year: fromYear })
+
+    if (!targets || targets.length === 0) {
+        throwError(event.message.failed.notFound, 404)
+    }
+
+    const records = targets.map(target => ({
+        materialId: target.materialId,
+        grades,
+        month: toMonth,
+        year: toYear
+    }))
+
+    await materialTargetRepository.bulkCreate(records)
+
+    return { count: records.length }
+}
+
 materialTargetService.getSummary = async (structure, filters) => {
     validateStructure(structure)
     if (structure === 'material' && !filters?.subcategory) {

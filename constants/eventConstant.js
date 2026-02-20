@@ -722,6 +722,16 @@ const eventConstant = {
 				},
 			},
 		},
+		duplicate: {
+			event: 'duplicate-material-target',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid.',
+					notFound: 'tidak ada target yang ditemukan untuk diduplikasi.',
+				},
+			},
+		},
 	},
 }
 

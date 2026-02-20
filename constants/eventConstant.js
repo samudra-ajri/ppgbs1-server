@@ -708,6 +708,7 @@ const eventConstant = {
 				success: 'berhasil.',
 				failed: {
 					notFound: 'data tidak ditemukan.',
+					invalidData: 'data parameter tidak valid.',
 				},
 			},
 		},

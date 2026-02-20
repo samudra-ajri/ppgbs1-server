@@ -99,15 +99,23 @@ materialTargetController.update = asyncHandler(async (req, res) => {
 })
 
 // @desc    delete material target
-// @route   DELETE /material-targets/:id
+// @route   DELETE /material-targets
 // @access  Protect
 materialTargetController.delete = asyncHandler(async (req, res) => {
     req.event = eventConstant.materialTarget.delete.event
-    const { id } = req.params
+    const { materialIds, grades, month, year } = req.query
 
-    await materialTargetService.deleteMaterialTarget(id)
+    const materialIdsArray = materialIds ? materialIds.split(',').map(Number) : []
+    const gradesArray = grades ? grades.split(',').map(Number) : []
 
-    res.json({ message: 'SUCCESS' })
+    await materialTargetService.deleteMaterialTargets({
+        materialIds: materialIdsArray,
+        grades: gradesArray,
+        month: Number(month),
+        year: Number(year)
+    })
+
+    res.json({ materialIds: materialIdsArray })
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 

@@ -103,12 +103,20 @@ materialTargetRepository.update = async (id, data) => {
     await db.query(query, { type: QueryTypes.UPDATE })
 }
 
-materialTargetRepository.delete = async (id) => {
+materialTargetRepository.delete = async (filters) => {
+    const { materialIds, grades, month, year } = filters
     const now = Date.now()
+    let whereClause = 'WHERE "deletedAt" IS NULL'
+
+    if (materialIds) whereClause += ` AND "materialId" IN (${materialIds.join(',')})`
+    if (grades) whereClause += ` AND "grades" = ARRAY[${grades.join(',')}]`
+    if (month) whereClause += ` AND "month" = ${month}`
+    if (year) whereClause += ` AND "year" = ${year}`
+
     const query = `
         UPDATE "materialTargets"
         SET "deletedAt" = ${now}
-        WHERE id = ${id}
+        ${whereClause}
     `
     await db.query(query, { type: QueryTypes.UPDATE })
 }

@@ -8,6 +8,6 @@ router.get('/group', protect, materialTargetController.group)
 router.get('/ids', protect, materialTargetController.listIds)
 router.get('/summary/:structure', protect, materialTargetController.summary)
 router.put('/:id', protect, admin, materialTargetController.update)
-router.delete('/:id', protect, admin, materialTargetController.delete)
+router.delete('/', protect, admin, materialTargetController.delete)
 
 module.exports = router

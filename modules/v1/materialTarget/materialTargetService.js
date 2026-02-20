@@ -73,13 +73,30 @@ materialTargetService.updateMaterialTarget = async (id, payload) => {
     return { id }
 }
 
-materialTargetService.deleteMaterialTarget = async (id) => {
+materialTargetService.deleteMaterialTargets = async (payload) => {
     const event = eventConstant.materialTarget.delete
-    const materialTarget = await materialTargetRepository.findById(id)
-    if (!materialTarget) throwError(event.message.failed.notFound, 404)
+    const { materialIds, grades, month, year } = payload
+    const filters = {}
 
-    await materialTargetRepository.delete(id)
-    return { id }
+    if (materialIds && Array.isArray(materialIds) && materialIds.length > 0) {
+        filters.materialIds = materialIds
+    }
+    if (grades && Array.isArray(grades) && grades.length > 0) {
+        filters.grades = grades
+    }
+    if (month && !isNaN(month)) {
+        filters.month = month
+    }
+    if (year && !isNaN(year)) {
+        filters.year = year
+    }
+
+    if (Object.keys(filters).length === 0) {
+        throwError(event.message.failed.invalidData, 400)
+    }
+
+    await materialTargetRepository.delete(filters)
+    return filters
 }
 
 materialTargetService.getSummary = async (structure, filters) => {

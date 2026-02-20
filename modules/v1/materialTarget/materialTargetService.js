@@ -84,8 +84,11 @@ materialTargetService.deleteMaterialTarget = async (id) => {
 
 materialTargetService.getSummary = async (structure, filters) => {
     validateStructure(structure)
+    if (structure === 'material' && !filters?.subcategory) {
+        throwError(eventConstant.materialTarget.summary.message.failed.subcategoryNotFound, 404)
+    }
     const targetedCount = await materialTargetRepository.countTargeted(structure, filters)
-    const materialCount = await materialTargetRepository.countMaterials(structure)
+    const materialCount = await materialTargetRepository.countMaterials(structure, filters)
     return calculateSummary(targetedCount, materialCount, structure)
 }
 

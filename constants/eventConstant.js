@@ -717,6 +717,7 @@ const eventConstant = {
 				success: 'berhasil.',
 				failed: {
 					structureNotFound: 'struktur materi tidak ditemukan.',
+					subcategoryNotFound: 'subcategory harus diisi.',
 				},
 			},
 		},

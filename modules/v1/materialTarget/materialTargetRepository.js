@@ -131,7 +131,7 @@ materialTargetRepository.group = async (filters) => {
 
 materialTargetRepository.countTargeted = async (structure, filters) => {
     let whereClause = 'WHERE mt."deletedAt" IS NULL AND materials."deletedAt" IS NULL'
-    const { month, year, grades } = filters || {}
+    const { month, year, grades, subject, category, subcategory } = filters || {}
 
     if (month) whereClause += ` AND mt."month" = ${month}`
     if (year) whereClause += ` AND mt."year" = ${year}`
@@ -139,6 +139,10 @@ materialTargetRepository.countTargeted = async (structure, filters) => {
         const gradesList = grades.split(',').map(n => Number(n)).filter(n => !isNaN(n)).join(',')
         if (gradesList) whereClause += ` AND mt."grades" && ARRAY[${gradesList}]`
     }
+
+    if (subject) whereClause += ` AND materials.subject = '${subject}'`
+    if (category) whereClause += ` AND materials.category = '${category}'`
+    if (subcategory) whereClause += ` AND materials.subcategory = '${subcategory}'`
 
     if (structure === 'material') {
         return db.query(`
@@ -163,8 +167,13 @@ materialTargetRepository.countTargeted = async (structure, filters) => {
     }
 }
 
-materialTargetRepository.countMaterials = async (structure) => {
+materialTargetRepository.countMaterials = async (structure, filters) => {
     let whereClause = 'WHERE materials."deletedAt" IS NULL'
+    const { subject, category, subcategory } = filters || {}
+
+    if (subject) whereClause += ` AND materials.subject = '${subject}'`
+    if (category) whereClause += ` AND materials.category = '${category}'`
+    if (subcategory) whereClause += ` AND materials.subcategory = '${subcategory}'`
 
     if (structure === 'material') {
         return db.query(`

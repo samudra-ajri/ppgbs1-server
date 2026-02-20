@@ -9,7 +9,7 @@ materialTargetService.create = async (payload) => {
     const event = eventConstant.materialTarget.create
 
     // Basic validation
-    if (!materialIds || !Array.isArray(materialIds) || materialIds.length === 0) {
+    if (materialIds && !Array.isArray(materialIds)) {
         throwError(event.message.failed.invalidMaterialIds, 400)
     }
     if (!grades || !Array.isArray(grades) || grades.length === 0) {
@@ -24,16 +24,20 @@ materialTargetService.create = async (payload) => {
 
     // Prepare records for bulk insert
     const records = []
-    for (const materialId of materialIds) {
-        records.push({
-            materialId,
-            grades,
-            month,
-            year
-        })
-    }
+    if (materialIds && materialIds.length > 0) {
+        for (const materialId of materialIds) {
+            records.push({
+                materialId,
+                grades,
+                month,
+                year
+            })
+        }
 
-    await materialTargetRepository.bulkCreate(records)
+        await materialTargetRepository.bulkCreate(records)
+    } else {
+        await materialTargetRepository.bulkCreate([{ materialId: null, grades, month, year }])
+    }
 
     return { count: records.length }
 }

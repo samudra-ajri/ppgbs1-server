@@ -171,21 +171,25 @@ materialTargetRepository.countTargeted = async (structure, filters) => {
 
     if (structure === 'material') {
         return db.query(`
-            SELECT materials.id, materials.material, COUNT(mt."materialId") as count
+            SELECT materials.id, materials.material, materials.subject, COUNT(mt."materialId") as count
             FROM "materialTargets" mt
             INNER JOIN materials ON mt."materialId" = materials.id
             ${whereClause}
-            GROUP BY materials.material, materials.id
+            GROUP BY materials.material, materials.id, materials.subject
             ORDER BY materials.id`, {
             type: QueryTypes.SELECT,
         })
     } else {
+        const includeSubject = structure !== 'grade' && structure !== 'subject'
+        const subjectSelect = includeSubject ? ', materials.subject' : ''
+        const subjectGroup = includeSubject ? ', materials.subject' : ''
+
         return db.query(`
-            SELECT materials.${structure}, COUNT(mt."materialId") as count
+            SELECT materials.${structure}${subjectSelect}, COUNT(mt."materialId") as count
             FROM "materialTargets" mt
             INNER JOIN materials ON mt."materialId" = materials.id
             ${whereClause}
-            GROUP BY materials.${structure}
+            GROUP BY materials.${structure}${subjectGroup}
             ORDER BY materials.${structure}`, {
             type: QueryTypes.SELECT,
         })
@@ -202,19 +206,23 @@ materialTargetRepository.countMaterials = async (structure, filters) => {
 
     if (structure === 'material') {
         return db.query(`
-            SELECT materials.id, materials.material, materials.grade, COUNT(materials.id) as count
+            SELECT materials.id, materials.material, materials.grade, materials.subject, COUNT(materials.id) as count
             FROM materials
             ${whereClause}
-            GROUP BY materials.material, materials.grade, materials.id
+            GROUP BY materials.material, materials.grade, materials.id, materials.subject
             ORDER BY materials.id`, {
             type: QueryTypes.SELECT,
         })
     } else {
+        const includeSubject = structure !== 'grade' && structure !== 'subject'
+        const subjectSelect = includeSubject ? ', materials.subject' : ''
+        const subjectGroup = includeSubject ? ', materials.subject' : ''
+
         return db.query(`
-            SELECT materials.${structure}, COUNT(materials.id) as count
+            SELECT materials.${structure}${subjectSelect}, COUNT(materials.id) as count
             FROM materials
             ${whereClause}
-            GROUP BY materials.${structure}
+            GROUP BY materials.${structure}${subjectGroup}
             ORDER BY materials.${structure}`, {
             type: QueryTypes.SELECT,
         })

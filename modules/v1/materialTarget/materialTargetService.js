@@ -162,12 +162,17 @@ const validateStructure = (structure) => {
 const calculateSummary = (targetedCounts, materialCounts, structure) => {
     const findIndex = structure === 'material' ? 'id' : structure
     return materialCounts.map(material => {
-        const targeted = targetedCounts.find(t => t[findIndex] === material[findIndex])
+        const targeted = targetedCounts.find(t => {
+            const structureMatch = t[findIndex] === material[findIndex]
+            const subjectMatch = material.subject ? t.subject === material.subject : true
+            return structureMatch && subjectMatch
+        })
         const targetedCount = targeted ? parseInt(targeted.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
 
         const sumData = { targetedCount, materialCount }
         sumData[structure] = material[structure]
+        sumData.subject = material.subject
 
         if (structure === 'material') {
             sumData.materialId = material.id

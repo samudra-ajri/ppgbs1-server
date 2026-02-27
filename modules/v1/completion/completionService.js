@@ -90,7 +90,11 @@ const getUsersCount = async (positionTypes, filters) => {
 const calculateSumCompletion = (completionsCount, materialsCount, structure, materialsMultiplier) => {
     const findCompletionIndex = structure === 'material' ? 'id' : structure
     return materialsCount.map(material => {
-        const completion = completionsCount.find(c => c[findCompletionIndex] === material[findCompletionIndex])
+        const completion = completionsCount.find(c => {
+            const structureMatch = c[findCompletionIndex] === material[findCompletionIndex]
+            const subjectMatch = material.subject ? c.subject === material.subject : true
+            return structureMatch && subjectMatch
+        })
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
         const percentage = materialsMultiplier
@@ -101,6 +105,7 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
         sumData[structure] = material[structure]
         sumData.materialId = material.id
         sumData.grade = material.grade
+        sumData.subject = material.subject
         sumData.createdAt = completion?.createdAt
         return sumData
     })
@@ -108,7 +113,11 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
 
 const calculateSumCompletions = (completionsCount, materialsCount, structure, materialsMultiplier) => {
     return materialsCount.map(material => {
-        const completion = completionsCount.find(c => c[structure] === material[structure])
+        const completion = completionsCount.find(c => {
+            const structureMatch = c[structure] === material[structure]
+            const subjectMatch = material.subject ? c.subject === material.subject : true
+            return structureMatch && subjectMatch
+        })
         const completionCount = completion ? parseInt(completion.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
         const percentage = materialsMultiplier
@@ -119,6 +128,7 @@ const calculateSumCompletions = (completionsCount, materialsCount, structure, ma
         sumData[structure] = material[structure]
         sumData.materialId = material.id
         sumData.grade = material.grade
+        sumData.subject = material.subject
         return sumData
     })
 }

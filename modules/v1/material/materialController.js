@@ -13,10 +13,10 @@ const materialController = {}
 materialController.list = asyncHandler(async (req, res) => {
     req.event = eventConstant.material.list.event
 
-    const { grade, subject, category, subcategory } = req.query
+    const { grade, subject, category, subcategory, q } = req.query
     const page = req.query.page || 1
     const pageSize = req.query.pageSize || 20
-    const filters = { grade, subject, category, subcategory }
+    const filters = { grade, subject, category, subcategory, q }
 
     const { data, total } = await materialService.getMaterials(filters, page, pageSize)
     const metadata = paginate({ page, pageSize, count: data.length, totalCount: total[0].count })

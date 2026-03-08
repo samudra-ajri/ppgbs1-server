@@ -45,9 +45,8 @@ materialRepository.getStructure = async () => {
             subject_agg
         ORDER BY
             grade`, {
-            type: QueryTypes.SELECT,
-        }
-    )
+        type: QueryTypes.SELECT,
+    })
     return data
 }
 
@@ -56,10 +55,9 @@ materialRepository.find = async (id) => {
         SELECT id, material, grade, subject, category, subcategory, "targetedMonth"
         FROM materials
         WHERE id = $1`, {
-            bind: [id],
-            type: QueryTypes.SELECT,
-        }
-    )
+        bind: [id],
+        type: QueryTypes.SELECT,
+    })
     return data
 }
 
@@ -102,6 +100,7 @@ const filtersQuery = (filters) => {
     filter += filterBySubject(filters)
     filter += filterByCategory(filters)
     filter += filterBySubcategory(filters)
+    filter += filterByMaterial(filters)
     return filter
 }
 
@@ -146,6 +145,16 @@ const filterBySubcategory = (filters) => {
     if (subcategory) {
         return `
             AND materials.subcategory = '${subcategory}'
+        `
+    }
+    return ''
+}
+
+const filterByMaterial = (filters) => {
+    const { q } = filters
+    if (q) {
+        return `
+            AND materials.material ILIKE '%' || ${db.escape(q)} || '%'
         `
     }
     return ''

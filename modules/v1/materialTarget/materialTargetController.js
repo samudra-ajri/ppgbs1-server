@@ -89,8 +89,8 @@ materialTargetController.group = asyncHandler(async (req, res) => {
 materialTargetController.summary = asyncHandler(async (req, res) => {
     req.event = eventConstant.materialTarget.summary.event
     const { structure } = req.params
-    const { month, year, grades, subject, category, subcategory } = req.query
-    const filters = { month, year, grades, subject, category, subcategory }
+    const { month, year, grades, subject, category, subcategory, q } = req.query
+    const filters = { month, year, grades, subject, category, subcategory, q }
 
     const data = await materialTargetService.getSummary(structure, filters)
 

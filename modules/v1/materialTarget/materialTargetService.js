@@ -165,14 +165,17 @@ const calculateSummary = (targetedCounts, materialCounts, structure) => {
         const targeted = targetedCounts.find(t => {
             const structureMatch = t[findIndex] === material[findIndex]
             const subjectMatch = material.subject ? t.subject === material.subject : true
-            return structureMatch && subjectMatch
+            const categoryMatch = material.category ? t.category === material.category : true
+            return structureMatch && subjectMatch && categoryMatch
         })
         const targetedCount = targeted ? parseInt(targeted.count, 10) : 0
         const materialCount = parseInt(material.count, 10)
 
         const sumData = { targetedCount, materialCount }
         sumData[structure] = material[structure]
-        sumData.subject = material.subject
+        sumData.subject = material.subject || null
+        sumData.category = material.category || null
+        sumData.subcategory = material.subcategory || null
 
         if (structure === 'material') {
             sumData.materialId = material.id

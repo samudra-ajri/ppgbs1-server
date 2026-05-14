@@ -1,3 +1,4 @@
+const gradeConstant = require('../../../constants/gradeConstant')
 const positionTypesTableMap = require('../../../constants/positionTypesTableMap')
 const db = require('../../../database/config/postgresql')
 
@@ -332,13 +333,19 @@ const insertUserPositions = async (trx, data) => {
 }
 
 const insertUserRoles = async (trx, data) => {
-    data.now = Date.now()
-
-    for (let position of data.positions) {
+    const { positions, grade } = data;
+    const timestamp = Date.now();
+    
+    const tasks = positions.map(async (position) => {
         const positionType = positionTypesTableMap[position.type]
-        if (positionType === positionTypesTableMap.GENERUS && data.grade) await insertStudentRole(trx, data)
-        if (positionType === positionTypesTableMap.PENGAJAR) await insertTeacherRole(trx, data)
-    }
+        const isStudent = positionType === positionTypesTableMap.GENERUS
+        const isTeacher = positionType === positionTypesTableMap.PENGAJAR
+        const isEligibleGrade = grade >= gradeConstant.PAUD && grade <= gradeConstant.PN4
+        if (isStudent && isEligibleGrade) return insertStudentRole(trx, { ...data, now: timestamp })
+        if (isTeacher) return insertTeacherRole(trx, { ...data, now: timestamp })
+    })
+
+    await Promise.all(tasks.filter(Boolean));
 }
 
 const insertStudentRole = async (trx, data) => {

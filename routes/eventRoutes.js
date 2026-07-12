@@ -7,7 +7,7 @@ const presenceController = require(`../modules/${config.APP_VERSION}/presence/pr
 const router = express.Router()
 // events
 router.route('/')
-    .post(protect, admin, eventController.create)
+    .post(protect, teacher, eventController.create)
     .get(protect, eventController.list)
 router.route('/top')
     .get(protect, eventController.topList)

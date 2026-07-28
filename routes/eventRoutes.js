@@ -13,7 +13,7 @@ router.route('/top')
     .get(protect, eventController.topList)
 router.route('/:id')
     .get(protect, eventController.detail)
-    .delete(protect, admin, eventController.delete)
+    .delete(protect, teacher, eventController.delete)
 // presences
 router.route('/:eventId/presences/download')
     .get(protect, presenceController.download)

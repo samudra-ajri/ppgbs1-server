@@ -67,6 +67,17 @@ userPositionController.createByAdmin = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
+// @desc    add a generus position to the logged in teacher
+// @route   POST /users/me/generus-position
+// @access  Private
+userPositionController.createMyGenerus = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.createMyGenerusPosition.event
+    const userId = req.auth.data.id
+    const data = await userPositionService.createMyGenerus(userId)
+    res.status(201).json(data)
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
+})
+
 // @desc    delete user position for another user
 // @route   DELETE /users/:userId/positions?organizationId=&type=
 // @access  Private, Admin

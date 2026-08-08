@@ -239,6 +239,19 @@ const eventConstant = {
 				}
 			},
 		},
+		createMyGenerusPosition: {
+			event: 'create-my-generus-position',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user tidak ditemukan.',
+					notTeacher: 'user bukan pengajar.',
+					notFoundPosition: 'posisi generus tidak ditemukan pada kelompok tersebut.',
+					alreadyExists: 'user sudah memiliki posisi generus.',
+					noBirthdate: 'tanggal lahir belum diisi, kelas tidak dapat ditentukan.',
+				}
+			},
+		},
 		deleteUserPositionByAdmin: {
 			event: 'delete-user-position-by-admin',
 			message: {

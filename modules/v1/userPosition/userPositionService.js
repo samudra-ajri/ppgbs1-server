@@ -1,6 +1,7 @@
 const userPositionRepository = require('./userPositionRepository')
 const eventConstant = require('../../../constants/eventConstant')
 const positionTypesConstant = require('../../../constants/positionTypesConstant')
+const ageUtils = require('../../../utils/ageUtils')
 const { throwError } = require('../../../utils/errorUtils')
 
 const userPositionService = {}
@@ -109,6 +110,45 @@ userPositionService.deleteByAdmin = async (userId, organizationId, type, request
         positionId: foundPosition.id,
         type: foundPosition.type,
         organizationId: foundPosition.organizationId,
+    }
+}
+
+// The teacher declares themselves a generus as well. The class is derived from
+// their age, and the position is taken from the kelompok they teach at.
+userPositionService.createMyGenerus = async (userId) => {
+    const event = eventConstant.userPosition.createMyGenerusPosition
+
+    const user = await userPositionRepository.findUser(userId)
+    if (!user) throwError(event.message.failed.notFound, 404)
+    if (!user.birthdate) throwError(event.message.failed.noBirthdate, 400)
+
+    const teacherPosition = await userPositionRepository.findActiveUserPositionByType(userId, positionTypesConstant.PENGAJAR)
+    if (!teacherPosition) throwError(event.message.failed.notTeacher, 403)
+
+    const generusPosition = await userPositionRepository.findPositionByOrganization(teacherPosition.organizationId, positionTypesConstant.GENERUS)
+    if (!generusPosition) throwError(event.message.failed.notFoundPosition, 404)
+
+    const userPosition = await userPositionRepository.findUserPosition(userId, generusPosition.id)
+    if (userPosition) throwError(event.message.failed.alreadyExists, 403)
+
+    const grade = ageUtils.getGrade(user.birthdate)
+    const data = { userId, newPositionId: generusPosition.id, grade }
+
+    const deletedUserPosition = await userPositionRepository.findDeletedUserPosition(userId, generusPosition.id)
+    if (deletedUserPosition) {
+        await userPositionRepository.restoreGenerusPosition(data)
+    } else {
+        await userPositionRepository.createGenerusPosition(data)
+    }
+
+    return {
+        userId,
+        positionId: generusPosition.id,
+        positionName: generusPosition.name,
+        type: generusPosition.type,
+        organizationId: generusPosition.organizationId,
+        organizationName: generusPosition.organizationName,
+        grade,
     }
 }
 

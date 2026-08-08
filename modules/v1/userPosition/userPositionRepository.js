@@ -168,9 +168,28 @@ userPositionRepository.countActiveUserPositions = async (userId) => {
     return Number(data.count)
 }
 
+userPositionRepository.findActiveUserPositionByType = async (userId, type) => {
+    const [data] = await db.query(`
+        SELECT
+            positions.id as "positionId",
+            positions.type,
+            positions."organizationId"
+        FROM
+            "usersPositions"
+            LEFT JOIN positions on positions.id = "usersPositions"."positionId"
+        WHERE
+            "usersPositions"."userId" = $1
+            AND positions.type = $2
+            AND "usersPositions"."deletedAt" IS NULL`, {
+        bind: [userId, type],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 userPositionRepository.findUser = async (userId) => {
     const [data] = await db.query(`
-        SELECT id
+        SELECT id, birthdate
         FROM users
         WHERE id = $1`, {
         bind: [userId],
@@ -216,6 +235,38 @@ userPositionRepository.restoreUserPosition = async (data) => {
         await undoDeleteUserPosition(t, userId, newPositionId)
         await insertUserRole(t, data)
     })
+}
+
+userPositionRepository.createGenerusPosition = async (data) => {
+    await db.transaction(async (t) => {
+        await insertUserPosition(t, data)
+        await upsertStudent(t, data)
+    })
+}
+
+userPositionRepository.restoreGenerusPosition = async (data) => {
+    const { userId, newPositionId } = data
+    await db.transaction(async (t) => {
+        await undoDeleteUserPosition(t, userId, newPositionId)
+        await upsertStudent(t, data)
+    })
+}
+
+const upsertStudent = async (trx, data) => {
+    const { userId, grade } = data
+    const now = Date.now()
+    await db.query(`
+        INSERT INTO students ("userId", "grade", "createdAt", "updatedAt", "updatedBy")
+        VALUES ($1, $2, $3, $3, $1)
+        ON CONFLICT ("userId") DO UPDATE
+        SET "grade" = EXCLUDED."grade",
+            "updatedAt" = EXCLUDED."updatedAt",
+            "updatedBy" = EXCLUDED."updatedBy"`, {
+            bind: [userId, grade, now],
+            type: QueryTypes.INSERT,
+            transaction: trx,
+        }
+    )
 }
 
 const insertUserPosition = async (trx, data) => {

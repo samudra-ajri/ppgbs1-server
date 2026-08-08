@@ -16,6 +16,7 @@ router.route('/download').get(protect, userController.download)
 router.route('/:id').get(protect, userController.detail)
 router.route('/:id').delete(protect, teacher, userController.delete)
 // user position
+router.route('/me/generus-position').post(protect, userPositionController.createMyGenerus)
 router.route('/:userId/positions')
     .post(protect, teacher, userPositionController.createByAdmin)
     .delete(protect, teacher, userPositionController.deleteByAdmin)

@@ -15,26 +15,30 @@ userPositionRepository.delete = async (userId, positionId, deletedBy) => {
 
 userPositionRepository.undoDelete = async (userId, positionId) => {
     await db.transaction(async (trx) => {
-        await db.query(`
-            UPDATE "usersPositions"
-            SET "deletedAt" = NULL
-            WHERE "userId" = $1 AND "positionId" = $2`, {
-                bind: [userId, positionId],
-                type: QueryTypes.UPDATE,
-                transaction: trx
-            }
-        )
-
-        await db.query(`
-            UPDATE users
-            SET "deletedAt" = NULL, "deletedBy" = NULL, "isActive" = TRUE
-            WHERE "id" = $1`, {
-                bind: [userId],
-                type: QueryTypes.UPDATE,
-                transaction: trx
-            }
-        )
+        await undoDeleteUserPosition(trx, userId, positionId)
     })
+}
+
+const undoDeleteUserPosition = async (trx, userId, positionId) => {
+    await db.query(`
+        UPDATE "usersPositions"
+        SET "deletedAt" = NULL
+        WHERE "userId" = $1 AND "positionId" = $2`, {
+            bind: [userId, positionId],
+            type: QueryTypes.UPDATE,
+            transaction: trx
+        }
+    )
+
+    await db.query(`
+        UPDATE users
+        SET "deletedAt" = NULL, "deletedBy" = NULL, "isActive" = TRUE
+        WHERE "id" = $1`, {
+            bind: [userId],
+            type: QueryTypes.UPDATE,
+            transaction: trx
+        }
+    )
 }
 
 userPositionRepository.hardDelete = async (userId, positionId) => {
@@ -136,6 +140,28 @@ userPositionRepository.findPosition = async (positionId) => {
     return data
 }
 
+userPositionRepository.findPositionByOrganization = async (organizationId, type) => {
+    const [data] = await db.query(`
+        SELECT id, type
+        FROM positions
+        WHERE "organizationId" = $1 AND type = $2 AND "deletedAt" IS NULL`, {
+        bind: [organizationId, type],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
+userPositionRepository.findUser = async (userId) => {
+    const [data] = await db.query(`
+        SELECT id
+        FROM users
+        WHERE id = $1`, {
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 userPositionRepository.changeUserPosition = async (userId, positionId, newPositionId) => {
     const now = Date.now()
     await db.query(`
@@ -167,6 +193,14 @@ userPositionRepository.createUserPosition = async (data) => {
     })
 }
 
+userPositionRepository.restoreUserPosition = async (data) => {
+    const { userId, newPositionId } = data
+    await db.transaction(async (t) => {
+        await undoDeleteUserPosition(t, userId, newPositionId)
+        await insertUserRole(t, data)
+    })
+}
+
 const insertUserPosition = async (trx, data) => {
     const { userId, newPositionId } = data
     const now = Date.now()
@@ -184,6 +218,7 @@ const insertUserRole = async (trx, data) => {
     const { userId, type } = data
     const now = Date.now()
     const positionType = positionTypesTableMap[type]
+    if (!positionType) return
     await db.query(`
         INSERT INTO ${positionType} ("userId", "createdAt", "updatedAt")
         VALUES ($1, $2, $2)

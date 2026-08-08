@@ -54,4 +54,17 @@ userPositionController.create = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
+// @desc    create user position for another user
+// @route   POST /users/:userId/positions
+// @access  Private, Admin
+userPositionController.createByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.createUserPositionByAdmin.event
+    const { userId } = req.params
+    const { organizationId, type } = req.body
+    const requesterPositionType = req.auth.data.position?.type
+    const data = await userPositionService.createByAdmin(userId, organizationId, type, requesterPositionType)
+    res.status(201).json(data)
+    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
+})
+
 module.exports = userPositionController

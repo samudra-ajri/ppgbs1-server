@@ -1,5 +1,6 @@
 const userPositionRepository = require('./userPositionRepository')
 const eventConstant = require('../../../constants/eventConstant')
+const positionTypesConstant = require('../../../constants/positionTypesConstant')
 const { throwError } = require('../../../utils/errorUtils')
 
 const userPositionService = {}
@@ -43,6 +44,38 @@ userPositionService.create = async (userId, newPositionId) => {
         type: foundPosition.type,
     }
     await userPositionRepository.createUserPosition(data)
+}
+
+userPositionService.createByAdmin = async (userId, organizationId, type, requesterPositionType) => {
+    const event = eventConstant.userPosition.createUserPositionByAdmin
+
+    if (!positionTypesConstant[type]) throwError(event.message.failed.invalidType, 400)
+    const isAdminRequester = requesterPositionType === positionTypesConstant.ADMIN
+    if (type === 'ADMIN' && !isAdminRequester) throwError(event.message.failed.forbiddenType, 403)
+
+    const foundUser = await userPositionRepository.findUser(userId)
+    if (!foundUser) throwError(event.message.failed.notFound, 404)
+
+    const foundPosition = await userPositionRepository.findPositionByOrganization(organizationId, type)
+    if (!foundPosition) throwError(event.message.failed.notFoundPosition, 404)
+
+    const data = {
+        userId,
+        newPositionId: foundPosition.id,
+        type: foundPosition.type,
+    }
+
+    const userPosition = await userPositionRepository.findUserPosition(userId, foundPosition.id)
+    if (userPosition) throwError(event.message.failed.alreadyExists, 403)
+
+    const deletedUserPosition = await userPositionRepository.findDeletedUserPosition(userId, foundPosition.id)
+    if (deletedUserPosition) {
+        await userPositionRepository.restoreUserPosition(data)
+    } else {
+        await userPositionRepository.createUserPosition(data)
+    }
+
+    return { userId, positionId: foundPosition.id, type: foundPosition.type }
 }
 
 module.exports = userPositionService

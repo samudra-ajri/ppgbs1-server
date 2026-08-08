@@ -226,6 +226,19 @@ const eventConstant = {
 				}
 			},
 		},
+		createUserPositionByAdmin: {
+			event: 'create-user-position-by-admin',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user tidak ditemukan.',
+					alreadyExists: 'user dengan posisi tersebut sudah ada.',
+					notFoundPosition: 'posisi tidak ditemukan.',
+					invalidType: 'tipe posisi tidak valid.',
+					forbiddenType: 'tidak berwenang menambahkan tipe posisi tersebut.',
+				}
+			},
+		},
 	},
 	attendance: {
 		create: {

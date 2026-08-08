@@ -166,7 +166,7 @@ userRepository.findPositions = async (positionsIds) => {
 }
 
 userRepository.findAll = async (filters, search, page, pageSize) => {
-    const query = selectQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + orderByQuery() + paginateQuery(page, pageSize)
+    const query = selectQuery() + allPositionsQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search) + groupByQuery() + orderByQuery() + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + baseJoinQuery() + filtersQuery(filters) + searchQuery(search)
     const [data] = await db.query(query)
     const [total] = await db.query(queryTotal)
@@ -282,6 +282,30 @@ const selectQuery = () => {
 const totalQuery = () => {
     return `
         SELECT count(DISTINCT users.id)
+    `
+}
+
+// All positions of the user, unaffected by the position filters applied to the
+// outer query, so callers can tell which roles a user holds beyond the filtered one.
+const allPositionsQuery = () => {
+    return `
+        ,(
+            SELECT JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'isMain', up."isMain",
+                    'positionDeletedAt', up."deletedAt",
+                    'type', p.type,
+                    'positionId', p.id,
+                    'positionName', p.name,
+                    'organizationId', o.id,
+                    'organizationName', o.name
+                )
+            )
+            FROM "usersPositions" up
+                LEFT JOIN positions p on p.id = up."positionId"
+                LEFT JOIN organizations o on o.id = p."organizationId"
+            WHERE up."userId" = users.id
+        ) as "allPositions"
     `
 }
 

@@ -49,9 +49,7 @@ userPositionService.create = async (userId, newPositionId) => {
 userPositionService.createByAdmin = async (userId, organizationId, type, requesterPositionType) => {
     const event = eventConstant.userPosition.createUserPositionByAdmin
 
-    if (!positionTypesConstant[type]) throwError(event.message.failed.invalidType, 400)
-    const isAdminRequester = requesterPositionType === positionTypesConstant.ADMIN
-    if (type === 'ADMIN' && !isAdminRequester) throwError(event.message.failed.forbiddenType, 403)
+    assertTypeAllowed(event, type, requesterPositionType)
 
     const foundUser = await userPositionRepository.findUser(userId)
     if (!foundUser) throwError(event.message.failed.notFound, 404)
@@ -75,7 +73,49 @@ userPositionService.createByAdmin = async (userId, organizationId, type, request
         await userPositionRepository.createUserPosition(data)
     }
 
-    return { userId, positionId: foundPosition.id, type: foundPosition.type }
+    return {
+        userId,
+        positionId: foundPosition.id,
+        positionName: foundPosition.name,
+        type: foundPosition.type,
+        organizationId: foundPosition.organizationId,
+        organizationName: foundPosition.organizationName,
+    }
+}
+
+userPositionService.deleteByAdmin = async (userId, organizationId, type, requesterPositionType) => {
+    const event = eventConstant.userPosition.deleteUserPositionByAdmin
+
+    assertTypeAllowed(event, type, requesterPositionType)
+
+    const foundUser = await userPositionRepository.findUser(userId)
+    if (!foundUser) throwError(event.message.failed.notFound, 404)
+
+    const foundPosition = await userPositionRepository.findPositionByOrganization(organizationId, type)
+    if (!foundPosition) throwError(event.message.failed.notFoundPosition, 404)
+
+    const userPosition = await userPositionRepository.findUserPosition(userId, foundPosition.id)
+    if (!userPosition) throwError(event.message.failed.notAssigned, 404)
+
+    const activePositions = await userPositionRepository.countActiveUserPositions(userId)
+    if (activePositions <= 1) throwError(event.message.failed.lastPosition, 403)
+
+    // Removed for good, not soft deleted: a soft deleted position still shows up in the
+    // user list as "pindah sementara", which is the toggle's meaning, not this one's.
+    await userPositionRepository.hardDelete(userId, foundPosition.id)
+
+    return {
+        userId,
+        positionId: foundPosition.id,
+        type: foundPosition.type,
+        organizationId: foundPosition.organizationId,
+    }
+}
+
+const assertTypeAllowed = (event, type, requesterPositionType) => {
+    if (!positionTypesConstant[type]) throwError(event.message.failed.invalidType, 400)
+    const isAdminRequester = requesterPositionType === positionTypesConstant.ADMIN
+    if (type === 'ADMIN' && !isAdminRequester) throwError(event.message.failed.forbiddenType, 403)
 }
 
 module.exports = userPositionService

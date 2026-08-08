@@ -142,13 +142,30 @@ userPositionRepository.findPosition = async (positionId) => {
 
 userPositionRepository.findPositionByOrganization = async (organizationId, type) => {
     const [data] = await db.query(`
-        SELECT id, type
+        SELECT
+            positions.id,
+            positions.name,
+            positions.type,
+            positions."organizationId",
+            organizations.name as "organizationName"
         FROM positions
-        WHERE "organizationId" = $1 AND type = $2 AND "deletedAt" IS NULL`, {
+            LEFT JOIN organizations on organizations.id = positions."organizationId"
+        WHERE positions."organizationId" = $1 AND positions.type = $2 AND positions."deletedAt" IS NULL`, {
         bind: [organizationId, type],
         type: QueryTypes.SELECT,
     })
     return data
+}
+
+userPositionRepository.countActiveUserPositions = async (userId) => {
+    const [data] = await db.query(`
+        SELECT count(*) as count
+        FROM "usersPositions"
+        WHERE "userId" = $1 AND "deletedAt" IS NULL`, {
+        bind: [userId],
+        type: QueryTypes.SELECT,
+    })
+    return Number(data.count)
 }
 
 userPositionRepository.findUser = async (userId) => {

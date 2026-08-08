@@ -67,4 +67,17 @@ userPositionController.createByAdmin = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
 })
 
+// @desc    delete user position for another user
+// @route   DELETE /users/:userId/positions?organizationId=&type=
+// @access  Private, Admin
+userPositionController.deleteByAdmin = asyncHandler(async (req, res) => {
+    req.event = eventConstant.userPosition.deleteUserPositionByAdmin.event
+    const { userId } = req.params
+    const { organizationId, type } = req.query
+    const requesterPositionType = req.auth.data.position?.type
+    const data = await userPositionService.deleteByAdmin(userId, organizationId, type, requesterPositionType)
+    res.json(data)
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 module.exports = userPositionController

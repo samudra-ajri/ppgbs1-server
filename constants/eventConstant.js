@@ -239,6 +239,20 @@ const eventConstant = {
 				}
 			},
 		},
+		deleteUserPositionByAdmin: {
+			event: 'delete-user-position-by-admin',
+			message: {
+				success: 'berhasil',
+				failed: {
+					notFound: 'user tidak ditemukan.',
+					notFoundPosition: 'posisi tidak ditemukan.',
+					notAssigned: 'user tidak memiliki posisi tersebut.',
+					lastPosition: 'posisi tersebut satu-satunya posisi user. Hapus user bila ingin menghapusnya.',
+					invalidType: 'tipe posisi tidak valid.',
+					forbiddenType: 'tidak berwenang menghapus tipe posisi tersebut.',
+				}
+			},
+		},
 	},
 	attendance: {
 		create: {

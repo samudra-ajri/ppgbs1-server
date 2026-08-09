@@ -336,11 +336,11 @@ completionRepository.countUserCompletionsMaterialsWithId = async (filtersInput) 
     const { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade } = filtersInput
     const filters = { grade, subject, category, subcategory, materialIds, targetMaterialMonth, targetMaterialYear, targetGrade }
     return db.query(`
-        SELECT materials.id, materials.material, materials.grade, materials.subject, COUNT(materials.id) as count
+        SELECT materials.id, materials.material, materials.grade, materials.subject, materials.category, materials.subcategory, COUNT(materials.id) as count
         FROM materials
         ${joinMaterialTargets(filters)}
         ${sumFiltersQuery(filters)}
-        GROUP BY materials.material, materials.grade, materials.id, materials.subject
+        GROUP BY materials.material, materials.grade, materials.id, materials.subject, materials.category, materials.subcategory
         ORDER BY materials.id`, {
         type: QueryTypes.SELECT,
     })

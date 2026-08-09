@@ -54,10 +54,19 @@ completionService.sumCompletions = async (structure, filters) => {
     return calculateSumCompletions(completionsCount, materialsCount, structure, materialsMultiplier)
 }
 
+// materials are only listable one by one when the result set is already narrowed down,
+// either by subcategory or by a specific monthly target
+const validateMaterialScope = (filters) => {
+    const event = eventConstant.completion.sum
+    const hasMonthlyTarget = Boolean(filters?.targetMaterialMonth && filters?.targetMaterialYear)
+    if (!filters?.subcategory && !hasMonthlyTarget) {
+        throwError(`${event.message.failed.subcategoryNotFound}`, 404)
+    }
+}
+
 const getCompletionCount = async (structure, userId, filters) => {
     if (structure === 'material') {
-        const event = eventConstant.completion.sum
-        if (!filters?.subcategory) throwError(`${event.message.failed.subcategoryNotFound}`, 404)
+        validateMaterialScope(filters)
         return completionRepository.countUserCompletionsWithId(userId, filters)
     } else {
         return completionRepository.countUserCompletions(structure, userId, filters)
@@ -66,8 +75,7 @@ const getCompletionCount = async (structure, userId, filters) => {
 
 const getMaterialCount = async (structure, filters) => {
     if (structure === 'material') {
-        const event = eventConstant.completion.sum
-        if (!filters?.subcategory) throwError(`${event.message.failed.subcategoryNotFound}`, 404)
+        validateMaterialScope(filters)
         return completionRepository.countUserCompletionsMaterialsWithId(filters)
     } else {
         return completionRepository.countUserCompletionsMaterials(structure, filters)
@@ -106,6 +114,8 @@ const calculateSumCompletion = (completionsCount, materialsCount, structure, mat
         sumData.materialId = material.id
         sumData.grade = material.grade
         sumData.subject = material.subject
+        sumData.category = material.category
+        sumData.subcategory = material.subcategory
         sumData.createdAt = completion?.createdAt
         return sumData
     })

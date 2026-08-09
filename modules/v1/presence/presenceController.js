@@ -17,12 +17,15 @@ presenceController.create = asyncHandler(async (req, res) => {
 
     const session = req.auth.data
     const { eventId } = req.params
-    const { status, passcode } = req.body
+    const { status, passcode, noMaterialAdditionReason } = req.body
     const data = { session, eventId, status, passcode }
 
     await presenceService.create(data)
     res.status(201).json({ message: 'SUCCESS' })
-    logger({ req, status: loggerStatusConstant.SUCCESS, message: null, statusCode: 201 })
+
+    // alasan tidak ada penambahan capaian materi hanya dicatat di log, tidak disimpan ke database
+    const message = noMaterialAdditionReason ? `noMaterialAdditionReason=${noMaterialAdditionReason}` : null
+    logger({ req, status: loggerStatusConstant.SUCCESS, message, statusCode: 201 })
 })
 
 // @desc    event presence list

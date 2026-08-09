@@ -6,7 +6,7 @@ const eventRepository = require('./eventRepository')
 const eventService = {}
 
 eventService.createEvent = async ({ session, payload }) => {
-    const { name, passcode, startDate, endDate, location, description, grades, defaultPresenceStatus } = payload
+    const { name, passcode, startDate, endDate, location, description, grades, defaultPresenceStatus, mustUpdateMaterialFirst } = payload
     const data = {
         session,
         roomId: generateRoomId(),
@@ -18,6 +18,7 @@ eventService.createEvent = async ({ session, payload }) => {
         description,
         grades,
         defaultPresenceStatus,
+        mustUpdateMaterialFirst: Boolean(mustUpdateMaterialFirst),
     }
     
     const eventId = await eventRepository.insertEvent(data)

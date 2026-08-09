@@ -56,7 +56,8 @@ const selectQuery = (session) => {
             ${session?.position.type === positionTypesConstant.GENERUS ? '' : '"passcode",'}
             events."createdBy",
             events."groupId",
-            events."isGroupHead"
+            events."isGroupHead",
+            events."mustUpdateMaterialFirst"
         FROM events
         LEFT JOIN organizations on organizations.id = "events"."organizationId"
     `
@@ -207,14 +208,14 @@ eventRepository.deleteEvent = async (createdBy, eventId) => {
 }
 
 const createEvent = async (trx, data) => {
-    const { session, roomId, name, passcode, startDate, endDate, location, description, grades } = data
+    const { session, roomId, name, passcode, startDate, endDate, location, description, grades, mustUpdateMaterialFirst } = data
     const now = Date.now()
 
     return db.query(`
-        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades")
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12)
+        INSERT INTO "events" ("organizationId", "roomId", "name", "passcode", "startDate", "endDate", "location", "description", "createdBy", "updatedBy", "createdAt", "updatedAt", "organizationName", "grades", "mustUpdateMaterialFirst")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $9, $10, $10, $11, $12, $13)
         RETURNING id`, {
-        bind: [session.position.orgId, roomId, name, passcode, startDate, endDate, location, description, session.id, now, session.position.orgName, grades],
+        bind: [session.position.orgId, roomId, name, passcode, startDate, endDate, location, description, session.id, now, session.position.orgName, grades, mustUpdateMaterialFirst ?? false],
         type: QueryTypes.INSERT,
         transaction: trx,
     }

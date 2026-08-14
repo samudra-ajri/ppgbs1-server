@@ -403,6 +403,15 @@ const eventConstant = {
 				},
 			},
 		},
+		lastByName: {
+			event: 'event-last-by-name',
+			message: {
+				success: 'berhasil.',
+				failed: {
+					invalidData: 'data tidak valid',
+				},
+			},
+		},
 		listAdmin: {
 			event: 'event-list-admin',
 			message: {

@@ -39,6 +39,12 @@ eventService.getEvents = async (session, filters, search, page, pageSize, order)
     return { data, total }
 }
 
+eventService.getLastEventByName = async (session, name) => {
+    if (!name?.trim()) return null
+    const data = await eventRepository.findLastByName(session, name.trim())
+    return data ?? null
+}
+
 eventService.getTopEvents = async (session) => {
     const data = await eventRepository.findTop(session)
     return data

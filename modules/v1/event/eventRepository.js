@@ -32,6 +32,32 @@ eventRepository.findById = async (session, id) => {
     return data
 }
 
+// find the latest event with the exact same name in the session user organization
+eventRepository.findLastByName = async (session, name) => {
+    const [data] = await db.query(`
+        SELECT
+            events.id,
+            events.name,
+            events.passcode,
+            events.location,
+            events.description,
+            events.grades,
+            events."startDate",
+            events."endDate",
+            events."mustUpdateMaterialFirst"
+        FROM events
+        WHERE events."deletedAt" IS NULL
+            AND events."organizationId" = :organizationId
+            AND LOWER(TRIM(events.name)) = LOWER(TRIM(:name))
+        ORDER BY events.id DESC
+        LIMIT 1;
+    `, {
+        replacements: { organizationId: session.position.orgId, name },
+        type: QueryTypes.SELECT,
+    })
+    return data
+}
+
 eventRepository.findAll = async (session, filters, search, page, pageSize, order) => {
     const query = selectQuery(session) + filtersQuery(session, filters) + searchQuery(search) + orderBy(order) + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)

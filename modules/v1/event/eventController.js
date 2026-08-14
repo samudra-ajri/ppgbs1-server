@@ -55,6 +55,17 @@ eventController.topList = asyncHandler(async (req, res) => {
     logger({ req, status: loggerStatusConstant.SUCCESS })
 })
 
+// @desc    last event with the same name in the session user organization
+// @route   GET /events/last?name=
+// @access  Protect, Admin
+eventController.lastByName = asyncHandler(async (req, res) => {
+    req.event = eventConstant.event.lastByName.event
+    const session = req.auth.data
+    const data = await eventService.getLastEventByName(session, req.query.name)
+    res.json({ data })
+    logger({ req, status: loggerStatusConstant.SUCCESS })
+})
+
 // @desc    event detail
 // @route   GET /events/:id
 // @access  Protect

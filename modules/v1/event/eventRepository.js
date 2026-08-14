@@ -61,8 +61,9 @@ eventRepository.findLastByName = async (session, name) => {
 eventRepository.findAll = async (session, filters, search, page, pageSize, order) => {
     const query = selectQuery(session) + filtersQuery(session, filters) + searchQuery(search) + orderBy(order) + paginateQuery(page, pageSize)
     const queryTotal = totalQuery() + filtersQuery(session, filters) + searchQuery(search)
-    const [data] = await db.query(query)
-    const [total] = await db.query(queryTotal)
+    const replacements = { search: `%${search}%` }
+    const [data] = await db.query(query, { replacements })
+    const [total] = await db.query(queryTotal, { replacements })
     return { data, total }
 }
 
@@ -99,7 +100,7 @@ const totalQuery = () => {
 
 const searchQuery = (search) => {
     if (search) return `
-        AND (events.name ILIKE '%${search}%' OR organizations.name ILIKE '%${search}%')
+        AND (events.name ILIKE :search OR organizations.name ILIKE :search)
     `
     return ''
 }
@@ -142,7 +143,8 @@ const filterByDefault = () => {
 }
 
 const filterByOrganizationIds = (filters) => {
-    let { organizationIds } = filters
+    // comes straight from the query string, keep only real ids
+    const organizationIds = filters.organizationIds?.map(Number).filter(Number.isInteger)
     if (organizationIds?.length) return `
         AND events."organizationId" IN (${organizationIds})
     `

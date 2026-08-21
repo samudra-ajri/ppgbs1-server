@@ -18,7 +18,7 @@ userRepository.delete = async (id, deletedBy) => {
 }
 
 userRepository.findById = async (id) => {
-    const query = selectQuery() + baseJoinQuery() + filterById() + groupByQuery()
+    const query = selectQuery() + teacherDetailQuery() + baseJoinQuery() + filterById() + groupByQuery()
     const [data] = await db.query(query, {
         bind: [id],
         type: QueryTypes.SELECT,
@@ -276,6 +276,21 @@ const selectQuery = () => {
                     'ancestorOrgName', ancestors.name
                 )
             ) as positions
+    `
+}
+
+// Kolom kemuballighan tambahan, hanya dipakai halaman detail supaya payload
+// daftar user tidak ikut membengkak.
+const teacherDetailQuery = () => {
+    return `
+        ,teachers."muballighStatus",
+        teachers."maritalStatus",
+        teachers."children",
+        teachers."assignmentStartDate",
+        teachers."assignmentFinishDate",
+        teachers."scopes",
+        teachers."job",
+        teachers."hasBpjs"
     `
 }
 
